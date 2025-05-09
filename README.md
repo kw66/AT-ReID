@@ -1,9 +1,8 @@
 # AT-ReID
 A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term. 
 
-Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification
 
-[Paper]() [IJCAI2025] Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification
+[\[IJCAI2025\] Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification]()
 ### Introduction
 
 ### Get the Dataset
