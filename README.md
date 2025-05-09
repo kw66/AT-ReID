@@ -8,9 +8,9 @@ A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrie
 ### Get our AT-USTC Dataset
 Please send a signed [Dataset Release Agreement]() copy to lxlkw@mail.ustc.edu.cn. If your application is passed, we will send the download link of the dataset.
 
-The AT-USTC is built as the following folder structure:
+The AT-USTC dataset is built as the following folder structure:
 ```
-│USTC-AT23/
+│AT-USTC/
 ├──p001-d01-c01/
 │  ├── cam01-f0-0050.jpg
 │  ├── cam01-f0-0100.jpg
