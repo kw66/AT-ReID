@@ -3,7 +3,7 @@ A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrie
 
 Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification
 
-[Paper]()
+[Paper]()(IJCAI2025)
 ### Introduction
 
 ### Get the Dataset
