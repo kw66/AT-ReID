@@ -5,17 +5,17 @@ A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrie
 [\[Paper\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025)
 ### Introduction
 
-### Get the AT-USTC Dataset
-Please send a signed [dataset release agreement]() copy to lxlkw@mail.ustc.edu.cn. If your application is passed, we will send the download link of the dataset.
+### Get our AT-USTC Dataset
+Please send a signed [Dataset Release Agreement]() copy to lxlkw@mail.ustc.edu.cn. If your application is passed, we will send the download link of the dataset.
 
 The AT-USTC is built as the following folder structure:
 ```
 │USTC-AT23/
-├──p001-c01/
+├──p001-d01-c01/
 │  ├── cam01-f0-0050.jpg
 │  ├── cam01-f0-0100.jpg
 │  ├── ......
-├──p001-c02/
+├──p001-d02-c02/
 │  ├── ......
 │ .....
 ```
