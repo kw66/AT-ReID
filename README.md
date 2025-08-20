@@ -6,6 +6,9 @@ Based on the timestamps of query and gallery images, AT-ReID can be categorized 
 [\[Paper\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025)
 
 ### AT-USTC Dataset
+
+The AT-USTC dataset is constructed to provide conditions for investigations in AT-ReID. Compared to existing datasets, AT-USTC stands out for its long data collection period and the inclusion of both RGB and IR camera footages. Our data collection spans over an entire year, and 270 volunteers were photographed on average 29.1 times across different dates or scenes, 4-15 times more than current datasets, leading to the richest intra-identity diversity in scene, clothing, and modality. Importantly, our data collection has obtained the consent of each volunteer. 
+
 Please send a signed [Dataset Release Agreement](https://github.com/kw66/AT-ReID/blob/main/AT-USTC%20Dataset%20Release%20Agreement.pdf) copy to lxlkw@mail.ustc.edu.cn. If your application is approved, we will send the download link for the dataset.
 
 The AT-USTC dataset is built as the following folder structure:
