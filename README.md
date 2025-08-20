@@ -1,12 +1,12 @@
 # AT-ReID
 A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term. 
 
-[\[Paper\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025)
-      
-### Introduction
+Based on the timestamps of query and gallery images, AT-ReID can be categorized into six scenarios: daytime short-term (DTST), daytime long-term (DT-LT), nighttime short-term (NT-ST), nighttime long-term (NT-LT), all-day short-term (AD-ST) and all-day long-term (AD-LT), providing a broader range of scenarios compared to traditional ReID (Tr-ReID), visible-infrared cross-modal ReID (CM-ReID), and long-term cloth-changing ReID (CC-ReID).
 
-### Get our AT-USTC Dataset
-Please send a signed [Dataset Release Agreement]() copy to lxlkw@mail.ustc.edu.cn. If your application is approved, we will send the download link for the dataset.
+[\[Paper\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025)
+
+### AT-USTC Dataset
+Please send a signed [Dataset Release Agreement](https://github.com/kw66/AT-ReID/blob/main/AT-USTC%20Dataset%20Release%20Agreement.pdf) copy to lxlkw@mail.ustc.edu.cn. If your application is approved, we will send the download link for the dataset.
 
 The AT-USTC dataset is built as the following folder structure:
 ```
