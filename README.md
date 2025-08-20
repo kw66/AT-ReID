@@ -22,6 +22,14 @@ The AT-USTC dataset is built as the following folder structure:
 
 ### Citation If you use the dataset, please cite the following paper: 
 ```
-Xulin Li, Yan Lu, Bin Liu, Jiaze Li, Qinhong Yang, Tao Gong, Qi Chu, Mang Ye and Nenghai Yu, “Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification.” International Joint Conferences on Artificial Intelligence, 2025. 
+@inproceedings{li2025ATreid,
+    title={Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification.},
+    author={Xulin Li, Yan Lu, Bin Liu, Jiaze Li, Qinhong Yang, Tao Gong, Qi Chu, Mang Ye and Nenghai Yu},
+    booktitle={International Joint Conferences on Artificial Intelligence (IJCAI)},
+    pages={},
+    year={2025}
+}
 ```
 
+### Contact 
+If you have any questions, please feel free to contact us. E-mail: lxlkw@mail.ustc.edu.cn
