@@ -5,7 +5,7 @@ Based on the timestamps of query and gallery images, AT-ReID can be categorized 
 
 [\[Paper\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025)
 
-![image](https://github.com/kw66/AT-ReID/blob/main/fig1.pdf)
+![image](https://github.com/kw66/AT-ReID/blob/main/fig1.png)
 
 ### AT-USTC Dataset
 
