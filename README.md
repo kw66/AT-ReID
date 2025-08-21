@@ -36,7 +36,11 @@ The image AT-USTC/p001-d01-c01/cam01-f0-0050.jpg denotes the following meaning:
 
 "f0": image division flag (0 training, 1 validation, 2-5 query, 6-9 gallery) ([2,6] for DT-ST, [3,7] for DT-LT, [4,8] for NT-ST, [5,9] for NT-LT, [2,4,6,8] for AD-ST, [3,5,7,9] for AD-LT).
 
+### Inference
 
+<p align="center">
+  <img src="https://github.com/kw66/AT-ReID/blob/main/fig3.png" style="width:80%; display: block; margin-left: auto; margin-right: auto;">
+</p>
 
 ### Citation If you use the dataset, please cite the following paper: 
 ```
