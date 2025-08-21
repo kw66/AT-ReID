@@ -39,7 +39,7 @@ The image AT-USTC/p001-d01-c01/cam01-f0-0050.jpg denotes the following meaning:
 ### Inference
 
 <p align="center">
-  <img src="https://github.com/kw66/AT-ReID/blob/main/fig3.png" style="width:80%; display: block; margin-left: auto; margin-right: auto;">
+  <img src="https://github.com/kw66/AT-ReID/blob/main/fig3.png" style="width:100%; display: block; margin-left: auto; margin-right: auto;">
 </p>
 
 ### Citation If you use the dataset, please cite the following paper: 
