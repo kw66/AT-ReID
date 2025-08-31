@@ -34,7 +34,7 @@ The image AT-USTC/p001-d01-c01/cam01-f0-0050.jpg denotes the following meaning:
 
 "p001": person ID (1-270); "d01": capture date ID (1-13); "c01": clothes ID for its owner (1-14); "cam01": camera ID (1-8 for RGB cameras and 9-16 for infrared cameras); "0050": frame ID of the video segment;
 
-"f0": image division flag (0 training, 1 validation, 2-5 query, 6-9 gallery) ([2,6] for DT-ST, [3,7] for DT-LT, [4,8] for NT-ST, [5,9] for NT-LT, [2,4,6,8] for AD-ST, [3,5,7,9] for AD-LT).
+"f0": image division flag (0 training; 1 validation; 2-10 test) ([2,3,4,5] query; [6,7,8,9] gallery; [2,6] for DT-ST; [3,7] for DT-LT; [4,8] for NT-ST; [5,9] for NT-LT; [2,4,6,8] for AD-ST; [3,5,7,9] for AD-LT).
 
 ### Citation If you use the dataset, please cite the following paper: 
 ```
