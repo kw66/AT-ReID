@@ -18,7 +18,7 @@ The AT-USTC dataset is constructed to provide conditions for investigations in A
 Please send a signed [Dataset Release Agreement](https://github.com/kw66/AT-ReID/blob/main/AT-USTC%20Dataset%20Release%20Agreement.pdf) copy to lxlkw@mail.ustc.edu.cn. If your application is approved, we will send the download link for the dataset.
 
 <p align="center">
-  <img src="https://github.com/kw66/AT-ReID/blob/main/fig2.png" style="width:60%; display: block; margin-left: auto; margin-right: auto;">
+  <img src="https://github.com/kw66/AT-ReID/blob/main/fig2.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;">
 </p>
 
 The AT-USTC dataset is built as the following folder structure:
