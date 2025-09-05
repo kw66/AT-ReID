@@ -5,7 +5,7 @@ Based on the timestamps of query and gallery images, AT-ReID can be categorized 
 
 知乎介绍 [\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129) [\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382) [\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1947080865181078424)
 
-[\[Paper\]](https://ijcai-preprints.s3.us-west-1.amazonaws.com/2025/2068.pdf) Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025 oral)
+[\[arxiv\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification [(IJCAI2025 oral)](https://ijcai-preprints.s3.us-west-1.amazonaws.com/2025/2068.pdf)
 
 <p align="center">   
     <img src="https://github.com/kw66/AT-ReID/blob/main/fig1.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;"> 
