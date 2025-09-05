@@ -3,7 +3,7 @@ A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrie
 
 Based on the timestamps of query and gallery images, AT-ReID can be categorized into six scenarios: daytime short-term (DTST), daytime long-term (DT-LT), nighttime short-term (NT-ST), nighttime long-term (NT-LT), all-day short-term (AD-ST) and all-day long-term (AD-LT), providing a broader range of scenarios compared to traditional ReID (Tr-ReID), visible-infrared cross-modal ReID (CM-ReID), and long-term cloth-changing ReID (CC-ReID).
 
-知乎介绍 [\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129) [\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382) [\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382)
+知乎介绍 [\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129) [\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382) [\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1947080865181078424)
 
 [\[Paper\]](https://ijcai-preprints.s3.us-west-1.amazonaws.com/2025/2068.pdf) Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025 oral)
 
