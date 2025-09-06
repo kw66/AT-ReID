@@ -1,6 +1,6 @@
 # AT-ReID
 
-知乎介绍 [\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129) [\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382) [\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1947080865181078424)
+知乎介绍   [\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129)   [\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382)   [\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1947080865181078424)
 
 [\[Paper\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025 oral)
 
