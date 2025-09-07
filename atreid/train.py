@@ -14,7 +14,7 @@ from others.test import attest
 args = create_argparser().parse_args()
 os.environ['CUDA_VISIBLE_DEVICES'] = str(args.gpu)
 set_seed(args.seed)
-start_time, start = gpu_avaliable(args, memory=args.mb)
+start_time, start = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), time.time()
 checkpoint_path = mkdir_(args)
 
 dataset = atustc()
