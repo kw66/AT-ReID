@@ -27,7 +27,7 @@ class vitmoe(nn.Module):
         self.bottleneck.apply(weights_init)
         self.classifier.apply(weights_init)
 
-    def forward(self, x, mids=0):
+    def forward(self, x):
         cls = self.base(x, mids).unbind(1)
         f = [self.bottleneck[i](cls[i]) for i in range(6)]
         y = [self.classifier[i](f[i]) for i in range(6)]
