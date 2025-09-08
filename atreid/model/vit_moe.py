@@ -18,7 +18,7 @@ class vitmoe(nn.Module):
         model_path = "/home/lixulin/.cache/torch/checkpoints/jx_vit_base_p16_224-80ecf9dd.pth"
         dim = 768
         self.base = vit_base_patch16_224_ReID_moe(
-            img_size=imsize, stride_size=stride, drop_path_rate=drop, ncls=6)
+            img_size=imsize, stride_size=stride, drop_path_rate=drop, ncls=6, moe=moe)
         self.base.load_param(model_path)
         print('Loading pretrained ImageNet model......from {}'.format(model_path))
         self.bottleneck = nn.ModuleList([nn.BatchNorm1d(dim) for i in range(6)])
