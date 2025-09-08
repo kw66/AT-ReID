@@ -1,5 +1,5 @@
 import torch.nn as nn
-from model.vit_moe_module import vit_base_patch16_224_ReID
+from model.vit_moe_module import vit_base_patch16_224_ReID_moe
 
 def weights_init(m):
     classname = m.__class__.__name__
