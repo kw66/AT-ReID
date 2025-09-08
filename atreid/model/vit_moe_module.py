@@ -40,7 +40,7 @@ class Mlpmoe(nn.Module):
         super().__init__()
         self.k = k
         self.ncls = 6
-        nexp = 26# vm im cm sc cc
+        self.nexp = 26# vm im cm sc cc
         gt0 = [[0, 1, 0, 0, 1, 0],  # vmsc
                [0, 1, 0, 0, 0, 1],  # vmcc
                [0, 0, 1, 0, 1, 0],  # imsc
@@ -197,17 +197,13 @@ class ViT(nn.Module):
                 v = v.expand(-1, self.ncls, -1)
             try:
                 if "blocks" in k:
-                    layer = int(k.split('.')[1])
-                    if layer in self.layers:
-                        nexp = layer.mlp.nexp
-                        if 'fc1' in k:
-                            for i in range(0, nexp):
-                                self.state_dict()[k.replace('fc1', f'moe.{i}.0')].copy_(v)
-                        elif 'fc2' in k:
-                            for i in range(0, nexp):
-                                self.state_dict()[k.replace('fc2', f'moe.{i}.2')].copy_(v)
-                        else:
-                            self.state_dict()[k].copy_(v)
+                    nexp = layer.mlp.nexp
+                    if 'fc1' in k:
+                        for i in range(0, nexp):
+                            self.state_dict()[k.replace('fc1', f'moe.{i}.0')].copy_(v)
+                    elif 'fc2' in k:
+                        for i in range(0, nexp):
+                            self.state_dict()[k.replace('fc2', f'moe.{i}.2')].copy_(v)
                     else:
                         self.state_dict()[k].copy_(v)
                 else:
@@ -223,10 +219,9 @@ def interpolate_pos_embed(self, pos_embed_checkpoint):
     new_size = (self.patch_embed.num_y, self.patch_embed.num_x)
     extra_tokens = pos_embed_checkpoint[:, :1]
     extra_tokens = extra_tokens.expand(-1, self.ncls, -1)
-    #extra_tokens = torch.zeros_like(extra_tokens).type_as(extra_tokens)
     pos_tokens = pos_embed_checkpoint[0, 1:]
     pos_tokens = pos_tokens.reshape(1, orig_size, orig_size, -1).permute(0, 3, 1, 2)
-    pos_tokens = F.interpolate(pos_tokens, size=new_size, mode='bicubic', align_corners=False)  # 'bicubic'
+    pos_tokens = F.interpolate(pos_tokens, size=new_size, mode='bicubic', align_corners=False)
     pos_tokens = pos_tokens.permute(0, 2, 3, 1).flatten(1, 2)
     new_pos_embed = torch.cat([extra_tokens, pos_tokens], dim=1)
     print('reshape position embedding from %d to %d' % (orig_size ** 2, new_size[0] * new_size[1]))
