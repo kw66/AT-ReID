@@ -40,7 +40,7 @@ class resnet(nn.Module):
         for i in range(5):
             for j in range(layers[i]):
                 x = self.base[i][j](x)
-        p1 = self.avgpool(x).squeeze()
+        p1 = self.avgpool(x).reshape(x.shape[:2])
         f1 = self.bottleneck(p1)
         if self.training:
             y1 = self.classifier(f1)
