@@ -8,7 +8,7 @@ from others.optim import get_param_groups, adjust_learning_rate, get_optim
 from args.args import create_argparser
 from dataset.sample import PSKSampler
 from model.resnet import resnet
-from loss.ciftloss import TripletLoss
+from loss.triloss import TripletLoss
 from others.test import attest
 
 args = create_argparser().parse_args()
@@ -101,7 +101,6 @@ for epoch in range(1, args.max_epoch + 1):
     train(epoch)
     if epoch % args.test_epoch == 0 or epoch >= args.max_epoch - args.last_test:
         print(f'==> Start Testing Epoch: {epoch}')
-        #cmc, mAP = np.ones(20), 1.0
         cmc, mAP = attest(args, dataset, model)
         if cmc[0] > best_acc:
             best_acc, best_epoch = cmc[0], epoch
