@@ -24,7 +24,7 @@ class Attention(nn.Module):
         self.qkv = nn.Linear(dim, dim * 3, bias=True)
         self.proj = nn.Linear(dim, dim)
 
-    def forward(self, x, mids):
+    def forward(self, x):
         B, N, C = x.shape
         qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, self.head_dim).permute(2, 0, 3, 1, 4)  # 3 B H N c
         q, k, v = qkv.unbind(0)  # B H N c
@@ -32,6 +32,20 @@ class Attention(nn.Module):
         attn = attn.softmax(dim=-1)
         x = (attn @ v).transpose(1, 2).reshape(B, N, C)
         x = self.proj(x)
+        return x
+
+
+class Mlp(nn.Module):
+    def __init__(self, in_dim, hidden_dim, out_dim):
+        super().__init__()
+        self.fc1 = nn.Linear(in_dim, hidden_dim)
+        self.act = nn.GELU()
+        self.fc2 = nn.Linear(hidden_dim, out_dim)
+
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.act(x)
+        x = self.fc2(x)
         return x
 
 
@@ -73,7 +87,7 @@ class Mlpmoe(nn.Module):
             for j in range(5):
                 self.moe.append(nn.Sequential(atom1[i], nn.GELU(), atom2[j]))
 
-    def forward(self, x, mids):
+    def forward(self, x):
         cls_tokens, patch_tokens = x[:, :self.ncls], x[:, self.ncls:]
         patch_tokens = self.moe[0](patch_tokens)
         x = []
@@ -105,9 +119,9 @@ class Block(nn.Module):
         self.mlp = Mlpmoe(in_dim=dim, hidden_dim=int(dim * mlp_ratio), out_dim=dim)
         self.drop_path = DropPath(dpr) if dpr > 0. else nn.Identity()
 
-    def forward(self, x, mids):
-        x = x + self.drop_path(self.attn(self.norm1(x), mids))
-        x = x + self.drop_path(self.mlp(self.norm2(x), mids))
+    def forward(self, x):
+        x = x + self.drop_path(self.attn(self.norm1(x)))
+        x = x + self.drop_path(self.mlp(self.norm2(x)))
         return x
 
 
@@ -132,7 +146,7 @@ class PatchEmbed_overlap(nn.Module):
 
 class ViT(nn.Module):
     def __init__(self, img_size=224, patch_size=16, stride_size=16, embed_dim=768,
-                 depth=12, num_heads=12, mlp_ratio=4., drop_path_rate=0., ncls=6):
+                 depth=12, num_heads=12, mlp_ratio=4., drop_path_rate=0., ncls=6, moe=True):
         super().__init__()
         self.patch_embed = PatchEmbed_overlap(img_size=img_size, patch_size=patch_size,
                                               stride_size=stride_size, embed_dim=embed_dim)
@@ -140,7 +154,7 @@ class ViT(nn.Module):
         self.pos_embed = nn.Parameter(torch.zeros(1, self.patch_embed.num_patches + ncls, embed_dim))
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
         self.blocks = nn.ModuleList([
-            Block(dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, dpr=dpr[i]) for i in range(depth)])
+            Block(dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, dpr=dpr[i], moe=moe) for i in range(depth)])
         self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
         self.ncls = ncls
 
@@ -171,14 +185,14 @@ class ViT(nn.Module):
             nn.init.constant_(m.bias, 0)
             nn.init.constant_(m.weight, 1.0)
 
-    def forward(self, x, mids):
+    def forward(self, x):
         B = x.shape[0]
         x = self.patch_embed(x)
         cls_tokens = self.cls_token.expand(B, -1, -1)
         x = torch.cat((cls_tokens, x), dim=1) + self.pos_embed
 
         for blk in self.blocks:
-            x = blk(x, mids)
+            x = blk(x)
         x = self.norm(x)
         return x[:, :self.ncls]
 
@@ -228,9 +242,9 @@ def interpolate_pos_embed(self, pos_embed_checkpoint):
     return new_pos_embed
 
 
-def vit_base_patch16_224_ReID_moe(img_size=(256, 128), stride_size=16, drop_path_rate=0.2, ncls=6):
+def vit_base_patch16_224_ReID_moe(img_size=(256, 128), stride_size=16, drop_path_rate=0.2, ncls=6, moe=True):
     model = ViT(
         img_size=img_size, patch_size=16, stride_size=stride_size, embed_dim=768, depth=12,
-        num_heads=12, mlp_ratio=4, drop_path_rate=drop_path_rate, ncls=ncls)
+        num_heads=12, mlp_ratio=4, drop_path_rate=drop_path_rate, ncls=ncls, moe=moe)
     return model
 
