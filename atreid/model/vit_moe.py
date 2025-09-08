@@ -13,12 +13,12 @@ def weights_init(m):
 
 
 class vitmoe(nn.Module):
-    def __init__(self, num_p, num_c, imsize=(256, 128), drop=0.2, stride=16, ncls=6):
+    def __init__(self, num_p, num_c, imsize=(256, 128), drop=0.2, stride=16, moe=True):
         super(vitmoe, self).__init__()
         model_path = "/home/lixulin/.cache/torch/checkpoints/jx_vit_base_p16_224-80ecf9dd.pth"
         dim = 768
         self.base = vit_base_patch16_224_ReID_moe(
-            img_size=imsize, stride_size=stride, drop_path_rate=drop, ncls=ncls)
+            img_size=imsize, stride_size=stride, drop_path_rate=drop, ncls=6)
         self.base.load_param(model_path)
         print('Loading pretrained ImageNet model......from {}'.format(model_path))
         self.bottleneck = nn.ModuleList([nn.BatchNorm1d(dim) for i in range(6)])
