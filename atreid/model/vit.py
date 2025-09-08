@@ -15,7 +15,7 @@ def weights_init(m):
 
 
 class vit(nn.Module):
-    def __init__(self, num_p, imsize=(256, 128), drop=0.1, stride=16):
+    def __init__(self, num_p, imsize=(256, 128), drop=0.2, stride=16):
         super(vit, self).__init__()
         model_path = "/home/lixulin/.cache/torch/checkpoints/jx_vit_base_p16_224-80ecf9dd.pth"
         dim = 768
