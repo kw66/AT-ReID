@@ -49,7 +49,7 @@ def train(epoch):
         data_time.update(time.time() - end)
         end = time.time()
         p, y = model(imgs)
-        loss1, loss2, loss3, loss4, loss5, loss6 = criterion_said(y, pids, cids, mids)
+        loss1 = criterion_said(y, pids, cids, mids)
         _, predicted = y[5].max(1)
         lossi = [loss1, loss2, loss3, loss4, loss5, loss6]
         loss = sum(lossi)
