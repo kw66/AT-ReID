@@ -40,7 +40,8 @@ class Mlpmoe(nn.Module):
         super().__init__()
         self.k = k
         self.ncls = 6
-        self.nexp = 26# vm im cm sc cc
+        self.nexp = 6
+        # vm im cm sc cc
         gt0 = [[0, 1, 0, 0, 1, 0],  # vmsc
                [0, 1, 0, 0, 0, 1],  # vmcc
                [0, 0, 1, 0, 1, 0],  # imsc
@@ -96,14 +97,13 @@ class Mlpmoe(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, dim, num_heads, mlp_ratio=4., dpr=0., layer=0):
+    def __init__(self, dim, num_heads, mlp_ratio=4., dpr=0.):
         super().__init__()
         self.norm1 = nn.LayerNorm(dim, eps=1e-6)
         self.attn = Attention(dim, num_heads=num_heads)
         self.norm2 = nn.LayerNorm(dim, eps=1e-6)
         self.mlp = Mlpmoe(in_dim=dim, hidden_dim=int(dim * mlp_ratio), out_dim=dim)
         self.drop_path = DropPath(dpr) if dpr > 0. else nn.Identity()
-        self.layer = layer
 
     def forward(self, x, mids):
         x = x + self.drop_path(self.attn(self.norm1(x), mids))
@@ -140,7 +140,7 @@ class ViT(nn.Module):
         self.pos_embed = nn.Parameter(torch.zeros(1, self.patch_embed.num_patches + ncls, embed_dim))
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
         self.blocks = nn.ModuleList([
-            Block(dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, dpr=dpr[i], layer=i) for i in range(depth)])
+            Block(dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, dpr=dpr[i]) for i in range(depth)])
         self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
         self.ncls = ncls
 
