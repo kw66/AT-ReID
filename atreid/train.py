@@ -7,7 +7,7 @@ from dataset.atustc import atustc
 from others.optimvit import get_param_groups, adjust_learning_rate, get_optim
 from args.argsvit import create_argparser
 from dataset.sample import PSKSampler
-from model.vit_moe import vitmoe
+from model.uniat import uniat
 from others.test import attest6
 from loss.saidloss import saidloss
 
@@ -26,7 +26,7 @@ trainloader = DataLoader(
     num_workers=args.workers, pin_memory=True, drop_last=True,
 )
 
-model = vitmoe(num_p=dataset.num_p, num_c=dataset.num_c, imsize=(args.ih, args.iw), drop=args.drop, stride=args.stride, moe=args.moe)
+model = uniat(num_p=dataset.num_p, num_c=dataset.num_c, imsize=(args.ih, args.iw), drop=args.drop, stride=args.stride, moe=args.moe)
 model.cuda()
 param_groups = get_param_groups(args, args.lr, model)
 optimizer = get_optim(args, param_groups)
