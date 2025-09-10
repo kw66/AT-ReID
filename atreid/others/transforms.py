@@ -42,7 +42,7 @@ def get_transform(args):
         T.Normalize(mean=IMAGENET_DEFAULT_MEAN, std=IMAGENET_DEFAULT_STD),
         RandomErasing(probability=0.5, min_area=0.02, max_area=args.era,
                       mode='pixel', max_count=1, device='cpu'),
-        gray(p=args.gray),
+        #gray(p=args.gray),
     ])
     transform_test = T.Compose([
         T.Resize((args.ih, args.iw), interpolation=T.InterpolationMode.BILINEAR),
