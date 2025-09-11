@@ -15,7 +15,7 @@ def weights_init(m):
 
 
 class uniat(nn.Module):
-    def __init__(self, num_p, num_c, imsize=(256, 128), drop=0.1, stride=16, ncls=1, moe=0):
+    def __init__(self, num_p, num_c, imsize=(256, 128), drop=0.1, stride=16, ncls=1, moae=False):
         super(uniat, self).__init__()
         model_path = "/home/lixulin/.cache/torch/checkpoints/jx_vit_base_p16_224-80ecf9dd.pth"
         dim = 768
