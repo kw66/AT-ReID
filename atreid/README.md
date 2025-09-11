@@ -3,19 +3,17 @@ Official PyTorch implementation of the paper Towards Anytime Retrieval: A Benchm
 ### 1. Training.
 Train a model by:
 ```
-python train.py -gpu 1 -v 1 -moe 10
+python train.py -gpu 1 -v 1 -said -moae -hdw
 ```
 -gpu: which gpu to run.
 
 -v: version of training model.
 
--hdw: do not use hdw.
+-said: use said loss.
 
--said: do not use said loss.
+-moae: use moae.
 
--moe 10: our moae.
-
--moe 1: do not use moae.
+-hdw: use hdw.
 
 You may need mannully define the data path first.
 
