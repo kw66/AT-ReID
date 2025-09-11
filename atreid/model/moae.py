@@ -47,46 +47,6 @@ class Mlp_moe(nn.Module):
         if self.moe == 0:  # base
             nexp = 1
             self.gt = [[1], [1], [1], [1], [1], [1]]
-        if self.moe == 1:  # mmoe 6
-            nexp = 7
-            self.gt = [[1 if j != 0 else 0 for j in range(nexp)] for i in range(6)]
-        if self.moe == 2:  # mmoe 12
-            nexp = 13
-            self.gt = [[1 if j != 0 else 0 for j in range(nexp)] for i in range(6)]
-        if self.moe == 3:  # ple 6 0
-            nexp = 7
-            self.gt = [[1 if j == i + 1 else 0 for j in range(nexp)]
-                       for i in range(6)]
-        if self.moe == 4:  # ple 6 1
-            nexp = 8
-            self.gt = [[1 if j == i + 1 or j >= 7 else 0 for j in range(nexp)]
-                       for i in range(6)]
-        if self.moe == 5:  # ple 6 6
-            nexp = 13
-            self.gt = [[1 if j == i + 1 or j >= 7 else 0 for j in range(nexp)]
-                       for i in range(6)]
-        if self.moe == 6:  # vlmo 3
-            nexp = 4
-            self.gt = [[1 if j == i // 2 + 1 else 0 for j in range(nexp)]
-                       for i in range(6)]
-        if self.moe == 7:  # vlmo 6
-            nexp = 7
-            self.gt = [[1 if (i // 2 + 1) * 2 - 1 <= j <= (i // 2 + 1) * 2 else 0 for j in range(nexp)]
-                       for i in range(6)]
-        if self.moe == 8:  # vlmo 12
-            nexp = 13
-            self.gt = [[1 if (i // 2 + 1) * 4 - 3 <= j <= (i // 2 + 1) * 4 else 0 for j in range(nexp)]
-                       for i in range(6)]
-        if self.moe == 9:  # moae 6
-            nexp = 26     # vm im cm sc cc
-            gt0 = [[0, 1, 0, 0, 1, 0],  # vmsc
-                   [0, 1, 0, 0, 0, 1],  # vmcc
-                   [0, 0, 1, 0, 1, 0],  # imsc
-                   [0, 0, 1, 0, 0, 1],  # imcc
-                   [0, 0, 0, 1, 1, 0],  # cmsc
-                   [0, 0, 0, 1, 0, 1]]  # cmcc
-            self.gt = [[0] + [(j < k) * gt0[i][j] * gt0[i][k] for j in range(1, 6)
-                              for k in range(1, 6)] for i in range(6)]
         if self.moe == 10:  # moae 12
             nexp = 26     # vm im cm sc cc
             gt0 = [[0, 1, 0, 0, 1, 0],  # vmsc
@@ -101,32 +61,17 @@ class Mlp_moe(nn.Module):
         self.gate = nn.ModuleList([
             nn.Linear(in_dim, sum(self.gt[i]), bias=False) for i in range(self.ncls)])
         hidden_dim2 = hidden_dim
-        if self.moe in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
-            self.moe = nn.ModuleList([
+        if self.moe == 0:
+            self.ffn = nn.ModuleList([
                 nn.Sequential(
                     nn.Linear(in_dim, hidden_dim), nn.GELU(),
                     nn.Linear(hidden_dim, out_dim), ), ])
             for i in range(1, nexp):
-                self.moe.append(
+                self.ffn.append(
                     nn.Sequential(
                         nn.Linear(in_dim, hidden_dim2),
                         nn.GELU(),
                         nn.Linear(hidden_dim2, out_dim), ))
-        if self.moe == 9:
-            vm1 = nn.Linear(in_dim, hidden_dim2)
-            im1 = nn.Linear(in_dim, hidden_dim2)
-            cm1 = nn.Linear(in_dim, hidden_dim2)
-            sc2 = nn.Linear(hidden_dim2, in_dim)
-            cc2 = nn.Linear(hidden_dim2, in_dim)
-            atom1 = [vm1, im1, cm1, sc2, cc2]
-            atom2 = [vm1, im1, cm1, sc2, cc2]
-            self.moe = nn.ModuleList([
-                nn.Sequential(
-                    nn.Linear(in_dim, hidden_dim), nn.GELU(),
-                    nn.Linear(hidden_dim, out_dim), ), ])
-            for i in range(5):
-                for j in range(5):
-                    self.moe.append(nn.Sequential(atom1[i], nn.GELU(), atom2[j]))
         if self.moe == 10:
             vm1 = nn.Linear(in_dim, hidden_dim2)
             im1 = nn.Linear(in_dim, hidden_dim2)
@@ -140,25 +85,25 @@ class Mlp_moe(nn.Module):
             cc2 = nn.Linear(hidden_dim2, in_dim)
             atom1 = [vm1, im1, cm1, sc1, cc1]
             atom2 = [vm2, im2, cm2, sc2, cc2]
-            self.moe = nn.ModuleList([
+            self.ffn = nn.ModuleList([
                 nn.Sequential(
                     nn.Linear(in_dim, hidden_dim), nn.GELU(),
                     nn.Linear(hidden_dim, out_dim), ), ])
             for i in range(5):
                 for j in range(5):
-                    self.moe.append(nn.Sequential(atom1[i], nn.GELU(), atom2[j]))
+                    self.ffn.append(nn.Sequential(atom1[i], nn.GELU(), atom2[j]))
         self.drop = nn.Dropout(0.03)
 
     def forward(self, x):
         cls_tokens, patch_tokens = x[:, :self.ncls], x[:, self.ncls:]
-        patch_tokens = self.moe[0](patch_tokens)
+        patch_tokens = self.ffn[0](patch_tokens)
         x = []
         tokens = list(cls_tokens.chunk(self.ncls, 1))
         for i in range(len(tokens)):
             token = tokens[i]
             gt = self.gt[i]
-            out = torch.cat([self.moe[j](token).unsqueeze(3)
-                             for j in range(len(self.moe)) if gt[j] == 1], 3)
+            out = torch.cat([self.ffn[j](token).unsqueeze(3)
+                             for j in range(len(self.ffn)) if gt[j] == 1], 3)
             gate = self.gate[i](token).unsqueeze(2)
             gate = gate.softmax(dim=-1)
             if self.k < sum(gt):
@@ -235,7 +180,7 @@ class ViT(nn.Module):
             rescale(layer.attn.proj.weight.data, layer_id + 1)
             nexp = layer.mlp.nexp
             for i in range(nexp):
-                rescale(layer.mlp.moe[i][2].weight.data, layer_id + 1)
+                rescale(layer.mlp.ffn[i][2].weight.data, layer_id + 1)
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
@@ -273,22 +218,14 @@ class ViT(nn.Module):
                 if "blocks" in k:
                     if self.moe == 0:  # base
                         nexp = 1
-                    if self.moe == 6:
-                        nexp = 4
-                    if self.moe in [1, 3, 7]:
-                        nexp = 7
-                    if self.moe == 4:
-                        nexp = 8
-                    if self.moe in [2, 5, 8]:
-                        nexp = 13
-                    if self.moe in [9, 10]:
+                    if self.moe == 10:
                         nexp = 26
                     if 'fc1' in k:
                         for i in range(0, nexp):
-                            self.state_dict()[k.replace('fc1', f'moe.{i}.0')].copy_(v)
+                            self.state_dict()[k.replace('fc1', f'ffn.{i}.0')].copy_(v)
                     elif 'fc2' in k:
                         for i in range(0, nexp):
-                            self.state_dict()[k.replace('fc2', f'moe.{i}.2')].copy_(v)
+                            self.state_dict()[k.replace('fc2', f'ffn.{i}.2')].copy_(v)
                     else:
                         self.state_dict()[k].copy_(v)
                 else:
