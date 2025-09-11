@@ -28,10 +28,6 @@ class Attention(nn.Module):
         qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, self.head_dim).permute(2, 0, 3, 1, 4)  # 3 B H N c
         q, k, v = qkv.unbind(0)  # B H N c
         attn = ((q * self.scale) @ k.transpose(-2, -1))  # B H N N
-        #mask = torch.zeros(N, N).type_as(attn)
-        #mask[:6, :6] = torch.eye(6).type_as(attn)
-        #mask[6:, :6] = 1
-        #attn = attn.masked_fill(mask == 1, -1e9)
         attn = attn.softmax(dim=-1)
         x = (attn @ v).transpose(1, 2).reshape(B, N, C)
         x = self.proj(x)
@@ -47,7 +43,7 @@ class Mlp_moe(nn.Module):
         if self.moe == 0:  # base
             nexp = 1
             self.gt = [[1], [1], [1], [1], [1], [1]]
-        if self.moe == 10:  # moae 12
+        if self.moe == 10:  # moae
             nexp = 26     # vm im cm sc cc
             gt0 = [[0, 1, 0, 0, 1, 0],  # vmsc
                    [0, 1, 0, 0, 0, 1],  # vmcc
