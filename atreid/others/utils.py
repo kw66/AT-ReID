@@ -101,20 +101,6 @@ def get_grad_norm(parameters, norm_type=2):
 
 def gpu_avaliable(args):
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-    #'''
-    if args.t > 0:
-        for i in tqdm(range(int(args.t*3600))):
-            time.sleep(1)
-        print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-    while args.wait:
-        gpu_status = os.popen('nvidia-smi | grep %').read().split('|')
-        gpu_memory = int(gpu_status[2 + 4 * int(args.gpu)].split('/')[0].split('M')[0].strip())
-        if gpu_memory < args.mb:
-            print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-            return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), time.time()
-        else:
-            time.sleep(20)
-    #'''
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), time.time()
 
 
