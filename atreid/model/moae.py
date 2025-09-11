@@ -35,15 +35,12 @@ class Attention(nn.Module):
 
 
 class Mlp_moe(nn.Module):
-    def __init__(self, in_dim, hidden_dim, out_dim, ncls=6, moe=0, k=1):
+    def __init__(self, in_dim, hidden_dim, out_dim, ncls=6, moae=False, k=1):
         super().__init__()
         self.ncls = ncls
-        self.moe = moe
+        self.moae = moae
         self.k = k
-        if self.moe == 0:  # base
-            nexp = 1
-            self.gt = [[1], [1], [1], [1], [1], [1]]
-        if self.moe == 10:  # moae
+        if self.moae:  # moae
             nexp = 26     # vm im cm sc cc
             gt0 = [[0, 1, 0, 0, 1, 0],  # vmsc
                    [0, 1, 0, 0, 0, 1],  # vmcc
@@ -53,22 +50,15 @@ class Mlp_moe(nn.Module):
                    [0, 0, 0, 1, 0, 1]]  # cmcc
             self.gt = [[0] + [(j != k) * gt0[i][j] * gt0[i][k] for j in range(1, 6)
                               for k in range(1, 6)] for i in range(6)]
+        else:  # base
+            nexp = 1
+            self.gt = [[1], [1], [1], [1], [1], [1]]
         self.nexp = nexp
         self.gate = nn.ModuleList([
             nn.Linear(in_dim, sum(self.gt[i]), bias=False) for i in range(self.ncls)])
         hidden_dim2 = hidden_dim
-        if self.moe == 0:
-            self.ffn = nn.ModuleList([
-                nn.Sequential(
-                    nn.Linear(in_dim, hidden_dim), nn.GELU(),
-                    nn.Linear(hidden_dim, out_dim), ), ])
-            for i in range(1, nexp):
-                self.ffn.append(
-                    nn.Sequential(
-                        nn.Linear(in_dim, hidden_dim2),
-                        nn.GELU(),
-                        nn.Linear(hidden_dim2, out_dim), ))
-        if self.moe == 10:
+        
+        if self.moae:
             vm1 = nn.Linear(in_dim, hidden_dim2)
             im1 = nn.Linear(in_dim, hidden_dim2)
             cm1 = nn.Linear(in_dim, hidden_dim2)
@@ -88,6 +78,17 @@ class Mlp_moe(nn.Module):
             for i in range(5):
                 for j in range(5):
                     self.ffn.append(nn.Sequential(atom1[i], nn.GELU(), atom2[j]))
+        else:
+            self.ffn = nn.ModuleList([
+                nn.Sequential(
+                    nn.Linear(in_dim, hidden_dim), nn.GELU(),
+                    nn.Linear(hidden_dim, out_dim), ), ])
+            for i in range(1, nexp):
+                self.ffn.append(
+                    nn.Sequential(
+                        nn.Linear(in_dim, hidden_dim2),
+                        nn.GELU(),
+                        nn.Linear(hidden_dim2, out_dim), ))
         self.drop = nn.Dropout(0.03)
 
     def forward(self, x):
@@ -114,7 +115,7 @@ class Mlp_moe(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, dim, num_heads, mlp_ratio=4., dpr=0., ncls=6, moe=0):
+    def __init__(self, dim, num_heads, mlp_ratio=4., dpr=0., ncls=6, moae=False):
         super().__init__()
         self.norm1 = nn.LayerNorm(dim, eps=1e-6)
         self.attn = Attention(dim, num_heads=num_heads)
@@ -149,7 +150,7 @@ class PatchEmbed_overlap(nn.Module):
 
 class ViT(nn.Module):
     def __init__(self, img_size=224, patch_size=16, stride_size=16, embed_dim=768,
-                 depth=12, num_heads=12, mlp_ratio=4., drop_path_rate=0., ncls=6, moe=0):
+                 depth=12, num_heads=12, mlp_ratio=4., drop_path_rate=0., ncls=6, moae=False):
         super().__init__()
         self.patch_embed = PatchEmbed_overlap(img_size=img_size, patch_size=patch_size,
                                               stride_size=stride_size, embed_dim=embed_dim)
@@ -161,7 +162,7 @@ class ViT(nn.Module):
             for i in range(depth)])
         self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
         self.ncls = ncls
-        self.moe = moe
+        self.moae = moae
 
         self.apply(self._init_weights)
         self.fix_init_weight()
@@ -212,10 +213,10 @@ class ViT(nn.Module):
                 v = v.expand(-1, self.ncls, -1)
             try:
                 if "blocks" in k:
-                    if self.moe == 0:  # base
-                        nexp = 1
-                    if self.moe == 10:
+                    if self.moae:
                         nexp = 26
+                    else:  # base
+                        nexp = 1
                     if 'fc1' in k:
                         for i in range(0, nexp):
                             self.state_dict()[k.replace('fc1', f'ffn.{i}.0')].copy_(v)
