@@ -6,8 +6,8 @@
 
 ### TODO
 - [yes] Code of our proposed Uni-AT
-- [wait] Code of popular ReID methods for AT-ReID
-- [wait] Code for other ReID datasets
+- [wait] Include popular ReID methods
+- [wait] Include more ReID datasets
 
 A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
 
