@@ -36,6 +36,8 @@ def create_argparser():
         era=0.4,
         ih=256, iw=128,
         p=8, k=8, n=200, sample='m',
+        md1=[1, 3, 2, 0], md2=[1, 3, 0, 0],
+        d1=0.6, d2=6,
         seed=0, workers=4,
         test_epoch=999, last_test=0, test_batch=256, flip=False
     )
