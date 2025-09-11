@@ -30,7 +30,7 @@ trainloader = DataLoader(
 
 model = uniat(num_p=dataset.num_p, num_c=dataset.num_c, imsize=(args.ih, args.iw),
               drop=args.drop, stride=args.stride,
-              ncls=args.ncls, moe=args.moe)
+              ncls=args.ncls, moae=args.moae)
 model.cuda()
 param_groups = get_param_groups(args, args.lr, model)
 optimizer = get_optim(args, param_groups)
