@@ -25,7 +25,7 @@ python train.py -gpu 0 -v 2 -ncls 1
 ### 2. Testing.
 Test a model by
 ```
-python train.py -gpu 1 -v 1 -said -moae -hdw -test
+python train.py -gpu 0 -v 1 -said -moae -hdw -test
 ```
 
 ### 3. Results.
