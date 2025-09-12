@@ -120,7 +120,7 @@ class Block(nn.Module):
         self.norm1 = nn.LayerNorm(dim, eps=1e-6)
         self.attn = Attention(dim, num_heads=num_heads)
         self.norm2 = nn.LayerNorm(dim, eps=1e-6)
-        self.mlp = Mlp_moe(in_dim=dim, hidden_dim=int(dim * mlp_ratio), out_dim=dim, ncls=ncls, moe=moe)
+        self.mlp = Mlp_moe(in_dim=dim, hidden_dim=int(dim * mlp_ratio), out_dim=dim, ncls=ncls, moae=moae)
         self.drop_path = DropPath(dpr) if dpr > 0. else nn.Identity()
 
     def forward(self, x):
@@ -158,7 +158,7 @@ class ViT(nn.Module):
         self.pos_embed = nn.Parameter(torch.zeros(1, self.patch_embed.num_patches + ncls, embed_dim))
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
         self.blocks = nn.ModuleList([
-            Block(dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, dpr=dpr[i], ncls=ncls, moe=moe)
+            Block(dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, dpr=dpr[i], ncls=ncls, moae=moae)
             for i in range(depth)])
         self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
         self.ncls = ncls
@@ -247,9 +247,9 @@ def interpolate_pos_embed(self, pos_embed_checkpoint):
     return new_pos_embed
 
 
-def vit_base_patch16_224_ReID_moe(img_size=(256, 128), stride_size=16, drop_path_rate=0.1, ncls=1, moe=0):
+def vit_base_patch16_224_ReID_moe(img_size=(256, 128), stride_size=16, drop_path_rate=0.1, ncls=1, moae=False):
     model = ViT(
         img_size=img_size, patch_size=16, stride_size=stride_size, embed_dim=768, depth=12,
-        num_heads=12, mlp_ratio=4, drop_path_rate=drop_path_rate, ncls=ncls, moe=moe)
+        num_heads=12, mlp_ratio=4, drop_path_rate=drop_path_rate, ncls=ncls, moae=moae)
     return model
 
