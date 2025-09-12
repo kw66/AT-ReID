@@ -33,7 +33,7 @@ def create_argparser():
         warmup_rate=0.1, warmup_epoch=10,
         scheduler_rate=0.1, scheduler_epoch=[],
         cosmin_rate=0.002, max_epoch=120,
-        era=0.4, gray=0.5,
+        era=0.4, gray=0.0,
         ih=256, iw=128,
         p=8, k=8, n=200, sample='m',
         md1=[1, 3, 2, 0], md2=[1, 3, 0, 0],
