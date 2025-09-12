@@ -27,7 +27,7 @@ Train a unified embedding model by:
 ```
 python train.py -gpu 0 -v 3 -ncls 1 
 ```
--ncls 1: use only 1 CLS token rather than multi-task learning.
+-ncls 1: use only 1 CLS token rather than 6.
 
 ### 2. Testing.
 Test a model by
