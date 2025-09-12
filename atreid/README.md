@@ -4,7 +4,7 @@ Official PyTorch implementation of the paper Towards Anytime Retrieval: A Benchm
 
 You may need mannully define the data path first.
 
-Train a model by:
+Train a full Uni-AT model by:
 ```
 python train.py -gpu 0 -v 1 -said -moae -hdw
 ```
@@ -18,8 +18,14 @@ python train.py -gpu 0 -v 1 -said -moae -hdw
 
 -hdw: use hdw.
 
+Train a baseline model by:
 ``` 
-python train.py -gpu 0 -v 2 -ncls 1
+python train.py -gpu 0 -v 2
+```
+
+Train a unified embedding model by: 
+```
+python train.py -gpu 0 -v 3 -ncls 1 
 ```
 -ncls 1: use only 1 CLS token rather than multi-task learning.
 
