@@ -3,11 +3,11 @@ Official PyTorch implementation of the paper Towards Anytime Retrieval: A Benchm
 ### 1. Training.
 Train a model by:
 ```
-python train.py -gpu 1 -v 1 -said -moae -hdw
+python train.py -gpu 0 -v 1 -said -moae -hdw
 ```
--gpu: which gpu to run.
+-gpu 0: run on gpu 0.
 
--v: version of training model.
+-v 1: version 1 of the training model.
 
 -said: use said loss.
 
@@ -16,6 +16,11 @@ python train.py -gpu 1 -v 1 -said -moae -hdw
 -hdw: use hdw.
 
 You may need mannully define the data path first.
+
+``` 
+python train.py -gpu 0 -v 2 -ncls 1
+```
+-ncls 1: use only 1 CLS token rather than multi-task learning.
 
 ### 2. Testing.
 Test a model by
