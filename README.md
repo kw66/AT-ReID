@@ -1,6 +1,9 @@
 # AT-ReID
 
-知乎介绍   [\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129)   [\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382)   [\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1947080865181078424)
+知乎介绍   
+[\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129)   
+[\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382)   
+[\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1947080865181078424)
 
 [\[Paper\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025 oral)
 
@@ -40,13 +43,11 @@ The AT-USTC dataset is built as the following folder structure:
 ```
 The image AT-USTC/p001-d01-c01/cam01-f0-0050.jpg denotes the following meaning: 
 
-"p001": person ID (1-270); "d01": capture date ID (1-13); "c01": clothes ID for its owner (1-14); "cam01": camera ID (1-8 for RGB cameras and 9-16 for infrared cameras); "0050": frame ID of the video segment;
+"p001": person ID (1-270); "d01": capture date ID (1-13); "c01": clothes ID for its owner (1-14); "cam01": camera ID (1-8 for RGB cameras and 9-16 for infrared cameras); "0050": frame ID of the video segment. "f0": image division flag (0 training; 1 validation; 2-10 test) (2,3,4,5 for query; 6,7,8,9 for gallery; 2,6 for DT-ST; 3,7 for DT-LT; 4,8 for NT-ST; 5,9 for NT-LT; 2,4,6,8 for AD-ST; 3,5,7,9 for AD-LT).
 
-"f0": image division flag (0 training; 1 validation; 2-10 test) ([2,3,4,5] query; [6,7,8,9] gallery; [2,6] for DT-ST; [3,7] for DT-LT; [4,8] for NT-ST; [5,9] for NT-LT; [2,4,6,8] for AD-ST; [3,5,7,9] for AD-LT).
+We divided the training and testing sets according to ID 1:1. The training set contains 286,087 images from 135 IDs, with 55,060 images (20%) set aside as a validation set. The testing set includes 117,512 images from another 135 IDs. The existing datasets mainly evaluate single scenes, while we constructed separate galleries and query sets for all six scenes covered by AT-ReID for a fine-grained assessment of the model. 
 
-We divided the training and testing sets according to ID 1:1. The training set contains 286,087 images from 135 IDs, with 55,060 images (20%) set aside as a validation set. The testing set includes 117,512 images from another 135 IDs. The existing datasets mainly evaluate single scenes, while we constructed separate galleries and query sets for all six scenes covered by AT-ReID for a fine-grained assessment of model. 
-
-Since the number of images per identity in our dataset is significantly high, the multi-shot evaluation may lead to excessively high rank-1 metrics, while the single-shot evaluation diminishes the relevance of the mAP metric. Therefore, we selected three query images and three gallery images for each identity's video clips (same ID, same camera, same clothing). In this setup, the gallery averages about 25 images per identity, which is comparable to the multi-shot conditions of other datasets (Market1501 has 21, MSMT17 has 27, and PRCC has 24). We did not perform 10 trials and take the average as done with the SYSU-MM01 and LLCM datasets, because the average number of images per identity in these two datasets is 3.1 and 1.6, respectively, which is closer to a single-shot scenario.
+Since the number of images per identity in our dataset is significantly high, the multi-shot evaluation may lead to excessively high rank-1 metrics, while the single-shot evaluation diminishes the relevance of the mAP metric. Therefore, we selected three query images and three gallery images for each identity's video clips (same ID, same camera, same clothing). In this setup, the gallery averages about 25 images per identity, which is comparable to the multi-shot conditions of other datasets (Market1501[1] has 21, MSMT17[2] has 27, and PRCC[3] has 24). We did not perform 10 trials and take the average as done with the SYSU-MM01[4] and LLCM[5] datasets, because the average number of images per identity in these two datasets is 3.1 and 1.6, respectively, which is closer to a single-shot scenario.
 
 ### Citation If you use the dataset, please cite the following paper: 
 ```
@@ -58,6 +59,18 @@ Since the number of images per identity in our dataset is significantly high, th
     year={2025}
 }
 ```
+
+###  References.
+
+[1] Liang Zheng, Liyue Shen, Lu Tian, Shengjin Wang, Jingdong Wang, and Qi Tian. Scalable person re-identification: A benchmark. In Proceedings of the IEEE International Conference on Computer Vision, pages 1116–1124, 2015.
+
+[2] Longhui Wei, Shiliang Zhang, Wen Gao, and Qi Tian. Person transfer gan to bridge domain gap for person re-identification. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 79–88, 2018.
+
+[3] Qize Yang, Ancong Wu, and Wei-Shi Zheng. Person re-identification by contour sketch under moderate clothing change. IEEE Transactions on Pattern Analysis and Machine Intelligence, 43(6):2029–2046, 2019.
+
+[4] Ancong Wu, Wei-Shi Zheng, Hong-Xing Yu, Shaogang Gong, and Jianhuang Lai. Rgb-infrared cross-modality person re-identification. In Proceedings of the IEEE International Conference on Computer Vision, pages 5380–5389, 2017.
+
+[5]  Yukang Zhang and Hanzi Wang. Diverse embedding expansion network and low-light cross-modality benchmark for visible-infrared person re-identification. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 2153–2162, 2023.
 
 ### Contact 
 If you have any questions, please feel free to contact us. E-mail: lxlkw@mail.ustc.edu.cn
