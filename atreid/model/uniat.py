@@ -21,7 +21,7 @@ class uniat(nn.Module):
         dim = 768
         self.ncls = ncls
         self.base = vit_base_patch16_224_ReID_moe(
-            img_size=imsize, stride_size=stride, drop_path_rate=drop, ncls=ncls, moe=moe)
+            img_size=imsize, stride_size=stride, drop_path_rate=drop, ncls=ncls, moae=moae)
         self.base.load_param(model_path)
         print('Loading pretrained ImageNet model......from {}'.format(model_path))
         self.bottleneck = nn.ModuleList([nn.BatchNorm1d(dim) for i in range(6)])
