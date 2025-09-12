@@ -24,11 +24,10 @@ python train.py -gpu 1 -v 1 -said -moae -hdw -test
 ```
 
 ### 3. Results.
-#### We have made some updates to the results in our paper on the AT-USTC dataset. Please cite the results in the table below.
+#### Our version of IJCAI selected 18 images for each video clip, ultimately choosing 135K images. This is based on existing datasets, which typically generate an average of 7-50 images per video clip. However, we later realized that including images with more perspectives and poses could enhance intra-class diversity, and we should not abandon our strengths. Therefore, we open-sourced the original 403K images, which indeed improve generalization, and the results have been updated in the arXiv version and the table below.
 
 
 
-The results may have some fluctuation due to random spliting and it might be better by finetuning the hyper-parameters.
 
 
 ### 4. Citation
