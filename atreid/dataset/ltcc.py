@@ -33,8 +33,8 @@ class ltcc(object):
         self._info('all')
         print(f"  --------------------------------------------------------------------")
         self.train, self.num_p, self.num_c = self._process('train')
-        self.query_cc, self.query_all = self._process('query')
-        self.gallery_cc, self.gallery_all = self._process('gallery')
+        self.query_cc, self.query = self._process('query')
+        self.gallery_cc, self.gallery = self._process('gallery')
 
     def _info(self, mode):
         pids = set()
@@ -112,4 +112,5 @@ class ltcc(object):
 
 
 if __name__ == '__main__':
+
     ltcc()
