@@ -35,7 +35,7 @@ Test a model by
 python train.py -gpu 0 -v 1 -said -moae -hdw -test
 ```
 
-Test a model on (AT-USTC Market1501 CUHK03 MSMT17 SYSU-MM01 RegDB LLCM PRCC LTCC DeepChange) by 
+Test a model on AT-USTC, Market1501, CUHK03, MSMT17, SYSU-MM01, RegDB, LLCM, PRCC, LTCC, and DeepChange by 
 ``` 
 python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_all
 ```
