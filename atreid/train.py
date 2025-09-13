@@ -101,17 +101,17 @@ def train(epoch):
 
 if test_model(checkpoint_path, model) or args.test:
     print('no training')
-    cmc, mAP = attest6(args, dataset, model)
+    cmc, mAP = attest(args, 'atustc', dataset, model)
     if args.test_all:
-        cmc, mAP = test_all(args, dataset_all('market'), model)
-        cmc, mAP = test_all(args, dataset_all('cuhk'), model)
-        cmc, mAP = test_all(args, dataset_all('msmt'), model)
-        cmc, mAP = test_all(args, dataset_all('sysu'), model)
-        cmc, mAP = test_all(args, dataset_all('regdb'), model)
-        cmc, mAP = test_all(args, dataset_all('llcm'), model)
-        cmc, mAP = test_all(args, dataset_all('prcc'), model)
-        cmc, mAP = test_all(args, dataset_all('ltcc'), model)
-        cmc, mAP = test_all(args, dataset_all('deepchange'), model)
+        cmc, mAP = test_all(args, 'market', dataset_all('market'), model)
+        cmc, mAP = test_all(args, 'cuhk', dataset_all('cuhk'), model)
+        cmc, mAP = test_all(args, 'msmt', dataset_all('msmt'), model)
+        cmc, mAP = test_all(args, 'sysu', dataset_all('sysu'), model)
+        cmc, mAP = test_all(args, 'regdb', dataset_all('regdb'), model)
+        cmc, mAP = test_all(args, 'llcm', dataset_all('llcm'), model)
+        cmc, mAP = test_all(args, 'prcc', dataset_all('prcc'), model)
+        cmc, mAP = test_all(args, 'ltcc', dataset_all('ltcc'), model)
+        cmc, mAP = test_all(args, 'deepchange', dataset_all('deepchange'), model)
     exit()
 
 print('==> Start Training...')
@@ -123,7 +123,7 @@ for epoch in range(1, args.max_epoch + 1):
     train(epoch)
     if epoch % args.test_epoch == 0 or epoch >= args.max_epoch - args.last_test:
         print(f'==> Start Testing Epoch: {epoch}')
-        cmc, mAP = attest6(args, dataset, model)
+        cmc, mAP = attest(args, dataset, model)
         if cmc[0] > best_acc:
             best_acc, best_epoch = cmc[0], epoch
             state = {'model': model.state_dict(), 'epoch': epoch, }
