@@ -117,7 +117,7 @@ class sysu(object):
                 for pid_camid in list(index_dic_all.keys()):
                     all_single[trial].append(dataset[np.random.choice(index_dic_all[pid_camid])])
             for trial in range(10):
-                random.seed(trial)
+                np.random.seed(trial)
                 for pid_camid in list(index_dic_indoor.keys()):
                     indoor_single[trial].append(dataset[random.choice(index_dic_indoor[pid_camid])])
             return dataset, all_single, indoor_single, all_multi, indoor_multi
@@ -126,3 +126,4 @@ class sysu(object):
 if __name__ == '__main__':
 
     sysu()
+
