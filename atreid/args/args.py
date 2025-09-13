@@ -22,7 +22,7 @@ def create_argparser():
     defaults = dict(
         log_path='./log', model_path='./save_model',
         d='atustc',
-        v=1, gpu=0, test=False,
+        v=1, gpu=0, test=False, test_all=False,
         wait=True, t=0.0, mb=100,
         drop=0.2, stride=16,
         ncls=6, said=False, hdw=False, moae=False,
