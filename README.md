@@ -12,7 +12,7 @@
 
 ### TODO
 - [yes] Code of our proposed Uni-AT
-- [wait] Include popular ReID methods 
+- [wait] More ReID methods for AT-USTC 
 - [yes] More datasets (+Market1501[1] +CUHK03[2] +MSMT17[3] +SYSU-MM01[4] +RegDB[5] +LLCM[6] +PRCC[7] +LTCC[8] +DeepChange[9])
 
 A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
