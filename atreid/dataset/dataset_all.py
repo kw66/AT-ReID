@@ -9,7 +9,6 @@ from dataset.prcc import prcc
 from dataset.ltcc import ltcc
 from dataset.vc import vc
 from dataset.deepchange import deepchange
-from dataset.ag import ag
 
 
 def dataset_all(name='market'):
@@ -35,9 +34,8 @@ def dataset_all(name='market'):
         return vc()
     if name == 'deepchange':
         return deepchange()
-    if name == 'ag':
-        return ag()
 
 
 if __name__ == '__main__':
+
     dataset_all()
