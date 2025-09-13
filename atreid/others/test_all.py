@@ -95,35 +95,35 @@ def test_1(args, d='market', dataset=None, model=None):
     return cmc, mAP
 
 
-def test_all(args, dataset=None, model=None):
-    if args.d == 'sysu':
+def test_all(args, d='atustc', dataset=None, model=None):
+    if d == 'sysu':
         _, _ = test_1(args, d='sysu_rgb', dataset=dataset, model=model)
         _, _ = test_1(args, d='sysu_ir', dataset=dataset, model=model)
         _, _ = test_1(args, d='sysu_multi', dataset=dataset, model=model)
         _, _ = test_1(args, d='sysu_indoor', dataset=dataset, model=model)
         _, _ = test_1(args, d='sysu_indoor_multi', dataset=dataset, model=model)
         cmc, mAP = test_1(args, d='sysu', dataset=dataset, model=model)
-    elif args.d == 'llcm':
+    elif d == 'llcm':
         cmc1, mAP1 = test_1(args, d='llcm_v2i', dataset=dataset, model=model)
         cmc2, mAP2 = test_1(args, d='llcm_i2v', dataset=dataset, model=model)
         cmc = cmc1/2+cmc2/2
         mAP = mAP1/2+mAP2/2
-    elif args.d == 'regdb':
+    elif d == 'regdb':
         cmc1, mAP1 = test_1(args, d='regdb_v2i', dataset=dataset, model=model)
         cmc2, mAP2 = test_1(args, d='regdb_i2v', dataset=dataset, model=model)
         cmc = cmc1 / 2 + cmc2 / 2
         mAP = mAP1 / 2 + mAP2 / 2
-    elif args.d == 'prcc':
+    elif d == 'prcc':
         _, _ = test_1(args, d='prcc_sc', dataset=dataset, model=model)
         cmc, mAP = test_1(args, d='prcc', dataset=dataset, model=model)
-    elif args.d == 'ltcc':
+    elif d == 'ltcc':
         _, _ = test_1(args, d='ltcc_all', dataset=dataset, model=model)
         cmc, mAP = test_1(args, d='ltcc', dataset=dataset, model=model)
-    elif args.d == 'vc':
+    elif d == 'vc':
         _, _ = test_1(args, d='vc_sc', dataset=dataset, model=model)
         cmc, mAP = test_1(args, d='vc', dataset=dataset, model=model)
     else:
-        cmc, mAP = test_1(args, d=args.d, dataset=dataset, model=model)
+        cmc, mAP = test_1(args, d=d, dataset=dataset, model=model)
     return cmc, mAP
 
 
