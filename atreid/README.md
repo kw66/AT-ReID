@@ -35,6 +35,11 @@ Test a model by
 python train.py -gpu 0 -v 1 -said -moae -hdw -test
 ```
 
+Test a model on (AT-USTC Market1501 CUHK03 MSMT17 SYSU-MM01 RegDB LLCM PRCC LTCC DeepChange) by 
+``` 
+python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_all
+```
+
 ### 3. Results.
 #### Our version of IJCAI selected 18 images for each video clip, ultimately choosing 135K images. This is based on existing datasets, which typically generate an average of 7-50 images per video clip. However, we later realized that including images with more perspectives and poses could enhance intra-class diversity, and we should not abandon our strengths. Therefore, we open-sourced the original 403K images, which indeed improve generalization, and the results have been updated in the arXiv version and the table below.
 
