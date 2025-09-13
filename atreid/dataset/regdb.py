@@ -6,7 +6,7 @@ import random
 
 
 class regdb(object):
-    def __init__(self, trial):
+    def __init__(self, trial=1):
         self.data_dir = '/home/lixulin/data/regdb/'
         #male_front_v_00007_1.bmp
         #female_back_t_06300_2.bmp
@@ -128,4 +128,5 @@ class regdb(object):
 
 
 if __name__ == '__main__':
+
     regdb()
