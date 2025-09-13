@@ -95,7 +95,7 @@ def test_1(args, d='market', dataset=None, model=None):
     return cmc, mAP
 
 
-def test_all(args, d='atustc', dataset=None, model=None):
+def test_all(args, d='market', dataset=None, model=None):
     if d == 'sysu':
         _, _ = test_1(args, d='sysu_rgb', dataset=dataset, model=model)
         _, _ = test_1(args, d='sysu_ir', dataset=dataset, model=model)
@@ -125,5 +125,6 @@ def test_all(args, d='atustc', dataset=None, model=None):
     else:
         cmc, mAP = test_1(args, d=d, dataset=dataset, model=model)
     return cmc, mAP
+
 
 
