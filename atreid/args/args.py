@@ -39,7 +39,8 @@ def create_argparser():
         md1=[1, 3, 2, 0], md2=[1, 3, 0, 0],
         d1=0.6, d2=6,
         seed=0, workers=4,
-        test_epoch=999, last_test=0, test_batch=256, flip=False
+        test_epoch=999, last_test=0, 
+        test_batch=256, flip=False, nfeature=6
     )
     parser = argparse.ArgumentParser(description='ReID')
     add_dict_to_argparser(parser, defaults)
