@@ -112,55 +112,10 @@ class sysu(object):
                 if camid not in [4, 5]:
                     indoor_multi.append(dataset[index])
                     index_dic_indoor[pid, camid].append(index)
-            x = 5
-            if x == 0:
-                for trial in range(10):
-                    random.seed(trial)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[random.choice(index_dic_all[pid_camid])])
-            if x == 1:
-                random.seed(0)
+            for trial in range(10):
+                np.random.seed(trial)
                 for pid_camid in list(index_dic_all.keys()):
-                    for trial in range(10):
-                        all_single[trial].append(dataset[random.choice(index_dic_all[pid_camid])])
-            if x == 2:###
-                random.seed(0)
-                for pid_camid in sorted(index_dic_all.keys()):
-                    index = random.sample(index_dic_all[pid_camid], k=10)  # sample 是相当于不放回抽样
-                    for trial in range(10):
-                        all_single[trial].append(dataset[index[trial]])
-            if x == 3:###
-                random.seed(0)
-                for pid_camid in list(index_dic_all.keys()):
-                    index = random.choices(index_dic_all[pid_camid], k=10)
-                    for trial in range(10):
-                        all_single[trial].append(dataset[index[trial]])
-            if x == 4:
-                for trial in range(10):
-                    random.seed(trial + 1)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[random.choice(index_dic_all[pid_camid])])
-            if x == 5:
-                for trial in range(10):
-                    np.random.seed(trial)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[np.random.choice(index_dic_all[pid_camid])])
-            if x == 6:
-                for trial in range(10):
-                    random.seed(trial)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].extend(np.array(dataset)[random.sample(index_dic_all[pid_camid], k=1)])
-            if x == 7:
-                np.random.seed(0)
-                for trial in range(10):
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[np.random.choice(index_dic_all[pid_camid])])
-            if x == 8:
-                for trial in range(10):
-                    np.random.seed(trial+1)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[np.random.choice(index_dic_all[pid_camid])])
-
+                    all_single[trial].append(dataset[np.random.choice(index_dic_all[pid_camid])])
             for trial in range(10):
                 random.seed(trial)
                 for pid_camid in list(index_dic_indoor.keys()):
@@ -169,4 +124,5 @@ class sysu(object):
 
 
 if __name__ == '__main__':
+
     sysu()
