@@ -97,12 +97,10 @@ def test_1(args, d='market', dataset=None, model=None):
 
 def test_all(args, d='market', dataset=None, model=None):
     if d == 'sysu':
-        _, _ = test_1(args, d='sysu_rgb', dataset=dataset, model=model)
-        _, _ = test_1(args, d='sysu_ir', dataset=dataset, model=model)
+        cmc, mAP = test_1(args, d='sysu', dataset=dataset, model=model)
         _, _ = test_1(args, d='sysu_multi', dataset=dataset, model=model)
         _, _ = test_1(args, d='sysu_indoor', dataset=dataset, model=model)
         _, _ = test_1(args, d='sysu_indoor_multi', dataset=dataset, model=model)
-        cmc, mAP = test_1(args, d='sysu', dataset=dataset, model=model)
     elif d == 'llcm':
         cmc1, mAP1 = test_1(args, d='llcm_v2i', dataset=dataset, model=model)
         cmc2, mAP2 = test_1(args, d='llcm_i2v', dataset=dataset, model=model)
@@ -125,6 +123,7 @@ def test_all(args, d='market', dataset=None, model=None):
     else:
         cmc, mAP = test_1(args, d=d, dataset=dataset, model=model)
     return cmc, mAP
+
 
 
 
