@@ -11,6 +11,8 @@ from model.uniat import uniat
 from others.test import attest6
 from loss.hdw import saidloss_hdw
 from loss.tri import TripletLoss
+from dataset.dataset_all import dataset_all
+from others.test_all import test_all
 
 
 args = create_argparser().parse_args()
@@ -100,6 +102,16 @@ def train(epoch):
 if test_model(checkpoint_path, model) or args.test:
     print('no training')
     cmc, mAP = attest6(args, dataset, model)
+    if args.test_all:
+        cmc, mAP = test_all(args, dataset_all('market'), model)
+        cmc, mAP = test_all(args, dataset_all('cuhk'), model)
+        cmc, mAP = test_all(args, dataset_all('msmt'), model)
+        cmc, mAP = test_all(args, dataset_all('sysu'), model)
+        cmc, mAP = test_all(args, dataset_all('regdb'), model)
+        cmc, mAP = test_all(args, dataset_all('llcm'), model)
+        cmc, mAP = test_all(args, dataset_all('prcc'), model)
+        cmc, mAP = test_all(args, dataset_all('ltcc'), model)
+        cmc, mAP = test_all(args, dataset_all('deepchange'), model)
     exit()
 
 print('==> Start Training...')
