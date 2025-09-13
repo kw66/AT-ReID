@@ -8,7 +8,7 @@ from others.optim import get_param_groups, adjust_learning_rate, get_optim
 from args.args import create_argparser
 from dataset.sample import PSKSampler
 from model.uniat import uniat
-from others.test import attest6
+from others.test import attest
 from loss.hdw import saidloss_hdw
 from loss.tri import TripletLoss
 from dataset.dataset_all import dataset_all
