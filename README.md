@@ -13,7 +13,7 @@
 ### TODO
 - [yes] Code of our proposed Uni-AT
 - [wait] Include popular ReID methods 
-- [wait] Include more ReID datasets
+- [yes] Include more ReID datasets (Market1501[1], CUHK03[2], MSMT17[3], SYSU-MM01[4], RegDB[5], LLCM[6], PRCC[7], LTCC[8], DeepChange[9])
 
 A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
 
@@ -50,7 +50,7 @@ The image AT-USTC/p001-d01-c01/cam01-f0-0050.jpg denotes the following meaning:
 
 We divided the training and testing sets according to ID 1:1. The training set contains 286,087 images from 135 IDs, with 55,060 images (20%) set aside as a validation set. The testing set includes 117,512 images from another 135 IDs. The existing datasets mainly evaluate single scenes, while we constructed separate galleries and query sets for all six scenes covered by AT-ReID for a fine-grained assessment of the model. 
 
-Since the number of images per identity in our dataset is significantly high, the multi-shot evaluation may lead to excessively high rank-1 metrics, while the single-shot evaluation diminishes the relevance of the mAP metric. Therefore, we selected three query images and three gallery images for each identity's video clips (same ID, same camera, same clothing). In this setup, the gallery averages about 25 images per identity, which is comparable to the multi-shot conditions of other datasets (Market1501[1] has 21, MSMT17[2] has 27, and PRCC[3] has 24). We did not perform 10 trials and take the average as done with the SYSU-MM01[4] and LLCM[5] datasets, because the average number of images per identity in these two datasets is 3.1 and 1.6, respectively, which is closer to a single-shot scenario.
+Since the number of images per identity in our dataset is significantly high, the multi-shot evaluation may lead to excessively high rank-1 metrics, while the single-shot evaluation diminishes the relevance of the mAP metric. Therefore, we selected three query images and three gallery images for each identity's video clips (same ID, same camera, same clothing). In this setup, the gallery averages about 25 images per identity, which is comparable to the multi-shot conditions of other datasets (Market1501[1] has 21, MSMT17[3] has 27, and PRCC[7] has 24). We did not perform 10 trials and take the average as done with the SYSU-MM01[4] and LLCM[6] datasets, because the average number of images per identity in these two datasets is 3.1 and 1.6, respectively, which is closer to a single-shot scenario.
 
 ### Citation If you use the dataset, please cite the following paper: 
 ```
@@ -67,13 +67,21 @@ Since the number of images per identity in our dataset is significantly high, th
 
 [1] Liang Zheng, Liyue Shen, Lu Tian, Shengjin Wang, Jingdong Wang, and Qi Tian. Scalable person re-identification: A benchmark. In Proceedings of the IEEE International Conference on Computer Vision, pages 1116–1124, 2015.
 
-[2] Longhui Wei, Shiliang Zhang, Wen Gao, and Qi Tian. Person transfer gan to bridge domain gap for person re-identification. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 79–88, 2018.
+[2] Wei Li, Rui Zhao, Tong Xiao, and Xiaogang Wang. Deepreid: Deep filter pairing neural network for person re-identification. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 152–159, 2014.
 
-[3] Qize Yang, Ancong Wu, and Wei-Shi Zheng. Person re-identification by contour sketch under moderate clothing change. IEEE Transactions on Pattern Analysis and Machine Intelligence, 43(6):2029–2046, 2019.
+[3] Longhui Wei, Shiliang Zhang, Wen Gao, and Qi Tian. Person transfer gan to bridge domain gap for person re-identification. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pages 79–88, 2018.
 
 [4] Ancong Wu, Wei-Shi Zheng, Hong-Xing Yu, Shaogang Gong, and Jianhuang Lai. Rgb-infrared cross-modality person re-identification. In Proceedings of the IEEE International Conference on Computer Vision, pages 5380–5389, 2017.
 
-[5]  Yukang Zhang and Hanzi Wang. Diverse embedding expansion network and low-light cross-modality benchmark for visible-infrared person re-identification. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 2153–2162, 2023.
+[5] Dat Tien Nguyen, Hyung Gil Hong, Ki Wan Kim, and Kang Ryoung Park. Person recognition system based on a combination of body images from visible light and thermal cameras. Sensors, 17(3):605, 2017.
+
+[6]  Yukang Zhang and Hanzi Wang. Diverse embedding expansion network and low-light cross-modality benchmark for visible-infrared person re-identification. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 2153–2162, 2023.
+
+[7] Qize Yang, Ancong Wu, and Wei-Shi Zheng. Person re-identification by contour sketch under moderate clothing change. IEEE Transactions on Pattern Analysis and Machine Intelligence, 43(6):2029–2046, 2019.
+
+[8] Xuelin Qian, Wenxuan Wang, Li Zhang, Fangrui Zhu, Yanwei Fu, Tao Xiang, Yu-Gang Jiang, and Xiangyang Xue. Long-term cloth-changing person re-identification. In Proceedings of the Asian Conference on Computer Vision, 2020.
+
+[9] Peng Xu and Xiatian Zhu. Deepchange: A long-term person re-identification benchmark with clothes change. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 11196–11205, 2023.
 
 ### Contact 
 If you have any questions, please feel free to contact us. E-mail: lxlkw@mail.ustc.edu.cn
