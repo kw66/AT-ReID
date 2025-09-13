@@ -36,10 +36,10 @@ def test_1(args, d='market', dataset=None, model=None):
             gallery = np.array(dataset.gallery_indoor_single[trial])
         if d == 'sysu_multi':
             query = np.array(dataset.query)
-            gallery = np.array(dataset.gallery_all_multi[trial])
+            gallery = np.array(dataset.gallery_all_multi)
         if d == 'sysu_indoor_multi':
             query = np.array(dataset.query)
-            gallery = np.array(dataset.gallery_indoor_multi[trial])
+            gallery = np.array(dataset.gallery_indoor_multi)
         if d == 'regdb_v2i':
             query = np.array(dataset.test_ir[args.trial])
             gallery = np.array(dataset.test_rgb[args.trial])
@@ -122,6 +122,7 @@ def test_all(args, d='market', dataset=None, model=None):
     else:
         cmc, mAP = test_1(args, d=d, dataset=dataset, model=model)
     return cmc, mAP
+
 
 
 
