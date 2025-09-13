@@ -101,7 +101,7 @@ def train(epoch):
 
 if test_model(checkpoint_path, model) or args.test:
     print('no training')
-    cmc, mAP = attest(args, 'atustc', dataset, model)
+    cmc, mAP = attest(args, dataset, model)
     if args.test_all:
         cmc, mAP = test_all(args, 'market', dataset_all('market'), model)
         cmc, mAP = test_all(args, 'cuhk', dataset_all('cuhk'), model)
