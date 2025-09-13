@@ -22,7 +22,7 @@ def test_1(args, d='market', dataset=None, model=None):
         mode2 = 'sc'
     else:
         mode2 = 'all'
-    if d in ['sysu', 'sysu_indoor', 'llcm_v2i', 'llcm_i2v']:
+    if d in ['sysu', 'sysu_indoor', 'llcm_v2i', 'llcm_i2v', 'regdb_v2i', 'regdb_i2v']:
         t = 10
     for trial in range(t):
         if d in ['market', 'cuhk', 'msmt', 'deepchange', 'ltcc_all', 'vc', 'vc_sc']:
@@ -41,14 +41,14 @@ def test_1(args, d='market', dataset=None, model=None):
             query = np.array(dataset.query)
             gallery = np.array(dataset.gallery_indoor_multi)
         if d == 'regdb_v2i':
-            query = np.array(dataset.test_ir[args.trial])
-            gallery = np.array(dataset.test_rgb[args.trial])
+            query = np.array(dataset.test_ir[trial+1])
+            gallery = np.array(dataset.test_rgb[trial+1])
         if d == 'llcm_v2i':
             query = np.array(dataset.q_ir)
             gallery = np.array(dataset.g_rgb[trial])
         if d == 'regdb_i2v':
-            query = np.array(dataset.test_rgb[args.trial])
-            gallery = np.array(dataset.test_ir[args.trial])
+            query = np.array(dataset.test_rgb[trial+1])
+            gallery = np.array(dataset.test_ir[trial+1])
         if d == 'llcm_i2v':
             query = np.array(dataset.q_rgb)
             gallery = np.array(dataset.g_ir[trial])
@@ -122,6 +122,7 @@ def test_all(args, d='market', dataset=None, model=None):
     else:
         cmc, mAP = test_1(args, d=d, dataset=dataset, model=model)
     return cmc, mAP
+
 
 
 
