@@ -8,7 +8,7 @@ from others.transforms import get_transform
 import torch
 
 
-def test_1(args, d='market', dataset=None, model=None, nfeature=6):
+def test_1(args, d='market', dataset=None, model=None):
     start = time.time()
     t = 1
     if d in ['sysu', 'sysu_indoor', 'sysu_multi', 'sysu_indoor_multi',
@@ -71,22 +71,21 @@ def test_1(args, d='market', dataset=None, model=None, nfeature=6):
             ImageDataset(gallery, transform=transform_test),
             batch_size=args.test_batch, num_workers=args.workers,
             pin_memory=True, drop_last=False, )
-        if nfeature == 1:
+        if args.nfeature == 1:
             q, q_pids, q_cids, q_mids, q_camids = extract_feature(model, queryloader, args.flip)
             g, g_pids, g_cids, g_mids, g_camids = extract_feature(model, galleryloader, args.flip)
             distmat = 1 - torch.mm(F.normalize(q, p=2, dim=1), F.normalize(g, p=2, dim=1).t()).numpy()
-        if nfeature == 6:
+        if args.nfeature == 6:
             if d in ['market', 'cuhk', 'msmt', 'prcc_sc', 'vc_sc']:
-                q, _, _, _, _, _, q_pids, q_cids, q_mids, q_camids = extract_feature(model, queryloader, args.flip)             
-                g, _, _, _, _, _, g_pids, g_cids, g_mids, g_camids = extract_feature(model, galleryloader, args.flip)
+                q, _, _, _, _, _, q_pids, q_cids, q_mids, q_camids = extract_feature6(model, queryloader, args.flip)
+                g, _, _, _, _, _, g_pids, g_cids, g_mids, g_camids = extract_feature6(model, galleryloader, args.flip)
             if d in ['prcc', 'ltcc', 'deepchange', 'vc', 'ltcc_all']:
-                _, q, _, _, _, _, q_pids, q_cids, q_mids, q_camids = extract_feature(model, queryloader, args.flip)             
-                _, g, _, _, _, _, g_pids, g_cids, g_mids, g_camids = extract_feature(model, galleryloader, args.flip)
+                _, q, _, _, _, _, q_pids, q_cids, q_mids, q_camids = extract_feature6(model, queryloader, args.flip)
+                _, g, _, _, _, _, g_pids, g_cids, g_mids, g_camids = extract_feature6(model, galleryloader, args.flip)
             if d in ['sysu', 'sysu_indoor', 'sysu_multi', 'sysu_indoor_multi', 'regdb_v2i', 'regdb_i2v', 'llcm_v2i', 'llcm_i2v']:
-                _, _, _, _, q, _, q_pids, q_cids, q_mids, q_camids = extract_feature(model, queryloader, args.flip)             
-                _, _, _, _, g, _, g_pids, g_cids, g_mids, g_camids = extract_feature(model, galleryloader, args.flip)
-        cmc_t, mAP_t = eval(q, q_pids, q_cids, q_mids, q_camids, g, g_pids,
-                            g_cids, g_mids, g_camids, mode1, mode2, distmat, d)
+                _, _, _, _, q, _, q_pids, q_cids, q_mids, q_camids = extract_feature6(model, queryloader, args.flip)
+                _, _, _, _, g, _, g_pids, g_cids, g_mids, g_camids = extract_feature6(model, galleryloader, args.flip)
+        cmc_t, mAP_t = eval(q, q_pids, q_cids, q_mids, q_camids, g, g_pids, g_cids, g_mids, g_camids, mode1, mode2, distmat, d)
         if trial == 0:
             cmc, mAP = cmc_t / t, mAP_t / t
         else:
@@ -96,35 +95,35 @@ def test_1(args, d='market', dataset=None, model=None, nfeature=6):
     return cmc, mAP
 
 
-def test_all(args, dataset=None, model=None, nfeature=6):
+def test_all(args, dataset=None, model=None):
     if args.d == 'sysu':
-        _, _ = test_1(args, d='sysu_rgb', dataset=dataset, model=model, nfeature=nfeature)
-        _, _ = test_1(args, d='sysu_ir', dataset=dataset, model=model, nfeature=nfeature)
-        _, _ = test_1(args, d='sysu_multi', dataset=dataset, model=model, nfeature=nfeature)
-        _, _ = test_1(args, d='sysu_indoor', dataset=dataset, model=model, nfeature=nfeature)
-        _, _ = test_1(args, d='sysu_indoor_multi', dataset=dataset, model=model, nfeature=nfeature)
-        cmc, mAP = test_1(args, d='sysu', dataset=dataset, model=model, nfeature=nfeature)
+        _, _ = test_1(args, d='sysu_rgb', dataset=dataset, model=model)
+        _, _ = test_1(args, d='sysu_ir', dataset=dataset, model=model)
+        _, _ = test_1(args, d='sysu_multi', dataset=dataset, model=model)
+        _, _ = test_1(args, d='sysu_indoor', dataset=dataset, model=model)
+        _, _ = test_1(args, d='sysu_indoor_multi', dataset=dataset, model=model)
+        cmc, mAP = test_1(args, d='sysu', dataset=dataset, model=model)
     elif args.d == 'llcm':
-        cmc1, mAP1 = test_1(args, d='llcm_v2i', dataset=dataset, model=model, nfeature=nfeature)
-        cmc2, mAP2 = test_1(args, d='llcm_i2v', dataset=dataset, model=model, nfeature=nfeature)
+        cmc1, mAP1 = test_1(args, d='llcm_v2i', dataset=dataset, model=model)
+        cmc2, mAP2 = test_1(args, d='llcm_i2v', dataset=dataset, model=model)
         cmc = cmc1/2+cmc2/2
         mAP = mAP1/2+mAP2/2
     elif args.d == 'regdb':
-        cmc1, mAP1 = test_1(args, d='regdb_v2i', dataset=dataset, model=model, nfeature=nfeature)
-        cmc2, mAP2 = test_1(args, d='regdb_i2v', dataset=dataset, model=model, nfeature=nfeature)
+        cmc1, mAP1 = test_1(args, d='regdb_v2i', dataset=dataset, model=model)
+        cmc2, mAP2 = test_1(args, d='regdb_i2v', dataset=dataset, model=model)
         cmc = cmc1 / 2 + cmc2 / 2
         mAP = mAP1 / 2 + mAP2 / 2
     elif args.d == 'prcc':
-        _, _ = test_1(args, d='prcc_sc', dataset=dataset, model=model, nfeature=nfeature)
-        cmc, mAP = test_1(args, d='prcc', dataset=dataset, model=model, nfeature=nfeature)
+        _, _ = test_1(args, d='prcc_sc', dataset=dataset, model=model)
+        cmc, mAP = test_1(args, d='prcc', dataset=dataset, model=model)
     elif args.d == 'ltcc':
-        _, _ = test_1(args, d='ltcc_all', dataset=dataset, model=model, nfeature=nfeature)
-        cmc, mAP = test_1(args, d='ltcc', dataset=dataset, model=model, nfeature=nfeature)
+        _, _ = test_1(args, d='ltcc_all', dataset=dataset, model=model)
+        cmc, mAP = test_1(args, d='ltcc', dataset=dataset, model=model)
     elif args.d == 'vc':
-        _, _ = test_1(args, d='vc_sc', dataset=dataset, model=model, nfeature=nfeature)
-        cmc, mAP = test_1(args, d='vc', dataset=dataset, model=model, nfeature=nfeature)
+        _, _ = test_1(args, d='vc_sc', dataset=dataset, model=model)
+        cmc, mAP = test_1(args, d='vc', dataset=dataset, model=model)
     else:
-        cmc, mAP = test_1(args, d=args.d, dataset=dataset, model=model, nfeature=nfeature)
+        cmc, mAP = test_1(args, d=args.d, dataset=dataset, model=model)
     return cmc, mAP
 
 
