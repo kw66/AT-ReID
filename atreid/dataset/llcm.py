@@ -61,7 +61,6 @@ class llcm(object):
             img += 1
         ids = len(pids)
         c = len(p_cids) / len(pids)
-        #print(len(p_rgb_camids))
         rgb = len(p_rgb_camids) / len(pids)
         ir = len(p_ir_camids) / len(pids)
         c_cam = len(p_c_camids) / len(pids)
@@ -81,9 +80,6 @@ class llcm(object):
             for img_path in sorted(img_paths):
                 pid, camid = map(int, pattern.search(img_path).groups())
                 cid = 1
-                #mid = 1 if camid <= 9 else 2
-                #if mid == 2:
-                #    continue
                 pid_container.add(pid)
                 pid_cid_container.add((pid, cid))
             pid_container = sorted(pid_container)
@@ -95,8 +91,6 @@ class llcm(object):
             pid, camid = map(int, pattern.search(img_path).groups())
             cid = 1
             mid = 1 if camid <= 9 else 2
-            #if mid == 2:
-            #    continue
             if mode == 'train':
                 cid = cid2label[pid, cid]
                 pid = pid2label[pid]
@@ -108,56 +102,13 @@ class llcm(object):
             all_single = defaultdict(list)
             for index, (_, pid, cid, mid, camid) in enumerate(dataset):
                 index_dic_all[pid, camid].append(index)
-            x = 5
-            if x == 0:
-                for trial in range(10):
-                    random.seed(trial)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[random.choice(index_dic_all[pid_camid])])
-            if x == 1:
-                random.seed(0)
+            for trial in range(10):
+                np.random.seed(trial)
                 for pid_camid in list(index_dic_all.keys()):
-                    for trial in range(10):
-                        all_single[trial].append(dataset[random.choice(index_dic_all[pid_camid])])
-            if x == 2:
-                random.seed(0)
-                for pid_camid in list(index_dic_all.keys()):
-                    index = random.sample(index_dic_all[pid_camid], k=10)  # sample 是相当于不放回抽样
-                    for trial in range(10):
-                        all_single[trial].append(dataset[index[trial]])
-            if x == 3:
-                random.seed(0)
-                for pid_camid in list(index_dic_all.keys()):
-                    index = random.choices(index_dic_all[pid_camid], k=10)
-                    for trial in range(10):
-                        all_single[trial].append(dataset[index[trial]])
-            if x == 4:
-                for trial in range(10):
-                    random.seed(trial + 1)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[random.choice(index_dic_all[pid_camid])])
-            if x == 5:
-                for trial in range(10):
-                    np.random.seed(trial)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[np.random.choice(index_dic_all[pid_camid])])
-            if x == 6:
-                for trial in range(10):
-                    random.seed(trial)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].extend(np.array(dataset)[random.sample(index_dic_all[pid_camid], k=1)])
-            if x == 7:
-                np.random.seed(0)
-                for trial in range(10):
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[np.random.choice(index_dic_all[pid_camid])])
-            if x == 8:
-                for trial in range(10):
-                    np.random.seed(trial + 1)
-                    for pid_camid in list(index_dic_all.keys()):
-                        all_single[trial].append(dataset[np.random.choice(index_dic_all[pid_camid])])
+                    all_single[trial].append(dataset[np.random.choice(index_dic_all[pid_camid])])
             return dataset, all_single
 
 
 if __name__ == '__main__':
+
     llcm()
