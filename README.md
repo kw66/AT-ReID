@@ -8,7 +8,7 @@
 
 [\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1947080865181078424)
 
-[\[Paper\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025 oral)
+[\[Arxiv\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification [(IJCAI2025 oral)]()
 
 ### TODO
 - [yes] Code of our proposed Uni-AT
