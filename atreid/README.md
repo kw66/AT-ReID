@@ -49,8 +49,14 @@ python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_all
 
 ### 4. Citation
 Please kindly cite this paper in your publications if it helps your research:
-
 ```
+@inproceedings{li2025ATreid,
+    title={Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification.},
+    author={Xulin Li, Yan Lu, Bin Liu, Jiaze Li, Qinhong Yang, Tao Gong, Qi Chu, Mang Ye and Nenghai Yu},
+    booktitle={International Joint Conferences on Artificial Intelligence (IJCAI)},
+    pages={},
+    year={2025}
+}
 ```
 
 
