@@ -55,11 +55,17 @@ Since the number of images per identity in our dataset is significantly high, th
 ### Citation If you use the dataset, please cite the following paper: 
 ```
 @inproceedings{li2025ATreid,
-    title={Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification.},
-    author={Xulin Li, Yan Lu, Bin Liu, Jiaze Li, Qinhong Yang, Tao Gong, Qi Chu, Mang Ye and Nenghai Yu},
-    booktitle={International Joint Conferences on Artificial Intelligence (IJCAI)},
-    pages={},
-    year={2025}
+  title     = {Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification},
+  author    = {Li, Xulin and Lu, Yan and Liu, Bin and Li, Jiaze and Yang, Qinhong and Gong, Tao and Chu, Qi and Ye, Mang and Yu, Nenghai},
+  booktitle = {Proceedings of the Thirty-Fourth International Joint Conference on Artificial Intelligence, {IJCAI-25}},
+  publisher = {International Joint Conferences on Artificial Intelligence Organization},
+  editor    = {James Kwok},
+  pages     = {1467--1475},
+  year      = {2025},
+  month     = {8},
+  note      = {Main Track},
+  doi       = {10.24963/ijcai.2025/164},
+  url       = {https://doi.org/10.24963/ijcai.2025/164},
 }
 ```
 
