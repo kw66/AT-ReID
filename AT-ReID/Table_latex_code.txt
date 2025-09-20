@@ -1,0 +1,323 @@
+\begin{table*}[t]
+    \renewcommand{\arraystretch}{1.4}      
+    \fontsize{9}{9}\selectfont     
+    \setlength\tabcolsep{4.0pt}
+    \centering
+    \begin{tabular}{ccccccccccccccccc}
+        \toprule[1pt]
+        \multicolumn{3}{c}{Method}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{C9FAFC}{Any-Time}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{F5F5CA}{DT-ST}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FAE2CC}{DT-LT}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{C5B7D8}{NT-ST}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{9EBFE3}{NT-LT}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FACCCE}{AD-ST}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{E9BCD9}{AD-LT}}
+        \cr\cmidrule(r){1-3}\cmidrule(r){4-5}
+        \cmidrule(r){6-7}\cmidrule(r){8-9}
+        \cmidrule(r){10-11}\cmidrule(r){12-13}
+        \cmidrule(r){14-15}\cmidrule(r){16-17}
+        $L^s_{id}$&MoAE&HDW&
+        R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP
+        \cr\midrule
+         & & &
+        50.90&34.75&95.02&80.23&32.99&21.48&
+        74.53&43.84&38.89&23.88&38.05&23.74&
+        25.92&15.31\cr
+        \Checkmark& & &
+        52.03&37.49&96.95&85.61&33.68&22.17&
+        78.71&50.23&38.64&24.61&40.78&27.62&
+        23.44&14.71\cr
+        \Checkmark&\Checkmark& &
+        53.70&38.76&97.04&86.09&35.31&23.19&
+        79.35&50.89&38.19&24.86&45.16&30.95&
+        27.15&16.58\cr
+        \Checkmark& &\Checkmark&
+        53.32&39.61&97.44&86.77&33.14&22.86&
+        79.72&52.44&36.89&25.76&46.61&32.50&
+        26.15&17.32\cr
+        \Checkmark&\Checkmark&\Checkmark&
+        \textbf{55.80}&\textbf{41.38}&
+        \textbf{97.76}&\textbf{87.97}&
+        \textbf{36.75}&\textbf{25.89}&
+        \textbf{81.32}&\textbf{53.82}&
+        \textbf{39.54}&\textbf{26.93}&
+        \textbf{50.25}&\textbf{34.94}&
+        \textbf{29.21}&\textbf{18.71}\cr
+        \bottomrule[1pt]
+    \end{tabular}
+    \vspace{-0.1cm}
+    \caption{
+    Ablation study on AT-USTC.
+    Rank-1 (R1) and mAP accuracy (\%) are reported.
+    }
+    \vspace{-0.2cm}
+    \label{tab:abl}
+\end{table*}
+
+\begin{table*}[t]
+    \renewcommand{\arraystretch}{1.4}      
+    \fontsize{9}{9}\selectfont     
+    \setlength\tabcolsep{6.0pt}
+    \centering
+    \begin{tabular}{ccccccccccccccc}
+        \toprule[1pt]
+        \multicolumn{3}{c}{Method}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{C9FAFC}{Avg}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{F5F5CA}{Market1501}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{F5F5CA}{CUHK03}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FACCCE}{SYSU-MM01}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FAE2CC}{PRCC}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FAE2CC}{LTCC}}
+        \cr\cmidrule(r){1-3}\cmidrule(r){4-5}
+        \cmidrule(r){6-7}\cmidrule(r){8-9}
+        \cmidrule(r){10-11}\cmidrule(r){12-13}
+        \cmidrule(r){14-15}
+        $L^s_{id}$&MoAE&HDW&
+        R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP
+        \cr\midrule
+         & & &
+        31.47&24.16&60.01&34.30&20.43&19.30&
+        20.78&20.81&33.95&33.63&22.19&12.75 
+        \cr
+        \Checkmark& & &
+        34.42&27.21&63.24&37.76&24.79&23.79&
+        26.10&25.68&32.97&35.09&25.00&13.72
+        \cr
+        \Checkmark&\Checkmark& &
+        36.95&29.11&68.38&42.87&25.57&24.67&
+        28.58&28.03&35.70&35.41&26.53&14.58
+        \cr
+        \Checkmark& &\Checkmark&
+        38.13&30.03&68.82&43.08&27.21&25.99&
+        30.21&29.28&35.85&36.88&\textbf{28.57}&14.90
+        \cr
+        \Checkmark&\Checkmark&\Checkmark&
+        \textbf{39.81}&\textbf{31.76}&
+        \textbf{70.72}&\textbf{45.67}&
+        \textbf{29.07}&\textbf{27.49}&
+        \textbf{32.26}&\textbf{31.12}&
+        \textbf{38.67}&\textbf{38.88}&
+        28.32&\textbf{15.66}
+        \cr
+        \bottomrule[1pt]
+    \end{tabular}
+    \vspace{-0.1cm}
+    \caption{
+    Ablation study with cross-dataset testing. Trained on AT-USTC and inferred on Market1501, CUHK03, SYSU-MM01, PRCC and LTCC datasets.
+    Rank-1 (R1) and mAP accuracy (\%) are reported.
+    }
+    \vspace{-0.2cm}
+    \label{tab:abl2}
+\end{table*}
+
+
+\begin{table*}[t]
+    \renewcommand{\arraystretch}{1.4}           
+    \fontsize{9}{9}\selectfont          
+    \setlength\tabcolsep{3.5pt}
+    \centering
+    %\resizebox{\textwidth}{!}{ 
+    \begin{tabular}{l l cc cc cc cc cc cc cc}
+        \toprule[1pt]
+        &&
+        \multicolumn{2}{c}{\cellcolor[HTML]{C9FAFC}{Any-Time}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{F5F5CA}{DT-ST}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FAE2CC}{DT-LT}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{C5B7D8}{NT-ST}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{9EBFE3}{NT-LT}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FACCCE}{AD-ST}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{E9BCD9}{AD-LT}}
+        \cr\cmidrule(r){3-4}\cmidrule(r){5-6}
+        \cmidrule(r){7-8}\cmidrule(r){9-10}
+        \cmidrule(r){11-12}\cmidrule(r){13-14}
+        \cmidrule(r){15-16}
+        \multirow{-2}*{Task}&
+        \multirow{-2}*{Method}
+        &R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP
+        \cr\midrule
+        \cellcolor[HTML]{F5F5CA}{}
+        &BoT~\cite{luo2019bag}&
+        44.94&22.56&89.32&57.03&32.15&14.93&
+        63.69&26.72&33.75&15.25&29.78&12.87&
+        20.93&8.55
+        \cr       
+        \cellcolor[HTML]{F5F5CA}{}
+        &TransReID~\cite{he2021transreid}&
+        48.30&31.42&93.55&75.35&34.17&21.83&
+        68.79&36.98&36.50&22.94&32.45&17.72&
+        24.34&13.69
+        \cr
+        \cellcolor[HTML]{F5F5CA}{}
+        &CLIP-ReID (R50)~\cite{li2023clip}&
+        48.29&29.37&92.00&66.50&30.17&19.08&
+        69.71&36.50&36.79&19.54&37.61&20.62&
+        23.46&13.96
+        \cr
+        \multirow{-4}{*}{\cellcolor[HTML]{F5F5CA}{\rotatebox{90}{\shortstack{Tr-\\ReID}}}}
+        &CLIP-ReID (ViT-B)&
+        52.56&35.86&96.35&81.21&\textbf{41.15}&\textbf{27.34}&
+        72.14&41.49&36.00&21.69&42.28&26.30&
+        27.43&17.14   
+        \cr\midrule
+        \cellcolor[HTML]{FAE2CC}{}
+        &CAL~\cite{gu2022clothes}&
+        50.53&33.95&94.53&76.92&31.80&20.19&
+        73.15&41.98&30.60&19.30&47.18&29.75&
+        25.92&15.55 
+        \cr
+        \cellcolor[HTML]{FAE2CC}{}
+        &AIM~\cite{yang2023good}&
+        50.19&33.31&94.16&76.00&30.37&19.30&
+        72.87&41.35&31.90&19.68&46.34&28.69&
+        25.52&14.88
+        \cr
+        \multirow{-3}{*}{\cellcolor[HTML]{FAE2CC}{\rotatebox{90}{\shortstack{CC-\\ReID}}}}
+        &CCIL~\cite{li2023clothes}&
+        51.58&31.74&92.89&72.11&36.65&23.29&
+        70.23&34.89&38.89&22.72&41.43&21.47&
+        29.41&15.96
+        \cr\midrule
+
+        \cellcolor[HTML]{FACCCE}{}
+        &CAJ~\cite{ye2021channel}&
+        50.09&30.04&93.38&68.91&34.17&20.83&
+        66.76&33.15&36.10&20.07&41.79&22.21&
+        28.33&15.05
+        \cr
+        \cellcolor[HTML]{FACCCE}{}
+        &CIFT$^\dagger$~\cite{li2022counterfactual}&
+        53.29&33.47&92.32&72.88&38.92&24.56&
+        71.77&36.92&38.04&22.68&48.61&26.20&
+        30.11&17.61
+        \cr
+        \multirow{-3}{*}{\cellcolor[HTML]{FACCCE}{\rotatebox{90}{\shortstack{CM-\\ReID}}}}
+        &DEEN~\cite{zhang2023diverse}&
+        53.52&33.48&91.86&70.11&37.34&24.47&
+        71.34&37.76&38.54&22.83&50.06&27.91&
+        \textbf{31.66}&18.09
+        \cr\midrule
+
+        \cellcolor[HTML]{C9FAFC}{}
+        &Baseline&
+        50.90&34.75&95.02&80.23&32.99&21.48&
+        74.53&43.84&38.89&23.88&38.05&23.74&
+        25.92&15.31
+        \cr
+        \multirow{-2}{*}{\cellcolor[HTML]{C9FAFC}{\rotatebox{90}{\shortstack{AT-\\ReID}}}}
+        &Uni-AT (Ours)&
+        \textbf{55.80}&\textbf{41.38}&
+        \textbf{97.76}&\textbf{87.97}&
+        36.75&25.89&
+        \textbf{81.32}&\textbf{53.82}&
+        \textbf{39.54}&\textbf{26.93}&
+        \textbf{50.25}&\textbf{34.94}&
+        29.21&\textbf{18.71}\cr
+        \bottomrule[1pt]
+    \end{tabular}
+    %}
+    \vspace{-0.1cm}
+    \caption{
+    Comparison with task-specific methods on AT-USTC.
+    Rank-1 (R1) and mAP accuracy (\%) are reported.
+    }
+    \vspace{-0.1cm}
+    \label{tab:comp}
+\end{table*}
+
+\begin{table*}[t]
+    \renewcommand{\arraystretch}{1.4}
+    \fontsize{9}{9}\selectfont
+    \setlength\tabcolsep{5.2pt}
+    \centering
+    %\resizebox{\textwidth}{!}{ 
+    \begin{tabular}{l l cc cc cc cc cc cc}
+        \toprule[1pt]
+        &&
+        \multicolumn{2}{c}{\cellcolor[HTML]{C9FAFC}{Avg}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{F5F5CA}{Market1501}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{F5F5CA}{CUHK03}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FACCCE}{SYSU-MM01}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FAE2CC}{PRCC}}&
+        \multicolumn{2}{c}{\cellcolor[HTML]{FAE2CC}{LTCC}}
+        \cr\cmidrule(r){3-4}\cmidrule(r){5-6}
+        \cmidrule(r){7-8}\cmidrule(r){9-10}
+        \cmidrule(r){11-12}\cmidrule(r){13-14}
+        \multirow{-2}*{Task}&
+        \multirow{-2}*{Method}
+        &R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP&R1&mAP
+        \cr\midrule
+        \cellcolor[HTML]{F5F5CA}{}
+        &BoT~\cite{luo2019bag}&
+        27.89&16.00&50.06&21.40&10.93&9.25&
+        15.42&14.47&36.78&26.78&26.28&8.11
+        \cr      
+        \cellcolor[HTML]{F5F5CA}{}
+        &TransReID~\cite{he2021transreid}&
+        30.19&22.02&57.75&31.04&19.36&18.00&
+        14.36&14.85&34.97&34.96&24.49&11.25
+        \cr
+        \cellcolor[HTML]{F5F5CA}{}
+        &CLIP-ReID (R50)~\cite{li2023clip}&
+        28.22&18.36&46.32&20.32&11.50&10.56&
+        19.51&19.19&35.73&30.50&28.06&11.22
+        \cr
+        \cellcolor[HTML]{F5F5CA}{}
+        \multirow{-4}{*}{\cellcolor[HTML]{F5F5CA}{\shortstack{Tr-\\ReID}}}
+        &CLIP-ReID (ViT-B)&
+        \textbf{42.97}&31.68&\textbf{73.90}&\textbf{47.73}&27.93&24.52&
+        29.28&28.07&\textbf{45.30}&\textbf{40.83}&\textbf{38.52}&\textbf{17.24}
+        \cr\midrule
+
+        \cellcolor[HTML]{FAE2CC}{}
+        &CAL~\cite{gu2022clothes}&
+        34.33&24.74&59.06&32.56&19.71&19.34&
+        27.09&26.16&36.21&33.63&29.59&12.03
+        \cr
+        \cellcolor[HTML]{FAE2CC}{}
+        &AIM~\cite{yang2023good}&
+        33.94&24.66&59.92&32.76&20.07&19.37&
+        25.76&25.22&35.39&33.67&28.57&12.30
+        \cr
+        \multirow{-3}{*}{\cellcolor[HTML]{FAE2CC}{\shortstack{CC-\\ReID}}}
+        &CCIL~\cite{li2023clothes}&
+        31.30&21.92&54.72&27.39&14.50&13.79&
+        20.09&18.82&42.70&38.74&24.49&10.87
+        \cr\midrule
+
+        \cellcolor[HTML]{FACCCE}{}
+        &CAJ~\cite{ye2021channel}&
+        31.33&21.73&55.11&27.77&16.36&15.14&
+        23.58&22.15&35.06&32.82&26.53&10.75
+        \cr
+        \cellcolor[HTML]{FACCCE}{}
+        &CIFT$^\dagger$~\cite{li2022counterfactual}&
+        32.14&22.78&54.78&27.57&13.79&14.18&
+        24.00&22.66&41.86&38.79&26.28&10.70
+        \cr
+        \multirow{-3}{*}{\cellcolor[HTML]{FACCCE}{\shortstack{CM-\\ReID}}}
+        &DEEN~\cite{zhang2023diverse}&
+        31.66&21.49&55.31&27.47&14.93&13.58&
+        26.78&24.73&35.79&31.42&25.51&10.27
+        \cr\midrule
+
+        \cellcolor[HTML]{C9FAFC}{}
+        &Baseline&
+        31.47&24.16&60.01&34.30&20.43&19.30&
+        20.78&20.81&33.95&33.63&22.19&12.75 
+        \cr
+        \multirow{-2}{*}{\cellcolor[HTML]{C9FAFC}{\shortstack{AT-\\ReID}}}
+        &Uni-AT (Ours)&
+        39.81&\textbf{31.76}&70.72&45.67&\textbf{29.07}&\textbf{27.49}&         \textbf{32.26}&\textbf{31.12}&38.67&38.88&28.32&15.66
+        \cr
+        \bottomrule[1pt]
+    \end{tabular}
+    %}
+    \vspace{-0.1cm}
+    \caption{
+    Comparison with task-specific methods with cross-dataset testing. Trained on AT-USTC and inferred on Market1501, CUHK03, SYSU-MM01, PRCC and LTCC datasets.
+    Rank-1 (R1) and mAP accuracy (\%) are reported.
+    }
+    \vspace{-0.1cm}
+    \label{tab:comp2}
+\end{table*}
