@@ -44,7 +44,7 @@ python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_all
 #### Our version of IJCAI selected 18 images for each video clip, ultimately choosing 135K images. In the final version, we provide the original 403K images with more perspectives and poses to enhance intra-class diversity. The results have been updated in the arXiv and the table below.
 
 <p align="center">        
-  <img src="https://github.com/kw66/AT-ReID/blob/main/AT-ReID/fig1.png" style="width:70%; display: block; margin-left: auto; margin-right: auto;">  
+  <img src="https://github.com/kw66/AT-ReID/blob/main/AT-ReID/fig1.png" style="width:60%; display: block; margin-left: auto; margin-right: auto;">  
 </p>
 
 ### 4. Citation
