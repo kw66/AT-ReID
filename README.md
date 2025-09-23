@@ -8,7 +8,7 @@
 
 [\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1947080865181078424)
 
-[\[Paper\]]() Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025 oral)
+[\[Paper\]](https://arxiv.org/pdf/2509.16635) Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025 oral)
 
 A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
 
