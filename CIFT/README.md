@@ -1,6 +1,8 @@
 # CIFT
 
-[\[Paper\]](https://arxiv.org/pdf/2208.00967) Counterfactual Intervention Feature Transfer for Visible-Infrared Person Re-identification (ECCV2022)
+[\[知乎介绍\]](https://zhuanlan.zhihu.com/p/552705108)
+
+[\[Paper\]](https://arxiv.org/abs/2208.00967) Counterfactual Intervention Feature Transfer for Visible-Infrared Person Re-identification (ECCV2022)
 
 ### Citation
 Please kindly cite this paper in your publications if it helps your research:
