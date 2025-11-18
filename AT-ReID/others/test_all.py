@@ -73,7 +73,6 @@ def test_1(args, d='market', dataset=None, model=None):
         if args.nfeature == 1:
             q, q_pids, q_cids, q_mids, q_camids = extract_feature(model, queryloader, args.flip)
             g, g_pids, g_cids, g_mids, g_camids = extract_feature(model, galleryloader, args.flip)
-            distmat = 1 - torch.mm(F.normalize(q, p=2, dim=1), F.normalize(g, p=2, dim=1).t()).numpy()
         if args.nfeature == 6:
             if d in ['market', 'cuhk', 'msmt', 'prcc_sc', 'vc_sc']:
                 q, _, _, _, _, _, q_pids, q_cids, q_mids, q_camids = extract_feature6(model, queryloader, args.flip)
@@ -84,6 +83,7 @@ def test_1(args, d='market', dataset=None, model=None):
             if d in ['sysu', 'sysu_indoor', 'sysu_multi', 'sysu_indoor_multi', 'regdb_v2i', 'regdb_i2v', 'llcm_v2i', 'llcm_i2v']:
                 _, _, _, _, q, _, q_pids, q_cids, q_mids, q_camids = extract_feature6(model, queryloader, args.flip)
                 _, _, _, _, g, _, g_pids, g_cids, g_mids, g_camids = extract_feature6(model, galleryloader, args.flip)
+        distmat = 1 - torch.mm(F.normalize(q, p=2, dim=1), F.normalize(g, p=2, dim=1).t()).numpy()
         cmc_t, mAP_t = eval(q, q_pids, q_cids, q_mids, q_camids, g, g_pids, g_cids, g_mids, g_camids, mode1, mode2, distmat, d)
         if trial == 0:
             cmc, mAP = cmc_t / t, mAP_t / t
@@ -122,6 +122,7 @@ def test_all(args, d='market', dataset=None, model=None):
     else:
         cmc, mAP = test_1(args, d=d, dataset=dataset, model=model)
     return cmc, mAP
+
 
 
 
