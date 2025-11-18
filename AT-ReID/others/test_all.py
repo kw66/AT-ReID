@@ -89,39 +89,54 @@ def test_1(args, d='market', dataset=None, model=None):
             cmc, mAP = cmc_t / t, mAP_t / t
         else:
             cmc, mAP = cmc + cmc_t / t, mAP + mAP_t / t
-    print(f'{mAP * 100:-2.2f}\t{cmc[0] * 100:-2.2f}\t{cmc[4] * 100:-2.2f}\t{cmc[9] * 100:-2.2f}\t{cmc[19] * 100:-2.2f}')
+    print(f'mAP:{mAP * 100:-2.2f}\t rank1{cmc[0] * 100:-2.2f}\t rank5{cmc[4] * 100:-2.2f}\t rank10{cmc[9] * 100:-2.2f}\t rank20{cmc[19] * 100:-2.2f}')
     print(f'Evaluation Time:\t {time.time() - start:.3f}')
     return cmc, mAP
 
 
 def test_all(args, d='market', dataset=None, model=None):
     if d == 'sysu':
+        print('sysu-single-all')
         cmc, mAP = test_1(args, d='sysu', dataset=dataset, model=model)
+        print('sysu-multi-all')
         _, _ = test_1(args, d='sysu_multi', dataset=dataset, model=model)
+        print('sysu-single-indoor')
         _, _ = test_1(args, d='sysu_indoor', dataset=dataset, model=model)
+        print('sysu-multi-indoor')
         _, _ = test_1(args, d='sysu_indoor_multi', dataset=dataset, model=model)
     elif d == 'llcm':
+        print('llcm-v-to-i')
         cmc1, mAP1 = test_1(args, d='llcm_v2i', dataset=dataset, model=model)
+        print('llcm-i-to-v')
         cmc2, mAP2 = test_1(args, d='llcm_i2v', dataset=dataset, model=model)
         cmc = cmc1/2+cmc2/2
         mAP = mAP1/2+mAP2/2
     elif d == 'regdb':
+        print('regdb-v-to-i')
         cmc1, mAP1 = test_1(args, d='regdb_v2i', dataset=dataset, model=model)
+        print('regdb-i-to-v')
         cmc2, mAP2 = test_1(args, d='regdb_i2v', dataset=dataset, model=model)
         cmc = cmc1 / 2 + cmc2 / 2
         mAP = mAP1 / 2 + mAP2 / 2
     elif d == 'prcc':
+        print('prcc-sc')
         _, _ = test_1(args, d='prcc_sc', dataset=dataset, model=model)
+        print('prcc-cc')
         cmc, mAP = test_1(args, d='prcc', dataset=dataset, model=model)
     elif d == 'ltcc':
+        print('ltcc-all')
         _, _ = test_1(args, d='ltcc_all', dataset=dataset, model=model)
+        print('ltcc-cc')
         cmc, mAP = test_1(args, d='ltcc', dataset=dataset, model=model)
     elif d == 'vc':
+        print('vc-sc')
         _, _ = test_1(args, d='vc_sc', dataset=dataset, model=model)
+        print('vc-cc')
         cmc, mAP = test_1(args, d='vc', dataset=dataset, model=model)
     else:
         cmc, mAP = test_1(args, d=d, dataset=dataset, model=model)
     return cmc, mAP
+
 
 
 
