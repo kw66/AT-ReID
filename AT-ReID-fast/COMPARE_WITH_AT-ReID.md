@@ -47,12 +47,4 @@ Conservative fallback:
 python train.py -gpu 0 -v 1 -said -moae -hdw --runtime-mode strict
 ```
 
-## Not Added
-
-The following are intentionally not included here:
-
-- neighbor-module acceleration
-- unrelated graph-style acceleration systems
-- larger architecture changes beyond the original AT-ReID scope
-
-This keeps `AT-ReID-fast` close to the original project while making it easier to use.
+`AT-ReID-fast` keeps the original AT-ReID scope, while making the code cleaner and the runtime path faster.

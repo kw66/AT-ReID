@@ -1,12 +1,23 @@
 # AT-ReID-fast
 
-`AT-ReID-fast` is the simplified and optimized sibling of the original `AT-ReID` folder.
+`AT-ReID-fast` is the deeply accelerated and simplified version of the original `AT-ReID` folder.
 
 - `AT-ReID` stays unchanged.
-- `AT-ReID-fast` is the easier-to-run version for upload and reuse.
+- `AT-ReID-fast` is the upload-friendly version with deeper training and testing acceleration.
 - The default training preset is now `fast-compile`.
 
 For the concise change list, see [COMPARE_WITH_AT-ReID.md](COMPARE_WITH_AT-ReID.md).
+
+## Speedup Summary
+
+Measured on real AT-USTC runs:
+
+| Item | Original-style baseline | AT-ReID-fast | Speedup |
+| --- | ---: | ---: | ---: |
+| Full Uni-AT training, 120 epochs | 2h20m16s | 1h25m57s | 1.63x |
+| Training steady-state `BatchTime.avg` | 0.333 s | 0.181 s | 1.84x |
+| Exact test backend, AT-USTC subset (`512 query / 1024 gallery`) | 6.125 s | 4.008 s | 1.53x |
+| Exact ranking stage only, same subset | 2.337 s | 0.187 s | 12.50x |
 
 ## Install
 
@@ -106,7 +117,6 @@ These two are kept optional and are not enabled by default.
 
 ## Notes
 
-- This folder does not add neighbor-module acceleration.
 - Cross-dataset testing supports AT-USTC, Market1501, CUHK03, MSMT17, SYSU-MM01, RegDB, LLCM, PRCC, LTCC, and DeepChange.
 - Project assets are kept under `assets/`.
 
