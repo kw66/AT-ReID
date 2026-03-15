@@ -1,0 +1,17 @@
+name: atreid-fast
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pytorch
+  - torchvision
+  - pytorch-cuda=12.1
+  - numpy<2
+  - pillow
+  - pyyaml
+  - tqdm
+  - pip
+  - pip:
+      - timm>=0.9

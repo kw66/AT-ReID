@@ -1,0 +1,13 @@
+{
+  "atustc": "data/atustc",
+  "market": "data/market1501",
+  "cuhk": "data/cuhk03-np/detected",
+  "msmt": "data/MSMT17_V1",
+  "sysu": "data/sysu",
+  "regdb": "data/regdb",
+  "llcm": "data/llcm",
+  "prcc": "data/prcc",
+  "ltcc": "data/ltcc",
+  "vc": "data/vc",
+  "deepchange": "data/deepchange"
+}
