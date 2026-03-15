@@ -55,18 +55,6 @@ Default full Uni-AT training (`fast-compile`):
 python train.py -gpu 0 -v 1 -said -moae -hdw
 ```
 
-Same setting without compile:
-
-```bash
-python train.py -gpu 0 -v 1 -said -moae -hdw --runtime-mode fast
-```
-
-Conservative fallback:
-
-```bash
-python train.py -gpu 0 -v 1 -said -moae -hdw --runtime-mode strict
-```
-
 Baseline training:
 
 ```bash
@@ -107,15 +95,6 @@ Optional manual experiments:
 ```
 
 These two are kept optional and are not enabled by default.
-
-## Runtime Modes
-
-- `fast-compile`
-  Default preset for long stable runs. Uses AMP, worker/prefetch speedups, and `torch.compile`.
-- `fast`
-  Recommended when you want most of the speedup but do not want compile warmup.
-- `strict`
-  Conservative fallback close to the original behavior.
 
 ## Notes
 
