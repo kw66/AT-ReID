@@ -79,10 +79,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Device used by exact sorting / CMC / mAP evaluation after the distance matrix is built.",
     )
     parser.add_argument(
+        "--test-rank-sort-batch-size",
+        type=int,
+        default=256,
+        help="Query block size used by the exact CUDA ranking backend.",
+    )
+    parser.add_argument(
+        "--test-rank-auto-min-pairs",
+        type=int,
+        default=5000000,
+        help="Auto mode prefers CUDA ranking once query_count * gallery_count reaches this value.",
+    )
+    parser.add_argument(
         "--test-rank-max-elements-cuda",
         type=int,
-        default=64000000,
-        help="Auto mode keeps exact GPU ranking only when query_count * gallery_count does not exceed this value.",
+        default=1200000000,
+        help="Hard upper bound for auto CUDA ranking. Set <= 0 to remove the cap.",
     )
     parser.add_argument(
         "--decode-cache",

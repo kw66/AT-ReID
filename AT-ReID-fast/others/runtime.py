@@ -6,6 +6,9 @@ import warnings
 import torch
 
 
+_AUTO_GPU_METRIC_MIN_PAIRS = 5_000_000
+
+
 def ensure_compile_cache_dirs(base_dir: str | Path | None = None) -> dict[str, str]:
     root = Path(base_dir or os.environ.get("ATREID_FAST_RUNTIME_CACHE_DIR", Path.home() / ".cache" / "atreid-fast")).expanduser().resolve()
     inductor = Path(os.environ.get("TORCHINDUCTOR_CACHE_DIR", root / "torchinductor")).expanduser().resolve()
@@ -105,13 +108,20 @@ def resolve_rank_device(
     num_query: int,
     num_gallery: int,
     max_cuda_elements: int,
+    auto_min_pairs: int = _AUTO_GPU_METRIC_MIN_PAIRS,
 ) -> torch.device:
     requested = str(requested).strip().lower()
     if requested == "auto":
         total = int(num_query) * int(num_gallery)
-        if default_device.type == "cuda" and torch.cuda.is_available() and total <= int(max_cuda_elements):
-            return torch.device("cuda")
-        return torch.device("cpu")
+        if default_device.type != "cuda" or not torch.cuda.is_available():
+            return torch.device("cpu")
+        min_pairs = int(auto_min_pairs) if auto_min_pairs is not None else _AUTO_GPU_METRIC_MIN_PAIRS
+        if total < max(0, min_pairs):
+            return torch.device("cpu")
+        max_elements = int(max_cuda_elements) if max_cuda_elements is not None else 0
+        if max_elements > 0 and total > max_elements:
+            return torch.device("cpu")
+        return torch.device("cuda")
     if requested == "cuda":
         return torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if requested == "cpu":

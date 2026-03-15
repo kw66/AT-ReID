@@ -620,11 +620,16 @@ def _eval_torch(
     *,
     device,
     max_rank=20,
+    sort_batch_size=256,
 ):
     with torch.inference_mode():
         distmat = _as_torch_float_tensor(distmat, device=device)
         if distmat.numel() == 0:
             return np.zeros(max_rank, dtype=np.float32), 0.0
+
+        num_q, num_g = int(distmat.shape[0]), int(distmat.shape[1])
+        max_rank = min(int(max_rank), num_g)
+        batch_size = max(1, int(sort_batch_size))
 
         q_pids_t = _as_torch_int_tensor(q_pids, device=device)
         q_cids_t = _as_torch_int_tensor(q_cids, device=device)
@@ -634,68 +639,81 @@ def _eval_torch(
         g_cids_t = _as_torch_int_tensor(g_cids, device=device)
         g_mids_t = _as_torch_int_tensor(g_mids, device=device)
         g_camids_t = _as_torch_int_tensor(g_camids, device=device)
+        sum_cmc = torch.zeros(max_rank, dtype=torch.float32, device=device)
+        sum_ap = torch.zeros((), dtype=torch.float32, device=device)
+        valid_query_count = 0
+        rank_positions = torch.arange(1, max_rank + 1, device=device, dtype=torch.int32).view(1, -1)
 
-        indices = torch.argsort(distmat, dim=1)
-        g_pid_sorted = g_pids_t[indices]
-        g_cid_sorted = g_cids_t[indices]
-        g_mid_sorted = g_mids_t[indices]
-        g_camid_sorted = g_camids_t[indices]
+        for start in range(0, num_q, batch_size):
+            stop = min(num_q, start + batch_size)
+            block = distmat[start:stop]
+            q_pid_col = q_pids_t[start:stop].view(-1, 1)
+            q_cid_col = q_cids_t[start:stop].view(-1, 1)
+            q_mid_col = q_mids_t[start:stop].view(-1, 1)
+            q_camid_col = q_camids_t[start:stop].view(-1, 1)
 
-        q_pid_col = q_pids_t.view(-1, 1)
-        q_cid_col = q_cids_t.view(-1, 1)
-        q_mid_col = q_mids_t.view(-1, 1)
-        q_camid_col = q_camids_t.view(-1, 1)
+            indices = torch.argsort(block, dim=1, stable=True)
+            g_pid_sorted = g_pids_t[indices]
+            g_cid_sorted = g_cids_t[indices]
+            g_mid_sorted = g_mids_t[indices]
+            g_camid_sorted = g_camids_t[indices]
 
-        matches = g_pid_sorted.eq(q_pid_col)
+            matches = g_pid_sorted.eq(q_pid_col)
 
-        remove_cam = matches & g_camid_sorted.eq(q_camid_col)
-        remove_sc = matches & g_cid_sorted.ne(q_cid_col)
-        remove_cc = matches & g_cid_sorted.eq(q_cid_col)
-        remove_vm = q_mid_col.ne(1) | g_mid_sorted.ne(1)
-        remove_im = q_mid_col.ne(2) | g_mid_sorted.ne(2)
-        remove_cm = (q_mid_col.eq(1) & g_mid_sorted.eq(1)) | (q_mid_col.eq(2) & g_mid_sorted.eq(2))
-        remove_sysu = q_camid_col.eq(3) & g_camid_sorted.eq(2)
+            remove_cam = matches & g_camid_sorted.eq(q_camid_col)
+            remove_sc = matches & g_cid_sorted.ne(q_cid_col)
+            remove_cc = matches & g_cid_sorted.eq(q_cid_col)
+            remove_vm = q_mid_col.ne(1) | g_mid_sorted.ne(1)
+            remove_im = q_mid_col.ne(2) | g_mid_sorted.ne(2)
+            remove_cm = (q_mid_col.eq(1) & g_mid_sorted.eq(1)) | (q_mid_col.eq(2) & g_mid_sorted.eq(2))
+            remove_sysu = q_camid_col.eq(3) & g_camid_sorted.eq(2)
 
-        remove = remove_vm if dataset == 'deepchange' else remove_cam
-        if dataset == 'sysu':
-            remove = remove | remove_sysu
+            remove = remove_vm if dataset == 'deepchange' else remove_cam
+            if dataset == 'sysu':
+                remove = remove | remove_sysu
 
-        if mode1 == 'vm':
-            remove = remove | remove_vm
-        elif mode1 == 'im':
-            remove = remove | remove_im
-        elif mode1 == 'cm':
-            remove = remove | remove_cm
+            if mode1 == 'vm':
+                remove = remove | remove_vm
+            elif mode1 == 'im':
+                remove = remove | remove_im
+            elif mode1 == 'cm':
+                remove = remove | remove_cm
 
-        if mode2 == 'sc':
-            remove = remove | remove_sc
-        elif mode2 == 'cc':
-            remove = remove | remove_cc
+            if mode2 == 'sc':
+                remove = remove | remove_sc
+            elif mode2 == 'cc':
+                remove = remove | remove_cc
 
-        keep = ~remove
-        valid_matches = matches & keep
-        num_rel = valid_matches.sum(dim=1)
-        valid_queries = num_rel.gt(0)
-        if not torch.any(valid_queries):
+            keep = ~remove
+            valid_matches = matches & keep
+            num_rel = valid_matches.sum(dim=1)
+            valid_queries = num_rel.gt(0)
+            if not torch.any(valid_queries):
+                continue
+
+            kept_rank = keep.to(dtype=torch.int32).cumsum(dim=1, dtype=torch.int32)
+            kept_count = keep.sum(dim=1, dtype=torch.int32)
+            in_top = valid_matches & kept_rank.le(max_rank)
+            cmc_hits = torch.zeros((block.shape[0], max_rank), dtype=torch.float32, device=device)
+            rows, cols = torch.where(in_top)
+            if rows.numel() > 0:
+                rank_cols = kept_rank[rows, cols].to(torch.long) - 1
+                cmc_hits[rows, rank_cols] = 1.0
+            cmc = cmc_hits.cumsum(dim=1).clamp_max_(1.0)
+            cmc = cmc * rank_positions.le(kept_count.view(-1, 1)).to(dtype=torch.float32)
+            sum_cmc += cmc[valid_queries].sum(dim=0)
+
+            precision = valid_matches.cumsum(dim=1, dtype=torch.float32) / kept_rank.clamp_min(1).to(torch.float32)
+            ap = (precision * valid_matches.to(torch.float32)).sum(dim=1) / num_rel.clamp_min(1).to(torch.float32)
+            sum_ap += ap[valid_queries].sum()
+            valid_query_count += int(valid_queries.sum().item())
+
+        if valid_query_count == 0:
             return np.zeros(max_rank, dtype=np.float32), 0.0
 
-        kept_rank = keep.to(dtype=torch.int32).cumsum(dim=1, dtype=torch.int32)
-        kept_count = keep.sum(dim=1, dtype=torch.int32)
-        in_top = valid_matches & kept_rank.le(int(max_rank))
-        cmc_hits = torch.zeros((distmat.shape[0], int(max_rank)), dtype=torch.float32, device=device)
-        rows, cols = torch.where(in_top)
-        if rows.numel() > 0:
-            rank_cols = kept_rank[rows, cols].to(torch.long) - 1
-            cmc_hits[rows, rank_cols] = 1.0
-        cmc = cmc_hits.cumsum(dim=1).clamp_max_(1.0)
-        rank_positions = torch.arange(1, int(max_rank) + 1, device=device, dtype=torch.int32).view(1, -1)
-        cmc = cmc * rank_positions.le(kept_count.view(-1, 1)).to(dtype=torch.float32)
-        cmc = cmc[valid_queries].sum(dim=0) / valid_queries.sum().to(dtype=torch.float32)
-
-        precision = valid_matches.cumsum(dim=1, dtype=torch.float32) / kept_rank.clamp_min(1).to(torch.float32)
-        ap = (precision * valid_matches.to(torch.float32)).sum(dim=1) / num_rel.clamp_min(1).to(torch.float32)
-        mAP = float(ap[valid_queries].mean().item())
-        return cmc.detach().cpu().numpy().astype(np.float32, copy=False), mAP
+        cmc = (sum_cmc / float(valid_query_count)).detach().cpu().numpy().astype(np.float32, copy=False)
+        mAP = float((sum_ap / float(valid_query_count)).item())
+        return cmc, mAP
 
 
 def evaluate_bundle(
@@ -744,6 +762,7 @@ def evaluate_bundle_head(
         num_query=q.shape[0],
         num_gallery=g.shape[0],
         max_cuda_elements=getattr(args, "test_rank_max_elements_cuda", 64000000),
+        auto_min_pairs=getattr(args, "test_rank_auto_min_pairs", 5000000),
     )
 
     dist_start = time.perf_counter()
@@ -772,6 +791,7 @@ def evaluate_bundle_head(
             distmat,
             dataset,
             device=rank_device,
+            sort_batch_size=getattr(args, "test_rank_sort_batch_size", 256),
         )
     else:
         cmc, mAP = eval(
