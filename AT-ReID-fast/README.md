@@ -71,7 +71,6 @@ Useful optional training flags:
 ```bash
 --runtime-mode fast
 --runtime-mode strict
---workers 4
 ```
 
 Baseline training:
