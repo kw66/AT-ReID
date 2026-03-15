@@ -8,12 +8,12 @@
 
 ## Speedup Summary
 
-Measured on real AT-USTC runs:
+Measured on real full AT-USTC runs:
 
 | Item | Original-style baseline | AT-ReID-fast | Speedup |
 | --- | ---: | ---: | ---: |
 | Full Uni-AT training, 120 epochs | 2h20m16s | 1h25m57s | 1.63x |
-| AT-USTC test backend (`512 query / 1024 gallery` subset) | 6.125 s | 4.008 s | 1.53x |
+| Full AT-USTC test | 170.188 s | 148.531 s | 1.15x |
 
 ## Install
 
