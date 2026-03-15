@@ -6,8 +6,6 @@
 - `AT-ReID-fast` is the upload-friendly version with deeper training and testing acceleration.
 - The default training preset is now `fast-compile`.
 
-For the concise change list, see [COMPARE_WITH_AT-ReID.md](COMPARE_WITH_AT-ReID.md).
-
 ## Speedup Summary
 
 Measured on real AT-USTC runs:
