@@ -10,7 +10,7 @@
 
 Measured on real full AT-USTC runs:
 
-| Item | Original-style baseline | AT-ReID-fast | Speedup |
+| Item | AT-ReID project | AT-ReID-fast | Speedup |
 | --- | ---: | ---: | ---: |
 | Full Uni-AT training, 120 epochs | 2h20m16s | 1h25m57s | 1.63x |
 | Full AT-USTC test | 170.188 s | 148.531 s | 1.15x |
