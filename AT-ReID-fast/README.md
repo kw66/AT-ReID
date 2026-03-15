@@ -15,9 +15,7 @@ Measured on real AT-USTC runs:
 | Item | Original-style baseline | AT-ReID-fast | Speedup |
 | --- | ---: | ---: | ---: |
 | Full Uni-AT training, 120 epochs | 2h20m16s | 1h25m57s | 1.63x |
-| Training steady-state `BatchTime.avg` | 0.333 s | 0.181 s | 1.84x |
-| Exact test backend, AT-USTC subset (`512 query / 1024 gallery`) | 6.125 s | 4.008 s | 1.53x |
-| Exact ranking stage only, same subset | 2.337 s | 0.187 s | 12.50x |
+| AT-USTC test backend (`512 query / 1024 gallery` subset) | 6.125 s | 4.008 s | 1.53x |
 
 ## Install
 
