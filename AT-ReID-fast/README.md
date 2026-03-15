@@ -55,6 +55,14 @@ Default full Uni-AT training (`fast-compile`):
 python train.py -gpu 0 -v 1 -said -moae -hdw
 ```
 
+Useful optional training flags:
+
+```bash
+--runtime-mode fast
+--runtime-mode strict
+--workers 4
+```
+
 Baseline training:
 
 ```bash
