@@ -66,13 +66,6 @@ Default full Uni-AT training (`fast-compile`):
 python train.py -gpu 0 -v 1 -said -moae -hdw
 ```
 
-Useful optional training flags:
-
-```bash
---runtime-mode fast
---runtime-mode strict
-```
-
 Baseline training:
 
 ```bash
@@ -98,21 +91,6 @@ AT-USTC plus public datasets:
 ```bash
 python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t -test_all
 ```
-
-Useful optional test acceleration flags:
-
-```bash
---test-distance-device cuda --test-rank-device auto --test-amp
-```
-
-Optional manual experiments:
-
-```bash
---decode-cache disk
---test-batch-auto-tune
-```
-
-These two are kept optional and are not enabled by default.
 
 ## Notes
 
