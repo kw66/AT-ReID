@@ -1,5 +1,4 @@
 import math
-from contextlib import nullcontext
 
 import torch
 import torch.nn as nn
@@ -11,6 +10,7 @@ from others.runtime import resolve_vit_attention_backend, sdpa_context
 
 TASK_NAMES = ("dt-st", "dt-lt", "nt-st", "nt-lt", "ad-st", "ad-lt")
 ATOM_NAMES = ("vm", "im", "cm", "sc", "cc")
+ATOM_TO_INDEX = {name: idx for idx, name in enumerate(ATOM_NAMES)}
 TASK_TO_ATOMS = {
     "dt-st": ("vm", "sc"),
     "dt-lt": ("vm", "cc"),
@@ -89,59 +89,35 @@ class Attention(nn.Module):
 
 
 class Mlp_moe(nn.Module):
-    def __init__(self, in_dim, hidden_dim, out_dim, ncls=6, moae=False, k=1):
+    def __init__(self, in_dim, hidden_dim, out_dim, ncls=6, moae=False, moae_router_noise=0.01):
         super().__init__()
         self.ncls = ncls
         self.moae = moae
-        self.k = int(k)
+        self.moae_router_noise = max(0.0, float(moae_router_noise))
+
+        self.patch_fc1 = nn.Linear(in_dim, hidden_dim)
+        self.patch_act = nn.GELU()
+        self.patch_fc2 = nn.Linear(hidden_dim, out_dim)
 
         if self.moae:
-            self.nexp = len(EXPERT_PAIRS)
-            self.gt = [list(mask) for mask in TASK_EXPERT_MASKS[: self.ncls]]
+            self.num_atoms = len(ATOM_NAMES)
+            task_atom_pairs = [TASK_TO_ATOMS[TASK_NAMES[i]] for i in range(self.ncls)]
+            left_atom_indices = torch.tensor([ATOM_TO_INDEX[left] for left, _ in task_atom_pairs], dtype=torch.long)
+            right_atom_indices = torch.tensor([ATOM_TO_INDEX[right] for _, right in task_atom_pairs], dtype=torch.long)
+            self.register_buffer("task_left_route_keys", left_atom_indices * self.num_atoms + right_atom_indices, persistent=False)
+            self.register_buffer("task_right_route_keys", right_atom_indices * self.num_atoms + left_atom_indices, persistent=False)
+            route_keys = sorted({int(key.item()) for key in torch.cat((self.task_left_route_keys, self.task_right_route_keys), dim=0)})
+            self.route_specs = tuple((route_key, *divmod(route_key, self.num_atoms)) for route_key in route_keys)
+
+            self.gate_delta = nn.Parameter(torch.empty(self.ncls, in_dim))
+            trunc_normal_(self.gate_delta, std=0.02)
+
+            self.atom_in_layers = nn.ModuleList([nn.Linear(in_dim, hidden_dim) for _ in ATOM_NAMES])
+            self.atom_out_layers = nn.ModuleList([nn.Linear(hidden_dim, in_dim) for _ in ATOM_NAMES])
         else:
-            self.nexp = 1
-            self.gt = [[1] for _ in range(self.ncls)]
-        self.task_expert_indices = [[idx for idx, flag in enumerate(mask) if flag == 1] for mask in self.gt]
-        self.active_cls_expert_indices = sorted({idx for indices in self.task_expert_indices for idx in indices})
-        self.active_atom_inputs = sorted(
-            {
-                EXPERT_PAIRS[expert_idx][0]
-                for expert_idx in self.active_cls_expert_indices
-                if expert_idx > 0 and EXPERT_PAIRS[expert_idx] is not None
-            }
-        )
-        self.expert_pairs = {
-            expert_idx: EXPERT_PAIRS[expert_idx]
-            for expert_idx in self.active_cls_expert_indices
-            if expert_idx > 0 and EXPERT_PAIRS[expert_idx] is not None
-        }
-
-        self.gate = nn.ModuleList([nn.Linear(in_dim, len(self.task_expert_indices[i]), bias=False) for i in range(self.ncls)])
-
-        hidden_dim2 = hidden_dim
-        self.ffn = nn.ModuleList([
-            nn.Sequential(
-                nn.Linear(in_dim, hidden_dim),
-                nn.GELU(),
-                nn.Linear(hidden_dim, out_dim),
-            )
-        ])
-
-        if self.moae:
-            atom_in_layers = nn.ModuleDict({name: nn.Linear(in_dim, hidden_dim2) for name in ATOM_NAMES})
-            atom_out_layers = nn.ModuleDict({name: nn.Linear(hidden_dim2, in_dim) for name in ATOM_NAMES})
-            self.atom_in_layers = atom_in_layers
-            self.atom_out_layers = atom_out_layers
-            for atom_in in ATOM_NAMES:
-                for atom_out in ATOM_NAMES:
-                    self.ffn.append(
-                        nn.Sequential(
-                            self.atom_in_layers[atom_in],
-                            nn.GELU(),
-                            self.atom_out_layers[atom_out],
-                        )
-                    )
-        else:
+            self.num_atoms = len(ATOM_NAMES)
+            self.route_specs = ()
+            self.gate_delta = None
             self.atom_in_layers = None
             self.atom_out_layers = None
 
@@ -149,96 +125,102 @@ class Mlp_moe(nn.Module):
 
     def rescale_output_layers(self, layer_id):
         scale = math.sqrt(2.0 * layer_id)
-        self.ffn[0][2].weight.data.div_(scale)
+        self.patch_fc2.weight.data.div_(scale)
         if not self.moae or self.atom_out_layers is None:
             return
-        seen = set()
-        for layer in self.atom_out_layers.values():
-            if id(layer) in seen:
-                continue
+        for layer in self.atom_out_layers:
             layer.weight.data.div_(scale)
-            seen.add(id(layer))
 
     def load_pretrained_fc1(self, weight=None, bias=None):
-        self.ffn[0][0].weight.data.copy_(weight)
-        if bias is not None and self.ffn[0][0].bias is not None:
-            self.ffn[0][0].bias.data.copy_(bias)
+        self.patch_fc1.weight.data.copy_(weight)
+        if bias is not None and self.patch_fc1.bias is not None:
+            self.patch_fc1.bias.data.copy_(bias)
         if not self.moae or self.atom_in_layers is None:
             return
-        for layer in self.atom_in_layers.values():
+        for layer in self.atom_in_layers:
             layer.weight.data.copy_(weight)
             if bias is not None and layer.bias is not None:
                 layer.bias.data.copy_(bias)
 
     def load_pretrained_fc2(self, weight=None, bias=None):
-        self.ffn[0][2].weight.data.copy_(weight)
-        if bias is not None and self.ffn[0][2].bias is not None:
-            self.ffn[0][2].bias.data.copy_(bias)
+        self.patch_fc2.weight.data.copy_(weight)
+        if bias is not None and self.patch_fc2.bias is not None:
+            self.patch_fc2.bias.data.copy_(bias)
         if not self.moae or self.atom_out_layers is None:
             return
-        for layer in self.atom_out_layers.values():
+        for layer in self.atom_out_layers:
             layer.weight.data.copy_(weight)
             if bias is not None and layer.bias is not None:
                 layer.bias.data.copy_(bias)
 
-    def _sparsify_gate(self, gate: torch.Tensor) -> torch.Tensor:
-        if gate.shape[-1] <= 1 or self.k <= 0 or self.k >= gate.shape[-1]:
-            return gate
-        topk_indices = gate.topk(k=self.k, dim=-1).indices
-        sparse_gate = torch.zeros_like(gate)
-        sparse_gate.scatter_(1, topk_indices, gate.gather(1, topk_indices))
-        sparse_gate = sparse_gate / sparse_gate.sum(dim=-1, keepdim=True).clamp_min(1e-6)
-        return sparse_gate
+    def _apply_patch_mlp(self, tokens: torch.Tensor) -> torch.Tensor:
+        return self.patch_fc2(self.patch_act(self.patch_fc1(tokens)))
+
+    def _compute_task_gate_logits(self, cls_tokens: torch.Tensor) -> torch.Tensor:
+        gate_logits = torch.einsum("bnd,nd->bn", cls_tokens.float(), self.gate_delta.float())
+        if self.training and self.moae_router_noise > 0:
+            gate_logits = gate_logits + torch.randn_like(gate_logits) * self.moae_router_noise
+        return gate_logits
+
+    def _forward_weighted_top1_moae(self, cls_tokens: torch.Tensor) -> torch.Tensor:
+        gate_delta = self._compute_task_gate_logits(cls_tokens)
+        choose_left = gate_delta >= 0
+        p_left = gate_delta.sigmoid()
+        chosen_weights = torch.where(choose_left, p_left, 1.0 - p_left).to(dtype=cls_tokens.dtype)
+        left_route_keys = self.task_left_route_keys.unsqueeze(0).expand(cls_tokens.shape[0], -1)
+        right_route_keys = self.task_right_route_keys.unsqueeze(0).expand(cls_tokens.shape[0], -1)
+        chosen_route_keys = torch.where(choose_left, left_route_keys, right_route_keys)
+
+        flat_tokens = cls_tokens.reshape(-1, cls_tokens.shape[-1])
+        flat_route_keys = chosen_route_keys.reshape(-1)
+        flat_weights = chosen_weights.reshape(-1, 1)
+        mixed_flat = torch.empty_like(flat_tokens)
+        for route_key, src_idx, dst_idx in self.route_specs:
+            route_positions = torch.nonzero(flat_route_keys == route_key, as_tuple=False).flatten()
+            if route_positions.numel() == 0:
+                continue
+            route_tokens = flat_tokens.index_select(0, route_positions)
+            route_hidden = F.gelu(self.atom_in_layers[src_idx](route_tokens))
+            route_outputs = self.atom_out_layers[dst_idx](route_hidden) * flat_weights.index_select(0, route_positions)
+            mixed_flat.index_copy_(0, route_positions, route_outputs)
+        return mixed_flat.reshape_as(cls_tokens)
 
     def forward(self, x):
         cls_tokens = x[:, :self.ncls]
-        patch_tokens = x[:, self.ncls:]
-        patch_tokens = self.ffn[0](patch_tokens)
+        patch_tokens = self._apply_patch_mlp(x[:, self.ncls:])
 
-        flat_cls_tokens = cls_tokens.reshape(-1, cls_tokens.shape[-1])
-        expert_outputs = {}
-        if self.moae and self.atom_in_layers is not None and self.atom_out_layers is not None:
-            hidden_cache = {
-                atom_name: F.gelu(self.atom_in_layers[atom_name](flat_cls_tokens))
-                for atom_name in self.active_atom_inputs
-            }
-            for expert_idx, (atom_in, atom_out) in self.expert_pairs.items():
-                expert_outputs[expert_idx] = self.atom_out_layers[atom_out](hidden_cache[atom_in]).reshape(
-                    cls_tokens.shape[0],
-                    self.ncls,
-                    -1,
-                )
+        if not self.moae or self.atom_in_layers is None or self.atom_out_layers is None:
+            cls_tokens = self._apply_patch_mlp(cls_tokens)
         else:
-            expert_outputs[0] = self.ffn[0](flat_cls_tokens).reshape(cls_tokens.shape[0], self.ncls, -1)
-
-        mixed_cls_tokens = []
-        for task_idx in range(self.ncls):
-            token = cls_tokens[:, task_idx, :]
-            expert_indices = self.task_expert_indices[task_idx]
-            if len(expert_indices) == 1:
-                mixed_cls_tokens.append(expert_outputs[expert_indices[0]][:, task_idx : task_idx + 1, :])
-                continue
-            gate = self.gate[task_idx](token).softmax(dim=-1)
-            gate = self._sparsify_gate(gate)
-            selected_outputs = torch.stack(
-                [expert_outputs[expert_idx][:, task_idx, :] for expert_idx in expert_indices],
-                dim=1,
-            )
-            mixed = (selected_outputs * gate.unsqueeze(-1)).sum(dim=1, keepdim=True)
-            mixed_cls_tokens.append(mixed)
-
-        cls_tokens = torch.cat(mixed_cls_tokens, dim=1)
+            cls_tokens = self._forward_weighted_top1_moae(cls_tokens)
         x = torch.cat((cls_tokens, patch_tokens), dim=1)
         return self.drop(x)
 
 
 class Block(nn.Module):
-    def __init__(self, dim, num_heads, mlp_ratio=4.0, dpr=0.0, ncls=6, moae=False, attention_backend="auto"):
+    def __init__(
+        self,
+        dim,
+        num_heads,
+        mlp_ratio=4.0,
+        dpr=0.0,
+        ncls=6,
+        moae=False,
+        moae_router_noise=0.01,
+        attention_backend="auto",
+    ):
         super().__init__()
         self.norm1 = nn.LayerNorm(dim, eps=1e-6)
         self.attn = Attention(dim, num_heads=num_heads, attention_backend=attention_backend)
         self.norm2 = nn.LayerNorm(dim, eps=1e-6)
-        self.mlp = Mlp_moe(in_dim=dim, hidden_dim=int(dim * mlp_ratio), out_dim=dim, ncls=ncls, moae=moae)
+        self.mlp = Mlp_moe(
+            in_dim=dim,
+            hidden_dim=int(dim * mlp_ratio),
+            out_dim=dim,
+            ncls=ncls,
+            moae=moae,
+            moae_router_noise=moae_router_noise,
+        )
         self.drop_path = DropPath(dpr) if dpr > 0.0 else nn.Identity()
 
     def forward(self, x):
@@ -278,6 +260,7 @@ class ViT(nn.Module):
         drop_path_rate=0.0,
         ncls=6,
         moae=False,
+        moae_router_noise=0.01,
         attention_backend="auto",
     ):
         super().__init__()
@@ -299,6 +282,7 @@ class ViT(nn.Module):
                     dpr=dpr[i],
                     ncls=ncls,
                     moae=moae,
+                    moae_router_noise=moae_router_noise,
                     attention_backend=attention_backend,
                 )
                 for i in range(depth)
@@ -362,7 +346,7 @@ class ViT(nn.Module):
                         self.blocks[block_idx].mlp.load_pretrained_fc1(weight=value)
                     else:
                         self.blocks[block_idx].mlp.load_pretrained_fc1(
-                            weight=self.blocks[block_idx].mlp.ffn[0][0].weight.data,
+                            weight=self.blocks[block_idx].mlp.patch_fc1.weight.data,
                             bias=value,
                         )
                 elif "blocks" in key and ".mlp.fc2." in key:
@@ -371,7 +355,7 @@ class ViT(nn.Module):
                         self.blocks[block_idx].mlp.load_pretrained_fc2(weight=value)
                     else:
                         self.blocks[block_idx].mlp.load_pretrained_fc2(
-                            weight=self.blocks[block_idx].mlp.ffn[0][2].weight.data,
+                            weight=self.blocks[block_idx].mlp.patch_fc2.weight.data,
                             bias=value,
                         )
                 elif "blocks" in key:
@@ -407,6 +391,7 @@ def vit_base_patch16_224_ReID_moe(
     drop_path_rate=0.1,
     ncls=1,
     moae=False,
+    moae_router_noise=0.01,
     attention_backend="auto",
 ):
     return ViT(
@@ -420,5 +405,6 @@ def vit_base_patch16_224_ReID_moe(
         drop_path_rate=drop_path_rate,
         ncls=ncls,
         moae=moae,
+        moae_router_noise=moae_router_noise,
         attention_backend=attention_backend,
     )

@@ -1,19 +1,23 @@
 # AT-ReID-fast
 
-`AT-ReID-fast` is the deeply accelerated and simplified version of the original `AT-ReID` folder.
+`AT-ReID-fast` is the deeply accelerated version of the original `AT-ReID` folder.
 
 - `AT-ReID` stays unchanged.
-- `AT-ReID-fast` is the upload-friendly version with deeper training and testing acceleration.
-- The default training preset is now `fast-compile`.
+- `AT-ReID-fast` is the optimized upload-friendly version.
+- The default runtime already uses the recommended fastest stable path (`fast-compile`).
 
 ## Speedup Summary
 
-Measured on real full AT-USTC runs:
+Benchmarked on real 120-epoch AT-USTC runs:
 
 | Item | AT-ReID project | AT-ReID-fast | Speedup |
 | --- | ---: | ---: | ---: |
-| Full Uni-AT training, 120 epochs | 2h20m16s | 1h25m57s | 1.63x |
-| Full AT-USTC test | 170.188 s | 148.531 s | 1.15x |
+| Baseline training (120 epochs) | 1h37m49s | 47m45s | 2.05x |
+| Full training (120 epochs) | 2h05m21s | 1h31m39s | 1.37x |
+| Full AT-USTC test | 174.836 s | 27.792 s | 6.29x |
+| Full `test_all` | 1h23m30s | 10m06s | 8.27x |
+
+`test_all` above reports the wall time of the full cross-dataset evaluation stage. Per-dataset timings are omitted here to keep the README short.
 
 ## Install
 
@@ -36,7 +40,7 @@ Edit:
 configs/dataset_roots.example.json
 ```
 
-or pass the main AT-USTC root directly:
+or pass the AT-USTC root directly:
 
 ```bash
 python train.py --data-root /path/to/atustc ...
@@ -56,33 +60,15 @@ python train.py --pretrained-path /path/to/jx_vit_base_p16_224-80ecf9dd.pth ...
 
 ## Train
 
-Default full Uni-AT training (`fast-compile`):
-
 ```bash
 python train.py -gpu 0 -v 1 -said -moae -hdw
 ```
 
-Baseline training:
-
-```bash
-python train.py -gpu 0 -v 2
-```
-
-Unified embedding training:
-
-```bash
-python train.py -gpu 0 -v 3 -ncls 1
-```
-
 ## Test
-
-AT-USTC evaluation:
 
 ```bash
 python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t
 ```
-
-AT-USTC plus public datasets:
 
 ```bash
 python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t -test_all
@@ -90,8 +76,8 @@ python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/ep
 
 ## Notes
 
-- Cross-dataset testing supports AT-USTC, Market1501, CUHK03, MSMT17, SYSU-MM01, RegDB, LLCM, PRCC, LTCC, and DeepChange.
-- Project assets are kept under `assets/`.
+- Cross-dataset `test_all` supports AT-USTC, Market1501, CUHK03, MSMT17, SYSU-MM01, RegDB, LLCM, PRCC, LTCC, and DeepChange.
+- The original `AT-ReID` folder remains the unmodified reference implementation.
 
 ## Citation
 

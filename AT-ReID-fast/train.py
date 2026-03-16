@@ -76,6 +76,7 @@ def build_model(args, dataset, device):
         stride=args.stride,
         ncls=args.ncls,
         moae=args.moae,
+        moae_router_noise=args.moae_router_noise,
         use_pretrained=not args.no_pretrained,
         pretrained_path=args.pretrained_path,
         attention_backend=args.vit_attention_backend,

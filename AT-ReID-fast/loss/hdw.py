@@ -1,18 +1,20 @@
 import torch
 from torch import nn
-from loss.said import saidloss
+from loss.said import HEAD_SPECS, compute_head_losses
 
 
-SCENARIO_NAMES = ("dt-st", "dt-lt", "nt-st", "nt-lt", "ad-st", "ad-lt")
-TASK_GROUPS = {
-    "dt": ("dt-st", "dt-lt"),
-    "nt": ("nt-st", "nt-lt"),
-    "ad": ("ad-st", "ad-lt"),
-}
-TIME_GROUPS = {
-    "st": ("dt-st", "nt-st", "ad-st"),
-    "lt": ("dt-lt", "nt-lt", "ad-lt"),
-}
+TASK_NAMES = ("dt", "nt", "ad")
+TIME_NAMES = ("st", "lt")
+TASK_GROUP_INDICES = tuple(
+    tuple(index for index, spec in enumerate(HEAD_SPECS) if spec["task"] == task_name)
+    for task_name in TASK_NAMES
+)
+TIME_GROUP_INDICES = tuple(
+    tuple(index for index, spec in enumerate(HEAD_SPECS) if spec["time"] == time_name)
+    for time_name in TIME_NAMES
+)
+HEAD_TASK_INDEX = tuple(TASK_NAMES.index(spec["task"]) for spec in HEAD_SPECS)
+HEAD_TIME_INDEX = tuple(TIME_NAMES.index(spec["time"]) for spec in HEAD_SPECS)
 
 
 class saidloss_hdw(nn.Module):
@@ -34,21 +36,6 @@ class saidloss_hdw(nn.Module):
             return loss.new_zeros(())
         return loss.mean()
 
-    def _compute_scenario_losses(self, y, pids, cids, mids):
-        return {
-            scenario: saidloss(
-                y[index],
-                pids,
-                cids,
-                mids,
-                self.invalid_same_pid_mask,
-                scenario,
-                self.said,
-                self.hdw,
-            )
-            for index, scenario in enumerate(SCENARIO_NAMES)
-        }
-
     def _hdw_weight(self, *probability_groups):
         merged = [group for group in probability_groups if group.numel() > 0]
         if not merged:
@@ -56,34 +43,40 @@ class saidloss_hdw(nn.Module):
         return (1 - self._safe_mean(torch.cat(merged, dim=0))).clamp_min(1e-6).sqrt()
 
     def forward(self, y, pids, cids, mids):
-        losses = self._compute_scenario_losses(y, pids, cids, mids)
+        losses = compute_head_losses(
+            y,
+            pids,
+            cids,
+            mids,
+            self.invalid_same_pid_mask,
+            said=self.said,
+            hdw=self.hdw,
+        )
         if not self.hdw:
-            return sum(losses.values())
+            return sum(losses)
 
-        probabilities = {scenario: (-loss).exp() for scenario, loss in losses.items()}
-        task_weights = {
-            task_name: self._hdw_weight(*(probabilities[name] for name in scenario_names))
-            for task_name, scenario_names in TASK_GROUPS.items()
-        }
-        time_weights = {
-            time_name: self._hdw_weight(*(probabilities[name] for name in scenario_names))
-            for time_name, scenario_names in TIME_GROUPS.items()
-        }
-        w_tm = torch.stack(tuple(task_weights.values())).max().clamp_min(1e-6)
-        w_ti = torch.stack(tuple(time_weights.values())).max().clamp_min(1e-6)
+        probabilities = tuple((-loss.detach()).exp() for loss in losses)
+        task_weights = tuple(
+            self._hdw_weight(*(probabilities[index] for index in group_indices))
+            for group_indices in TASK_GROUP_INDICES
+        )
+        time_weights = tuple(
+            self._hdw_weight(*(probabilities[index] for index in group_indices))
+            for group_indices in TIME_GROUP_INDICES
+        )
+        w_tm = torch.stack(task_weights).max().clamp_min(1e-6)
+        w_ti = torch.stack(time_weights).max().clamp_min(1e-6)
 
-        weighted_losses = {}
-        for scenario_name, loss_value in losses.items():
-            task_name, time_name = scenario_name.split('-')
-            weighted_losses[scenario_name] = (
-                (task_weights[task_name] / w_tm) *
-                (time_weights[time_name] / w_ti) *
-                loss_value
-            )
+        weighted_losses = tuple(
+            (task_weights[HEAD_TASK_INDEX[index]] / w_tm) *
+            (time_weights[HEAD_TIME_INDEX[index]] / w_ti) *
+            loss_value
+            for index, loss_value in enumerate(losses)
+        )
 
         batch_size = float(pids.shape[0])
         loss = sum(
             value.sum() if value.ndim > 0 else value
-            for value in weighted_losses.values()
+            for value in weighted_losses
         )
         return loss / batch_size

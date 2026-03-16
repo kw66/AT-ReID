@@ -208,6 +208,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("-hdw", "--hdw", action="store_true")
     parser.add_argument("-moae", "--moae", action="store_true")
     parser.add_argument(
+        "--moae-router-noise",
+        type=float,
+        default=0.01,
+        help="Std of Gaussian noise added to MOAE router logits during training only. 0 disables router noise.",
+    )
+    parser.add_argument(
         "--vit-attention-backend",
         default="auto",
         choices=["auto", "fused", "math", "eager"],

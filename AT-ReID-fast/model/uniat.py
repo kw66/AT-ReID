@@ -36,6 +36,7 @@ class uniat(nn.Module):
         stride=16,
         ncls=1,
         moae=False,
+        moae_router_noise=0.01,
         use_pretrained=True,
         pretrained_path=None,
         attention_backend="auto",
@@ -53,6 +54,7 @@ class uniat(nn.Module):
             drop_path_rate=drop,
             ncls=ncls,
             moae=moae,
+            moae_router_noise=moae_router_noise,
             attention_backend=attention_backend,
         )
         self.vit_attention_info = dict(getattr(self.base, "attention_info", {}))
