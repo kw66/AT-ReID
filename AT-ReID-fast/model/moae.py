@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 
 import torch
@@ -19,28 +21,16 @@ TASK_TO_ATOMS = {
     "ad-st": ("cm", "sc"),
     "ad-lt": ("cm", "cc"),
 }
-
-
-def _build_task_expert_masks():
-    expert_pairs = [None]
-    for atom_in in ATOM_NAMES:
-        for atom_out in ATOM_NAMES:
-            expert_pairs.append((atom_in, atom_out))
-
-    masks = []
-    indices = []
-    for task_name in TASK_NAMES:
-        active_atoms = set(TASK_TO_ATOMS[task_name])
-        task_mask = [0]
-        for pair in expert_pairs[1:]:
-            atom_in, atom_out = pair
-            task_mask.append(int(atom_in != atom_out and atom_in in active_atoms and atom_out in active_atoms))
-        masks.append(task_mask)
-        indices.append([idx for idx, flag in enumerate(task_mask) if flag == 1])
-    return expert_pairs, masks, indices
-
-
-EXPERT_PAIRS, TASK_EXPERT_MASKS, TASK_EXPERT_INDICES = _build_task_expert_masks()
+TASK_ROUTE_NAMES = {
+    task_name: (f"{atom_left}->{atom_right}", f"{atom_right}->{atom_left}")
+    for task_name, (atom_left, atom_right) in TASK_TO_ATOMS.items()
+}
+MOAE_BASE_BALANCE_EMA = 0.9
+MOAE_BASE_BALANCE_STEP = 0.01
+MOAE_BASE_BALANCE_CLAMP = 0.5
+MOAE_BALANCE_UPDATE = "direct-rms"
+MOAE_BALANCE_STEP_DECAY = "linear"
+MOAE_BALANCE_FREEZE_EPOCH = 40
 
 
 class DropPath(nn.Module):
@@ -89,11 +79,23 @@ class Attention(nn.Module):
 
 
 class Mlp_moe(nn.Module):
-    def __init__(self, in_dim, hidden_dim, out_dim, ncls=6, moae=False, moae_router_noise=0.01):
+    def __init__(
+        self,
+        in_dim,
+        hidden_dim,
+        out_dim,
+        ncls=6,
+        moae=False,
+    ):
         super().__init__()
         self.ncls = ncls
-        self.moae = moae
-        self.moae_router_noise = max(0.0, float(moae_router_noise))
+        self.moae = bool(moae)
+        self.moae_balance_ema = MOAE_BASE_BALANCE_EMA
+        self.moae_balance_step = MOAE_BASE_BALANCE_STEP
+        self.moae_balance_clamp = MOAE_BASE_BALANCE_CLAMP
+        self.moae_balance_freeze_epoch = MOAE_BALANCE_FREEZE_EPOCH
+        self.moae_balance_update = MOAE_BALANCE_UPDATE
+        self.moae_balance_step_decay = MOAE_BALANCE_STEP_DECAY
 
         self.patch_fc1 = nn.Linear(in_dim, hidden_dim)
         self.patch_act = nn.GELU()
@@ -101,27 +103,42 @@ class Mlp_moe(nn.Module):
 
         if self.moae:
             self.num_atoms = len(ATOM_NAMES)
-            task_atom_pairs = [TASK_TO_ATOMS[TASK_NAMES[i]] for i in range(self.ncls)]
-            left_atom_indices = torch.tensor([ATOM_TO_INDEX[left] for left, _ in task_atom_pairs], dtype=torch.long)
-            right_atom_indices = torch.tensor([ATOM_TO_INDEX[right] for _, right in task_atom_pairs], dtype=torch.long)
-            self.register_buffer("task_left_route_keys", left_atom_indices * self.num_atoms + right_atom_indices, persistent=False)
-            self.register_buffer("task_right_route_keys", right_atom_indices * self.num_atoms + left_atom_indices, persistent=False)
-            route_keys = sorted({int(key.item()) for key in torch.cat((self.task_left_route_keys, self.task_right_route_keys), dim=0)})
-            self.route_specs = tuple((route_key, *divmod(route_key, self.num_atoms)) for route_key in route_keys)
-
-            self.gate_delta = nn.Parameter(torch.empty(self.ncls, in_dim))
-            trunc_normal_(self.gate_delta, std=0.02)
-
-            self.atom_in_layers = nn.ModuleList([nn.Linear(in_dim, hidden_dim) for _ in ATOM_NAMES])
-            self.atom_out_layers = nn.ModuleList([nn.Linear(hidden_dim, in_dim) for _ in ATOM_NAMES])
+            src_indices = []
+            dst_indices = []
+            for task_name in TASK_NAMES[: self.ncls]:
+                left_atom, right_atom = TASK_TO_ATOMS[task_name]
+                src_indices.append((ATOM_TO_INDEX[left_atom], ATOM_TO_INDEX[right_atom]))
+                dst_indices.append((ATOM_TO_INDEX[right_atom], ATOM_TO_INDEX[left_atom]))
+            self.register_buffer(
+                "task_pair_src_indices",
+                torch.tensor(src_indices, dtype=torch.long),
+                persistent=False,
+            )
+            self.register_buffer(
+                "task_pair_dst_indices",
+                torch.tensor(dst_indices, dtype=torch.long),
+                persistent=False,
+            )
+            self.gate_pair = nn.Parameter(torch.empty(self.ncls, 2, in_dim))
+            trunc_normal_(self.gate_pair, std=0.02)
+            self.atom_in_layers = nn.ModuleList([nn.Linear(in_dim, hidden_dim) for _ in range(self.num_atoms)])
+            self.atom_out_layers = nn.ModuleList([nn.Linear(hidden_dim, in_dim) for _ in range(self.num_atoms)])
+            self.register_buffer("balance_bias", torch.zeros(self.ncls, 2, dtype=torch.float32), persistent=False)
+            self.register_buffer("balance_usage_ema", torch.full((self.ncls, 2), 0.5, dtype=torch.float32), persistent=False)
         else:
             self.num_atoms = len(ATOM_NAMES)
-            self.route_specs = ()
-            self.gate_delta = None
+            self.gate_pair = None
             self.atom_in_layers = None
             self.atom_out_layers = None
+            self.register_buffer("task_pair_src_indices", torch.zeros((0, 2), dtype=torch.long), persistent=False)
+            self.register_buffer("task_pair_dst_indices", torch.zeros((0, 2), dtype=torch.long), persistent=False)
+            self.register_buffer("balance_bias", torch.zeros((0, 2), dtype=torch.float32), persistent=False)
+            self.register_buffer("balance_usage_ema", torch.zeros((0, 2), dtype=torch.float32), persistent=False)
 
         self.drop = nn.Dropout(0.03)
+        self.last_route_stats = None
+        self.last_balance_fractions = None
+        self.moae_epoch = 0
 
     def rescale_output_layers(self, layer_id):
         scale = math.sqrt(2.0 * layer_id)
@@ -156,40 +173,134 @@ class Mlp_moe(nn.Module):
     def _apply_patch_mlp(self, tokens: torch.Tensor) -> torch.Tensor:
         return self.patch_fc2(self.patch_act(self.patch_fc1(tokens)))
 
-    def _compute_task_gate_logits(self, cls_tokens: torch.Tensor) -> torch.Tensor:
-        gate_logits = torch.einsum("bnd,nd->bn", cls_tokens.float(), self.gate_delta.float())
-        if self.training and self.moae_router_noise > 0:
-            gate_logits = gate_logits + torch.randn_like(gate_logits) * self.moae_router_noise
+    def _prepare_gate_inputs(self, cls_tokens: torch.Tensor):
+        return F.normalize(cls_tokens.float(), dim=-1)
+
+    def _compute_pair_gate_logits(self, gate_inputs: torch.Tensor) -> torch.Tensor:
+        gate_weights = F.normalize(self.gate_pair.float(), dim=-1)
+        gate_logits = torch.einsum("bnd,nrd->bnr", gate_inputs, gate_weights)
+        if self.balance_bias.numel() > 0:
+            gate_logits = gate_logits + self.balance_bias.float().unsqueeze(0)
         return gate_logits
 
-    def _forward_weighted_top1_moae(self, cls_tokens: torch.Tensor) -> torch.Tensor:
-        gate_delta = self._compute_task_gate_logits(cls_tokens)
-        choose_left = gate_delta >= 0
-        p_left = gate_delta.sigmoid()
-        chosen_weights = torch.where(choose_left, p_left, 1.0 - p_left).to(dtype=cls_tokens.dtype)
-        left_route_keys = self.task_left_route_keys.unsqueeze(0).expand(cls_tokens.shape[0], -1)
-        right_route_keys = self.task_right_route_keys.unsqueeze(0).expand(cls_tokens.shape[0], -1)
-        chosen_route_keys = torch.where(choose_left, left_route_keys, right_route_keys)
+    def _compute_route_probabilities(self, cls_tokens: torch.Tensor):
+        gate_inputs = self._prepare_gate_inputs(cls_tokens)
+        gate_logits = self._compute_pair_gate_logits(gate_inputs)
+        route_probs = gate_logits.softmax(dim=-1)
+        chosen_route = route_probs.argmax(dim=-1)
+        return route_probs, chosen_route
 
-        flat_tokens = cls_tokens.reshape(-1, cls_tokens.shape[-1])
-        flat_route_keys = chosen_route_keys.reshape(-1)
-        flat_weights = chosen_weights.reshape(-1, 1)
-        mixed_flat = torch.empty_like(flat_tokens)
-        for route_key, src_idx, dst_idx in self.route_specs:
-            route_positions = torch.nonzero(flat_route_keys == route_key, as_tuple=False).flatten()
-            if route_positions.numel() == 0:
-                continue
-            route_tokens = flat_tokens.index_select(0, route_positions)
-            route_hidden = F.gelu(self.atom_in_layers[src_idx](route_tokens))
-            route_outputs = self.atom_out_layers[dst_idx](route_hidden) * flat_weights.index_select(0, route_positions)
-            mixed_flat.index_copy_(0, route_positions, route_outputs)
-        return mixed_flat.reshape_as(cls_tokens)
+    @staticmethod
+    def _stack_linear_params(layers, dtype, device):
+        weights = torch.stack([layer.weight for layer in layers], dim=0).to(dtype=dtype, device=device)
+        if layers[0].bias is None:
+            return weights, None
+        biases = torch.stack([layer.bias for layer in layers], dim=0).to(dtype=dtype, device=device)
+        return weights, biases
+
+    def _compute_route_candidates(self, cls_tokens: torch.Tensor) -> torch.Tensor:
+        atom_in_weight, atom_in_bias = self._stack_linear_params(self.atom_in_layers, cls_tokens.dtype, cls_tokens.device)
+        atom_out_weight, atom_out_bias = self._stack_linear_params(self.atom_out_layers, cls_tokens.dtype, cls_tokens.device)
+
+        source_hidden_all = torch.einsum("bnd,ahd->bnah", cls_tokens, atom_in_weight)
+        if atom_in_bias is not None:
+            source_hidden_all = source_hidden_all + atom_in_bias.view(1, 1, self.num_atoms, -1)
+        source_hidden_all = F.gelu(source_hidden_all)
+
+        batch_size = cls_tokens.shape[0]
+        hidden_dim = source_hidden_all.shape[-1]
+        source_indices = self.task_pair_src_indices.view(1, self.ncls, 2, 1).expand(batch_size, -1, -1, hidden_dim)
+        source_hidden_pair = source_hidden_all.gather(2, source_indices)
+
+        dst_indices = self.task_pair_dst_indices.reshape(-1)
+        route_out_weight = atom_out_weight.index_select(0, dst_indices).view(self.ncls, 2, cls_tokens.shape[-1], hidden_dim)
+        route_candidates = torch.einsum("bnrh,nrdh->bnrd", source_hidden_pair, route_out_weight)
+        if atom_out_bias is not None:
+            route_out_bias = atom_out_bias.index_select(0, dst_indices).view(self.ncls, 2, cls_tokens.shape[-1])
+            route_candidates = route_candidates + route_out_bias.unsqueeze(0)
+        return route_candidates
+
+    def _record_route_stats(self, route_probs: torch.Tensor, chosen_route: torch.Tensor, chosen_weights: torch.Tensor) -> None:
+        if not self.moae:
+            self.last_route_stats = None
+            self.last_balance_fractions = None
+            return
+        route_probs = route_probs.detach().float()
+        left_prob = route_probs[:, :, 0]
+        right_prob = route_probs[:, :, 1]
+        left_select = chosen_route.detach().eq(0).float()
+        self.last_route_stats = {
+            "token_counts": torch.full(
+                (self.ncls,),
+                float(chosen_route.shape[0]),
+                device=chosen_route.device,
+                dtype=torch.float32,
+            ),
+            "left_select_counts": left_select.sum(dim=0),
+            "left_prob_sums": left_prob.sum(dim=0),
+            "right_prob_sums": right_prob.sum(dim=0),
+            "chosen_weight_sums": chosen_weights.detach().float().sum(dim=0),
+        }
+        route_onehot = F.one_hot(chosen_route.detach(), num_classes=2).float()
+        self.last_balance_fractions = route_onehot.mean(dim=0)
+
+    def consume_route_stats(self):
+        stats = self.last_route_stats
+        self.last_route_stats = None
+        return stats
+
+    def _current_balance_step(self) -> float:
+        if self.moae_balance_step <= 0:
+            return 0.0
+        epoch = max(int(self.moae_epoch), 1)
+        if epoch > self.moae_balance_freeze_epoch:
+            return 0.0
+        progress = (epoch - 1) / max(self.moae_balance_freeze_epoch - 1, 1)
+        progress = min(max(progress, 0.0), 1.0)
+        scale = 1.0 - progress
+        return float(self.moae_balance_step) * max(scale, 0.0)
+
+    def update_balance_state(self):
+        if (
+            not self.moae
+            or self.last_balance_fractions is None
+        ):
+            return
+        effective_step = self._current_balance_step()
+        if effective_step <= 0 or self.balance_bias.numel() == 0:
+            self.last_balance_fractions = None
+            return
+        with torch.no_grad():
+            fractions = self.last_balance_fractions.to(device=self.balance_usage_ema.device, dtype=self.balance_usage_ema.dtype)
+            self.balance_usage_ema.mul_(self.moae_balance_ema).add_(fractions * (1.0 - self.moae_balance_ema))
+            target = self.balance_usage_ema.new_full(self.balance_usage_ema.shape, 0.5)
+            delta = target - fractions
+            denom = delta.square().mean().sqrt().clamp_min(1e-6)
+            delta = delta / denom
+            self.balance_bias.add_(delta * effective_step)
+            self.balance_bias.sub_(self.balance_bias.mean(dim=-1, keepdim=True))
+            self.balance_bias.clamp_(-self.moae_balance_clamp, self.moae_balance_clamp)
+        self.last_balance_fractions = None
+
+    def _forward_weighted_top1_moae(self, cls_tokens: torch.Tensor) -> torch.Tensor:
+        route_probs, chosen_route = self._compute_route_probabilities(cls_tokens)
+        chosen_weights = route_probs.gather(2, chosen_route.unsqueeze(-1)).squeeze(-1)
+        self._record_route_stats(route_probs, chosen_route, chosen_weights)
+        chosen_weights = chosen_weights.to(dtype=cls_tokens.dtype)
+        route_candidates = self._compute_route_candidates(cls_tokens)
+        chosen_outputs = route_candidates.gather(
+            2,
+            chosen_route.unsqueeze(-1).unsqueeze(-1).expand(-1, -1, 1, cls_tokens.shape[-1]),
+        ).squeeze(2)
+        return chosen_outputs * chosen_weights.unsqueeze(-1)
 
     def forward(self, x):
         cls_tokens = x[:, :self.ncls]
         patch_tokens = self._apply_patch_mlp(x[:, self.ncls:])
 
         if not self.moae or self.atom_in_layers is None or self.atom_out_layers is None:
+            self.last_route_stats = None
+            self.last_balance_fractions = None
             cls_tokens = self._apply_patch_mlp(cls_tokens)
         else:
             cls_tokens = self._forward_weighted_top1_moae(cls_tokens)
@@ -206,7 +317,6 @@ class Block(nn.Module):
         dpr=0.0,
         ncls=6,
         moae=False,
-        moae_router_noise=0.01,
         attention_backend="auto",
     ):
         super().__init__()
@@ -219,7 +329,6 @@ class Block(nn.Module):
             out_dim=dim,
             ncls=ncls,
             moae=moae,
-            moae_router_noise=moae_router_noise,
         )
         self.drop_path = DropPath(dpr) if dpr > 0.0 else nn.Identity()
 
@@ -260,7 +369,6 @@ class ViT(nn.Module):
         drop_path_rate=0.0,
         ncls=6,
         moae=False,
-        moae_router_noise=0.01,
         attention_backend="auto",
     ):
         super().__init__()
@@ -282,7 +390,6 @@ class ViT(nn.Module):
                     dpr=dpr[i],
                     ncls=ncls,
                     moae=moae,
-                    moae_router_noise=moae_router_noise,
                     attention_backend=attention_backend,
                 )
                 for i in range(depth)
@@ -290,7 +397,7 @@ class ViT(nn.Module):
         )
         self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
         self.ncls = ncls
-        self.moae = moae
+        self.moae = bool(moae)
         self.attention_backend = str(attention_backend).strip().lower()
         first_attention = self.blocks[0].attn.attention_info if self.blocks else {"requested": "eager", "active": "eager", "uses_sdpa": False}
         self.attention_info = dict(first_attention)
@@ -325,6 +432,34 @@ class ViT(nn.Module):
             x = block(x)
         x = self.norm(x)
         return x
+
+    def consume_moae_route_stats(self):
+        if not self.moae:
+            return None
+        merged = None
+        for block in self.blocks:
+            block_stats = block.mlp.consume_route_stats()
+            if block_stats is None:
+                continue
+            if merged is None:
+                merged = {
+                    key: value.detach().clone()
+                    for key, value in block_stats.items()
+                }
+            else:
+                for key, value in block_stats.items():
+                    merged[key] = merged[key] + value.detach()
+        return merged
+
+    def set_moae_epoch(self, epoch: int):
+        for block in self.blocks:
+            if hasattr(block.mlp, "moae_epoch"):
+                block.mlp.moae_epoch = int(epoch)
+
+    def update_moae_balance(self):
+        for block in self.blocks:
+            if hasattr(block.mlp, "update_balance_state"):
+                block.mlp.update_balance_state()
 
     def load_param(self, model_path):
         param_dict = torch.load(model_path, map_location='cpu')
@@ -391,7 +526,6 @@ def vit_base_patch16_224_ReID_moe(
     drop_path_rate=0.1,
     ncls=1,
     moae=False,
-    moae_router_noise=0.01,
     attention_backend="auto",
 ):
     return ViT(
@@ -405,6 +539,5 @@ def vit_base_patch16_224_ReID_moe(
         drop_path_rate=drop_path_rate,
         ncls=ncls,
         moae=moae,
-        moae_router_noise=moae_router_noise,
         attention_backend=attention_backend,
     )

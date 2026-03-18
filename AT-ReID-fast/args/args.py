@@ -17,7 +17,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser.add_argument("-d", "--dataset", default="atustc", help="Primary dataset for training or AT-USTC evaluation.")
     parser.add_argument("-v", "--run-version", dest="v", type=int, default=1, help="Version id used in log/model folders.")
-    parser.add_argument("-gpu", "--gpu", default="0", help="CUDA_VISIBLE_DEVICES value, for example 0 or 0,1.")
+    parser.add_argument("-gpu", "--gpu", default="0", help="CUDA_VISIBLE_DEVICES value, for example 0 or 0,1. Use env when launched by an external scheduler.")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--data-root", default=None, help="Root path for the primary training dataset.")
     parser.add_argument(
@@ -205,13 +205,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--stride", type=int, default=16)
     parser.add_argument("-ncls", "--ncls", type=int, default=6, choices=[1, 6])
     parser.add_argument("-said", "--said", action="store_true")
-    parser.add_argument("-hdw", "--hdw", action="store_true")
-    parser.add_argument("-moae", "--moae", action="store_true")
     parser.add_argument(
-        "--moae-router-noise",
-        type=float,
-        default=0.01,
-        help="Std of Gaussian noise added to MOAE router logits during training only. 0 disables router noise.",
+        "-hdw",
+        "--hdw",
+        action="store_true",
+        help="Enable the fixed fast HDW weighting used by AT-ReID-fast. Ablation interfaces have been removed.",
+    )
+    parser.add_argument(
+        "-moae",
+        "--moae",
+        action="store_true",
+        help="Enable the fixed final MOAE variant used by AT-ReID-fast. Experimental MOAE interfaces have been removed.",
     )
     parser.add_argument(
         "--vit-attention-backend",

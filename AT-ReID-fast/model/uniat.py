@@ -3,7 +3,7 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 
-from model.moae import vit_base_patch16_224_ReID_moe
+from model.moae import TASK_ROUTE_NAMES, vit_base_patch16_224_ReID_moe
 
 
 DEFAULT_PRETRAINED_PATH = Path.home() / ".cache" / "torch" / "checkpoints" / "jx_vit_base_p16_224-80ecf9dd.pth"
@@ -36,7 +36,6 @@ class uniat(nn.Module):
         stride=16,
         ncls=1,
         moae=False,
-        moae_router_noise=0.01,
         use_pretrained=True,
         pretrained_path=None,
         attention_backend="auto",
@@ -54,7 +53,6 @@ class uniat(nn.Module):
             drop_path_rate=drop,
             ncls=ncls,
             moae=moae,
-            moae_router_noise=moae_router_noise,
             attention_backend=attention_backend,
         )
         self.vit_attention_info = dict(getattr(self.base, "attention_info", {}))
@@ -89,3 +87,33 @@ class uniat(nn.Module):
         if self.training:
             return list(cls), logits
         return features
+
+    def consume_moae_route_stats(self):
+        raw_stats = self.base.consume_moae_route_stats()
+        if raw_stats is None:
+            return None
+        token_counts = raw_stats["token_counts"].clamp_min(1.0)
+        stats = {}
+        for index, scenario_name in enumerate(self.head_names):
+            left_name, right_name = TASK_ROUTE_NAMES[scenario_name]
+            count = float(token_counts[index].item())
+            stats[scenario_name] = {
+                "token_count": int(raw_stats["token_counts"][index].item()),
+                "left_route": left_name,
+                "right_route": right_name,
+                "left_select_ratio": float((raw_stats["left_select_counts"][index] / token_counts[index]).item()),
+                "right_select_ratio": float(((token_counts[index] - raw_stats["left_select_counts"][index]) / token_counts[index]).item()),
+                "left_prob_mean": float((raw_stats["left_prob_sums"][index] / token_counts[index]).item()),
+                "right_prob_mean": float((raw_stats["right_prob_sums"][index] / token_counts[index]).item()),
+                "chosen_weight_mean": float((raw_stats["chosen_weight_sums"][index] / token_counts[index]).item()),
+                "block_token_count": count,
+            }
+        return stats
+
+    def set_moae_epoch(self, epoch: int):
+        if hasattr(self.base, "set_moae_epoch"):
+            self.base.set_moae_epoch(epoch)
+
+    def update_moae_balance(self):
+        if hasattr(self.base, "update_moae_balance"):
+            self.base.update_moae_balance()
