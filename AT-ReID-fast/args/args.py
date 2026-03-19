@@ -185,7 +185,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--prefetch-factor",
         type=int,
-        default=2,
+        default=1,
         help="prefetch_factor used when num_workers>0.",
     )
     parser.add_argument(
@@ -249,7 +249,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--md2", type=int, nargs="*", default=[1, 3, 0, 0])
     parser.add_argument("--d1", type=float, default=0.6)
     parser.add_argument("--d2", type=float, default=6)
-    parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--test-epoch", type=int, default=999)
     parser.add_argument("--last-test", type=int, default=0)
     parser.add_argument("--save-every", type=int, default=0, help="Also save epoch_{epoch:03d}.t every N epochs. 0 disables it.")

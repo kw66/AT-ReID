@@ -55,7 +55,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--data-root-config", type=Path, default=DEFAULT_DATA_ROOT_CONFIG)
     parser.add_argument("--runtime-mode", default="fast-compile", choices=["strict", "fast", "fast-compile"])
     parser.add_argument("--max-epoch", type=int, default=120)
-    parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--test-epoch", type=int, default=999)
     parser.add_argument("--last-test", type=int, default=0)
     parser.add_argument("--max-train-steps", type=int, default=0)

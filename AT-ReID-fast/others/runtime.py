@@ -13,14 +13,17 @@ def ensure_compile_cache_dirs(base_dir: str | Path | None = None) -> dict[str, s
     root = Path(base_dir or os.environ.get("ATREID_FAST_RUNTIME_CACHE_DIR", Path.home() / ".cache" / "atreid-fast")).expanduser().resolve()
     inductor = Path(os.environ.get("TORCHINDUCTOR_CACHE_DIR", root / "torchinductor")).expanduser().resolve()
     triton = Path(os.environ.get("TRITON_CACHE_DIR", root / "triton")).expanduser().resolve()
+    compile_threads = str(os.environ.get("TORCHINDUCTOR_COMPILE_THREADS", "4")).strip() or "4"
     inductor.mkdir(parents=True, exist_ok=True)
     triton.mkdir(parents=True, exist_ok=True)
     os.environ["TORCHINDUCTOR_CACHE_DIR"] = str(inductor)
     os.environ["TRITON_CACHE_DIR"] = str(triton)
+    os.environ["TORCHINDUCTOR_COMPILE_THREADS"] = compile_threads
     return {
         "root": str(root),
         "torchinductor": str(inductor),
         "triton": str(triton),
+        "compile_threads": compile_threads,
     }
 
 
