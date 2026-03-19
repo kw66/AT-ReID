@@ -117,7 +117,13 @@ def test_1(args, d='market', dataset=None, model=None):
         else:
             cmc = cmc + cmc_t / trials
             mAP = mAP + mAP_t / trials
-    print(f'mAP:{mAP * 100:-2.2f}\t rank1{cmc[0] * 100:-2.2f}\t rank5{cmc[4] * 100:-2.2f}\t rank10{cmc[9] * 100:-2.2f}\t rank20{cmc[19] * 100:-2.2f}')
+    print(
+        f'mAP: {mAP * 100:.2f}\t'
+        f'R-1: {cmc[0] * 100:.2f}\t'
+        f'R-5: {cmc[4] * 100:.2f}\t'
+        f'R-10: {cmc[9] * 100:.2f}\t'
+        f'R-20: {cmc[19] * 100:.2f}'
+    )
     print(f'Evaluation Time:\t {time.time() - start:.3f}')
     return cmc, mAP
 
