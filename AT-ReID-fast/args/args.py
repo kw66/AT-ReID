@@ -255,6 +255,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--save-every", type=int, default=0, help="Also save epoch_{epoch:03d}.t every N epochs. 0 disables it.")
     parser.add_argument("--max-train-steps", type=int, default=0, help="Stop each epoch after this many training iterations. 0 means full epoch.")
     parser.add_argument("--skip-eval", action="store_true", help="Skip validation/testing during and after training. Useful for fast smoke tests.")
+    parser.add_argument(
+        "--train-stats",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Collect and persist per-epoch HDW/MOAE diagnostic statistics. Disabled by default to avoid extra training overhead.",
+    )
 
     return parser
 

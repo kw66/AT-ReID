@@ -161,60 +161,35 @@ class saidloss_hdw(nn.Module):
         task_group_weights=None,
         time_group_weights=None,
     ):
-        scenario_mean_losses = {
-            name: float(self._safe_mean(loss).item())
-            for name, loss in zip(HEAD_SCENARIOS, losses)
-        }
-        scenario_sample_counts = {
-            name: int(loss.numel()) if loss.ndim > 0 else int(batch_size)
-            for name, loss in zip(HEAD_SCENARIOS, losses)
-        }
+        device = scenario_weights[0].device
+        scenario_mean_losses = torch.stack(
+            [self._safe_mean(loss).detach().float() for loss in losses],
+            dim=0,
+        )
+        scenario_sample_counts = torch.tensor(
+            [int(loss.numel()) if loss.ndim > 0 else int(batch_size) for loss in losses],
+            device=device,
+            dtype=torch.long,
+        )
         details = {
             "weight_mode": "legacy-group-fast" if self.hdw else "none",
             "scenario_mean_losses": scenario_mean_losses,
-            "scenario_weights": {
-                name: float(weight.item())
-                for name, weight in zip(HEAD_SCENARIOS, scenario_weights)
-            },
-            "scenario_effective_weights": {
-                name: float(weight.item())
-                for name, weight in zip(HEAD_SCENARIOS, effective_weights)
-            },
-            "scenario_base_losses": {
-                name: float(loss_value.item())
-                for name, loss_value in zip(HEAD_SCENARIOS, base_losses)
-            },
-            "scenario_loss_contribs": {
-                name: float(loss_value.item())
-                for name, loss_value in zip(HEAD_SCENARIOS, loss_contribs)
-            },
+            "scenario_weights": torch.stack([weight.detach().float() for weight in scenario_weights], dim=0),
+            "scenario_effective_weights": torch.stack([weight.detach().float() for weight in effective_weights], dim=0),
+            "scenario_base_losses": torch.stack([loss_value.detach().float() for loss_value in base_losses], dim=0),
+            "scenario_loss_contribs": torch.stack([loss_value.detach().float() for loss_value in loss_contribs], dim=0),
             "scenario_sample_counts": scenario_sample_counts,
         }
         if raw_scores is not None:
-            details["scenario_raw_scores"] = {
-                name: float(score.item())
-                for name, score in zip(HEAD_SCENARIOS, raw_scores)
-            }
+            details["scenario_raw_scores"] = raw_scores.detach().float()
         if smoothed_scores is not None:
-            details["scenario_smoothed_scores"] = {
-                name: float(score.item())
-                for name, score in zip(HEAD_SCENARIOS, smoothed_scores)
-            }
+            details["scenario_smoothed_scores"] = smoothed_scores.detach().float()
         if class_count_means is not None:
-            details["scenario_class_count_means"] = {
-                name: float(score.item())
-                for name, score in zip(HEAD_SCENARIOS, class_count_means)
-            }
+            details["scenario_class_count_means"] = class_count_means.detach().float()
         if task_group_weights is not None:
-            details["task_group_weights"] = {
-                name: float(weight.item())
-                for name, weight in zip(TASK_NAMES, task_group_weights)
-            }
+            details["task_group_weights"] = task_group_weights.detach().float()
         if time_group_weights is not None:
-            details["time_group_weights"] = {
-                name: float(weight.item())
-                for name, weight in zip(TIME_NAMES, time_group_weights)
-            }
+            details["time_group_weights"] = time_group_weights.detach().float()
         return details
 
     def forward(self, y, pids, cids, mids, return_details=False):

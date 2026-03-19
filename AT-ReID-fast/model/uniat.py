@@ -92,23 +92,14 @@ class uniat(nn.Module):
         raw_stats = self.base.consume_moae_route_stats()
         if raw_stats is None:
             return None
-        token_counts = raw_stats["token_counts"].clamp_min(1.0)
-        stats = {}
-        for index, scenario_name in enumerate(self.head_names):
-            left_name, right_name = TASK_ROUTE_NAMES[scenario_name]
-            count = float(token_counts[index].item())
-            stats[scenario_name] = {
-                "token_count": int(raw_stats["token_counts"][index].item()),
-                "left_route": left_name,
-                "right_route": right_name,
-                "left_select_ratio": float((raw_stats["left_select_counts"][index] / token_counts[index]).item()),
-                "right_select_ratio": float(((token_counts[index] - raw_stats["left_select_counts"][index]) / token_counts[index]).item()),
-                "left_prob_mean": float((raw_stats["left_prob_sums"][index] / token_counts[index]).item()),
-                "right_prob_mean": float((raw_stats["right_prob_sums"][index] / token_counts[index]).item()),
-                "chosen_weight_mean": float((raw_stats["chosen_weight_sums"][index] / token_counts[index]).item()),
-                "block_token_count": count,
-            }
-        return stats
+        return {
+            "token_counts": raw_stats["token_counts"].detach().float(),
+            "left_select_counts": raw_stats["left_select_counts"].detach().float(),
+            "left_prob_sums": raw_stats["left_prob_sums"].detach().float(),
+            "right_prob_sums": raw_stats["right_prob_sums"].detach().float(),
+            "chosen_weight_sums": raw_stats["chosen_weight_sums"].detach().float(),
+            "route_names": tuple(TASK_ROUTE_NAMES[scenario_name] for scenario_name in self.head_names),
+        }
 
     def set_moae_epoch(self, epoch: int):
         if hasattr(self.base, "set_moae_epoch"):
