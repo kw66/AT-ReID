@@ -87,14 +87,10 @@ Example: `AT-USTC/p001-d01-c01/cam01-f0-0050.jpg`
 
 ### 🎛️ Scenario Flags
 
-| Scenario | Query | Gallery |
-| --- | --- | --- |
-| DT-ST | `2` | `6` |
-| DT-LT | `3` | `7` |
-| NT-ST | `4` | `8` |
-| NT-LT | `5` | `9` |
-| AD-ST | `2,4` | `6,8` |
-| AD-LT | `3,5` | `7,9` |
+|  | DT-ST | DT-LT | NT-ST | NT-LT | AD-ST | AD-LT |
+| --- | --- | --- | --- | --- | --- | --- |
+| Query | `2` | `3` | `4` | `5` | `2,4` | `3,5` |
+| Gallery | `6` | `7` | `8` | `9` | `6,8` | `7,9` |
 
 ### 🧪 Evaluation Protocol
 
