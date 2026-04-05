@@ -39,7 +39,7 @@ Based on the timestamps of query and gallery images, AT-ReID can be categorized 
 
 The AT-USTC dataset is constructed to support investigations in AT-ReID. Compared with existing datasets, AT-USTC stands out for its long collection period and the inclusion of both RGB and IR camera footage.
 
-Our data collection spans **21 months**, and **270 volunteers** were photographed on average **29.1 times** across different dates or scenes, leading to rich intra-identity diversity in scene, clothing, and modality.
+Our data collection spans **21 months**, and **270 volunteers** were photographed on average **29.1 times** across different dates or scenes, leading to rich intra-identity diversity in scene, clothing, and modality. The dataset covers **13 dates** and **16 scenes**, and all data were collected with volunteer consent.
 
 <p align="center">
   <img src="./fig2.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;">
@@ -58,6 +58,45 @@ Please send a signed [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%2
 | Testing | 135 | 117,512 | Another 135 IDs for evaluation |
 
 The training and testing sets are split by identity in a 1:1 manner, and separate query/gallery sets are constructed for all six AT-ReID scenarios.
+
+### 🗃️ Folder Structure
+
+```text
+AT-USTC/
+├── p001-d01-c01/
+│   ├── cam01-f0-0050.jpg
+│   ├── cam01-f0-0100.jpg
+│   └── ...
+├── p001-d02-c02/
+│   └── ...
+└── ...
+```
+
+### 🏷️ File Naming
+
+For an image such as `AT-USTC/p001-d01-c01/cam01-f0-0050.jpg`:
+
+- `p001`: person ID, from 1 to 270
+- `d01`: capture date ID, from 1 to 13
+- `c01`: clothing ID for the corresponding person
+- `cam01`: camera ID, where `1-8` are RGB cameras and `9-16` are infrared cameras
+- `0050`: frame ID of the video segment
+- `f0`: split flag, where `0` is training, `1` is validation, and `2-10` are used for testing protocol
+
+For the six AT-ReID scenarios, the test split uses different query/gallery flags:
+
+- DT-ST: `2 / 6`
+- DT-LT: `3 / 7`
+- NT-ST: `4 / 8`
+- NT-LT: `5 / 9`
+- AD-ST: `2,4 / 6,8`
+- AD-LT: `3,5 / 7,9`
+
+### 🧪 Evaluation Protocol
+
+Since the number of images per identity is relatively high, pure multi-shot evaluation may produce excessively high rank-1 values, while pure single-shot evaluation weakens the meaning of mAP.
+
+Therefore, for each identity video clip with the same ID, camera, and clothing, we select **three query images** and **three gallery images**. Under this protocol, the gallery contains about **25 images per identity**, which is close to the multi-shot conditions of datasets such as Market1501, MSMT17, and PRCC.
 
 ## 🧠 Method Navigation
 
