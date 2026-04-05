@@ -51,11 +51,13 @@ Please send a signed [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%2
 
 ### 📊 Split Summary
 
-| Split | Content |
-| --- | --- |
-| Training | 286,087 images from 135 IDs |
-| Validation | 55,060 images |
-| Testing | 117,512 images from another 135 IDs |
+| Split | IDs | Images | Notes |
+| --- | ---: | ---: | --- |
+| Training | 135 | 286,087 | Official training split |
+| Validation | 135 | 55,060 | 20% held out from the training split |
+| Testing | 135 | 117,512 | Another 135 IDs for evaluation |
+
+The training and testing sets are split by identity in a 1:1 manner, and separate query/gallery sets are constructed for all six AT-ReID scenarios.
 
 ## 🧠 Method Navigation
 
