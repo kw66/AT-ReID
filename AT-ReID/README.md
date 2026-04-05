@@ -1,8 +1,12 @@
-Official PyTorch implementation of the paper Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification.
+# AT-ReID
+
+This folder keeps the original reference implementation of the paper *Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification*.
+
+If you want the maintained entry point for training and evaluation, please use [`../AT-ReID-fast`](../AT-ReID-fast) first.
 
 ### 1. Training.
 
-You may need mannully define the data path first.
+You may need to manually define the data path first.
 
 Train a full Uni-AT model by:
 ```

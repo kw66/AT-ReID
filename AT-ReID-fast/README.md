@@ -1,6 +1,8 @@
 # AT-ReID-fast
 
-`AT-ReID-fast` is the deeply accelerated version of the original `AT-ReID` folder.
+`AT-ReID-fast` is the recommended entry point for training and evaluation.
+
+It is the maintained and accelerated version of the original `AT-ReID` folder.
 
 - `AT-ReID` stays unchanged.
 - `AT-ReID-fast` is the optimized upload-friendly version.
