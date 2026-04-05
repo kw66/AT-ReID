@@ -4,11 +4,29 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
 
 ## 🧭 Navigation
 
-| 主题 | 仓库内 | 知乎 | 科研绘图 |
-| --- | --- | --- | --- |
-| 🎯 任务 | [📍 任务概览](#at-reid-task) | [📘 任务介绍](https://zhuanlan.zhihu.com/p/1944895842541605129) | [🖼️ AT-ReID 绘图](https://github.com/kw66/research-figures/tree/main/AT-ReID) |
-| 🗂️ 数据集 | [📍 数据集概览](#at-ustc-dataset) | [📘 数据集介绍](https://zhuanlan.zhihu.com/p/1946682409371304382) | [🖼️ AT-ReID 绘图](https://github.com/kw66/research-figures/tree/main/AT-ReID) |
-| 🧠 方法 | [📍 方法导航](#method-navigation) | [📘 方法介绍](https://zhuanlan.zhihu.com/p/1947080865181078424) | [🖼️ AT-ReID 绘图](https://github.com/kw66/research-figures/tree/main/AT-ReID) |
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <strong>🎯 任务</strong><br><br>
+      <a href="#at-reid-task">📍 仓库内概览</a><br>
+      <a href="https://zhuanlan.zhihu.com/p/1944895842541605129">📘 知乎介绍</a>
+    </td>
+    <td align="center" width="25%">
+      <strong>🗂️ 数据集</strong><br><br>
+      <a href="#at-ustc-dataset">📍 仓库内概览</a><br>
+      <a href="https://zhuanlan.zhihu.com/p/1946682409371304382">📘 知乎介绍</a>
+    </td>
+    <td align="center" width="25%">
+      <strong>🧠 方法</strong><br><br>
+      <a href="#method-navigation">📍 仓库内导航</a><br>
+      <a href="https://zhuanlan.zhihu.com/p/1947080865181078424">📘 知乎介绍</a>
+    </td>
+    <td align="center" width="25%">
+      <strong>🖼️ 科研绘图</strong><br><br>
+      <a href="https://github.com/kw66/research-figures/tree/main/AT-ReID">🎨 AT-ReID 绘图页</a>
+    </td>
+  </tr>
+</table>
 
 ## 🎯 AT-ReID Task
 
