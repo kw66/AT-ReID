@@ -11,7 +11,7 @@ This repository is now kept focused on the AT-ReID benchmark itself:
 - `AT-USTC Dataset Release Agreement.pdf`: dataset application form.
 - `fig1.png`, `fig2.png`: overview figures used by this README.
 
-Presentation decks, plotting source files, and historical side-paper materials have been moved out to a separate companion repository named `科研绘图` so that this repository does not mix AT-ReID code, dataset information, and unrelated paper assets.
+Presentation decks, plotting source files, and historical side-paper materials have been moved out to a separate companion repository [`research-figures`](https://github.com/kw66/research-figures) (科研绘图) so that this repository does not mix AT-ReID code, dataset information, and unrelated paper assets.
 
 ## Links
 
