@@ -108,8 +108,8 @@ Example: `AT-USTC/p001-d01-c01/cam01-f0-0050.jpg`
 
 The root README only provides the task overview, dataset overview, and entry links.
 
-- [`AT-ReID-fast/`](./AT-ReID-fast): 🚀 recommended entry point for training and evaluation.
-- [`AT-ReID/`](./AT-ReID): 🧪 original reference implementation.
+- [`AT-ReID/`](./AT-ReID): 🧪 original version.
+- [`AT-ReID-fast/`](./AT-ReID-fast): ⚡ GPT-5.4-refactored accelerated version.
 
 ## 📚 Citation
 
