@@ -7,19 +7,31 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
 <table>
   <tr>
     <td align="center" width="33%">
-      <strong>任务</strong><br>
-      <a href="#at-reid-task">仓库内概览</a><br>
-      <a href="https://zhuanlan.zhihu.com/p/1944895842541605129">知乎介绍</a>
+      <strong>任务</strong><br><br>
+      <a href="#at-reid-task">
+        <img src="https://img.shields.io/badge/GitHub-Overview-24292f?style=flat-square&logo=github&logoColor=white" alt="Task overview">
+      </a>
+      <a href="https://zhuanlan.zhihu.com/p/1944895842541605129">
+        <img src="https://img.shields.io/badge/Zhihu-Intro-0084ff?style=flat-square" alt="Task introduction">
+      </a>
     </td>
     <td align="center" width="33%">
-      <strong>数据集</strong><br>
-      <a href="#at-ustc-dataset">仓库内概览</a><br>
-      <a href="https://zhuanlan.zhihu.com/p/1946682409371304382">知乎介绍</a>
+      <strong>数据集</strong><br><br>
+      <a href="#at-ustc-dataset">
+        <img src="https://img.shields.io/badge/GitHub-Overview-24292f?style=flat-square&logo=github&logoColor=white" alt="Dataset overview">
+      </a>
+      <a href="https://zhuanlan.zhihu.com/p/1946682409371304382">
+        <img src="https://img.shields.io/badge/Zhihu-Intro-0084ff?style=flat-square" alt="Dataset introduction">
+      </a>
     </td>
     <td align="center" width="33%">
-      <strong>方法</strong><br>
-      <a href="#method-navigation">仓库内导航</a><br>
-      <a href="https://zhuanlan.zhihu.com/p/1947080865181078424">知乎介绍</a>
+      <strong>方法</strong><br><br>
+      <a href="#method-navigation">
+        <img src="https://img.shields.io/badge/GitHub-Navigation-24292f?style=flat-square&logo=github&logoColor=white" alt="Method navigation">
+      </a>
+      <a href="https://zhuanlan.zhihu.com/p/1947080865181078424">
+        <img src="https://img.shields.io/badge/Zhihu-Intro-0084ff?style=flat-square" alt="Method introduction">
+      </a>
     </td>
   </tr>
 </table>
