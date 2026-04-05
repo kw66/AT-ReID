@@ -4,11 +4,11 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
 
 ## Quick Links
 
-| 部分 | 站内 | 站外 |
-| --- | --- | --- |
-| 任务 | [AT-ReID Task](#at-reid-task) | [Task Introduction](https://zhuanlan.zhihu.com/p/1944895842541605129) |
-| 数据集 | [AT-USTC Dataset](#at-ustc-dataset) | [Dataset Introduction](https://zhuanlan.zhihu.com/p/1946682409371304382) |
-| 方法 | [Method Navigation](#method-navigation) | [Method Introduction](https://zhuanlan.zhihu.com/p/1947080865181078424) |
+| 主题 | 入口 |
+| --- | --- |
+| 任务 | [仓库内概览](#at-reid-task) / [知乎介绍](https://zhuanlan.zhihu.com/p/1944895842541605129) |
+| 数据集 | [仓库内概览](#at-ustc-dataset) / [知乎介绍](https://zhuanlan.zhihu.com/p/1946682409371304382) |
+| 方法 | [仓库内导航](#method-navigation) / [知乎介绍](https://zhuanlan.zhihu.com/p/1947080865181078424) |
 
 ## AT-ReID Task
 
