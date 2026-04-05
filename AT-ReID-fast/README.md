@@ -1,8 +1,8 @@
 # AT-ReID-fast
 
-`AT-ReID-fast` is the recommended entry point for training and evaluation in this repository. ⚡
+`AT-ReID-fast` is the GPT-5.4-refactored accelerated version of this repository. ⚡
 
-It is the maintained and accelerated version of the original `AT-ReID` folder.
+It corresponds to the original `AT-ReID` version kept in the sibling folder.
 
 ## ⚡ Speedup Summary
 
