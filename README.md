@@ -1,75 +1,44 @@
-<div align="center">
-
 # AT-ReID
 
-### A Benchmark for Anytime Person Re-Identification
+Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification**.
 
-[![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2509.16635)
-[![IJCAI 2025 Oral](https://img.shields.io/badge/IJCAI-2025%20Oral-c2410c)](https://doi.org/10.24963/ijcai.2025/164)
-[![Dataset](https://img.shields.io/badge/Dataset-AT--USTC-8957e5)](./AT-USTC%20Dataset%20Release%20Agreement.pdf)
+## Links
 
-**Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification**
+[\[Paper\]](https://arxiv.org/abs/2509.16635) IJCAI 2025 oral
 
-</div>
+[\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129)
+
+[\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382)
+
+[\[Dataset Release Agreement\]](./AT-USTC%20Dataset%20Release%20Agreement.pdf)
+
+AT-ReID is a benchmark for **anytime person re-identification**, which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
+
+Based on the timestamps of query and gallery images, AT-ReID can be categorized into six scenarios: daytime short-term (DT-ST), daytime long-term (DT-LT), nighttime short-term (NT-ST), nighttime long-term (NT-LT), all-day short-term (AD-ST), and all-day long-term (AD-LT).
 
 <p align="center">
-  <img src="./assets/atreid-readme-hero-dark.svg" alt="AT-ReID hero banner" width="100%">
+  <img src="./fig1.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;">
 </p>
-
-> [!NOTE]
-> This page is the overview and navigation page for the AT-ReID benchmark and the AT-USTC dataset.
-> Detailed method descriptions and implementation details are kept in the corresponding subdirectories.
-
-<div align="center">
-<table>
-  <tr>
-    <td><strong>6 scenarios</strong><br>DT-ST / DT-LT / NT-ST / NT-LT / AD-ST / AD-LT</td>
-    <td><strong>21 months</strong><br>long-span collection</td>
-    <td><strong>270 volunteers</strong><br>rich repeated captures</td>
-    <td><strong>403K+ images</strong><br>large-scale benchmark</td>
-    <td><strong>RGB + IR</strong><br>cross-illumination coverage</td>
-  </tr>
-</table>
-</div>
 
 ## Navigation
 
-| Destination | Description |
-| --- | --- |
-| [Paper](https://arxiv.org/abs/2509.16635) | Read the IJCAI 2025 oral paper. |
-| [Dataset Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) | Apply for AT-USTC dataset access. |
-| [AT-ReID-fast](./AT-ReID-fast) | Enter the maintained project subdirectory. |
-| [AT-ReID](./AT-ReID) | Enter the original project subdirectory. |
-| [Task Introduction](https://zhuanlan.zhihu.com/p/1944895842541605129) | 中文任务介绍。 |
-| [Dataset Introduction](https://zhuanlan.zhihu.com/p/1946682409371304382) | 中文数据集介绍。 |
-| [Contact](mailto:lxlkw@mail.ustc.edu.cn) | Dataset and project inquiries. |
+- [`AT-ReID-fast/`](./AT-ReID-fast): maintained implementation details.
+- [`AT-ReID/`](./AT-ReID): original implementation details.
+- The root README only provides the dataset overview and entry links. Method descriptions and code usage are kept in the corresponding subdirectories.
 
 ## AT-USTC Dataset
 
-AT-USTC is built to support the AT-ReID benchmark, which studies person retrieval across daytime and nighttime, from short-term to long-term settings.
-Compared with existing datasets, AT-USTC emphasizes long-span collection, repeated captures, rich clothing variation, and both RGB and IR camera footage.
+The AT-USTC dataset is constructed to support investigations in AT-ReID. Compared with existing datasets, AT-USTC stands out for its long collection period and the inclusion of both RGB and IR camera footage.
 
-<table>
-  <tr>
-    <td><strong>Collection period</strong><br>21 months</td>
-    <td><strong>Volunteers</strong><br>270</td>
-    <td><strong>Dates / scenes</strong><br>13 dates / 16 scenes</td>
-  </tr>
-  <tr>
-    <td><strong>Modalities</strong><br>RGB + IR</td>
-    <td><strong>Total images</strong><br>403K+</td>
-    <td><strong>Average capture frequency</strong><br>29.1 times per volunteer</td>
-  </tr>
-</table>
+Our data collection spans **21 months**, and **270 volunteers** were photographed on average **29.1 times** across different dates or scenes, leading to rich intra-identity diversity in scene, clothing, and modality.
 
 <p align="center">
-  <img src="./assets/atustc-dataset-rebuilt-dark.png" alt="AT-USTC dataset overview" width="100%">
+  <img src="./fig2.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;">
 </p>
 
 ### Dataset Access
 
-Please send a signed copy of the [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) to **lxlkw@mail.ustc.edu.cn**.
-If your application is approved, we will send the download link for the dataset.
+Please send a signed [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) copy to **lxlkw@mail.ustc.edu.cn**. If your application is approved, we will send the download link for the dataset.
 
 ### Split Summary
 
@@ -78,8 +47,6 @@ If your application is approved, we will send the download link for the dataset.
 | Training | 286,087 images from 135 IDs |
 | Validation | 55,060 images |
 | Testing | 117,512 images from another 135 IDs |
-
-AT-ReID constructs separate galleries and query sets for all six scenarios to support fine-grained evaluation across time and illumination changes.
 
 ## Citation
 
