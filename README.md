@@ -1,6 +1,19 @@
 # AT-ReID
 
-知乎介绍
+Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification**.
+
+## Repository Scope
+
+This repository is now kept focused on the AT-ReID benchmark itself:
+
+- `AT-ReID-fast/`: recommended optimized implementation for training and evaluation.
+- `AT-ReID/`: original reference implementation kept for comparison.
+- `AT-USTC Dataset Release Agreement.pdf`: dataset application form.
+- `fig1.png`, `fig2.png`: overview figures used by this README.
+
+Presentation decks, plotting source files, and historical side-paper materials have been moved out to a separate companion repository named `科研绘图` so that this repository does not mix AT-ReID code, dataset information, and unrelated paper assets.
+
+## Links
 
 [\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129)
 
@@ -17,6 +30,13 @@ Based on the timestamps of query and gallery images, AT-ReID can be categorized 
 <p align="center">   
     <img src="https://github.com/kw66/AT-ReID/blob/main/fig1.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;"> 
 </p>
+
+## Code Entry Points
+
+If you want to run the project, start from:
+
+- `AT-ReID-fast/README.md` for the maintained fast implementation.
+- `AT-ReID/README.md` for the original reference version.
 
 ### AT-USTC Dataset
 
