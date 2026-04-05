@@ -4,12 +4,12 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
 
 ## 🧭 Navigation
 
-<table>
+<table width="100%">
   <tr>
-    <th align="center" width="25%">🎯 任务</th>
-    <th align="center" width="25%">🗂️ 数据集</th>
-    <th align="center" width="25%">🧠 方法</th>
-    <th align="center" width="25%">🖼️ 科研绘图</th>
+    <th align="center" width="24%">🎯 任务</th>
+    <th align="center" width="24%">🗂️ 数据集</th>
+    <th align="center" width="24%">🧠 方法</th>
+    <th align="center" width="28%">🖼️ 科研绘图</th>
   </tr>
   <tr>
     <td align="center"><a href="#at-reid-task">📍 仓库内概览</a></td>
