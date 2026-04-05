@@ -4,19 +4,6 @@
 
 It is the maintained and accelerated version of the original `AT-ReID` folder.
 
-## 🔗 Quick Links
-
-- 🏠 [Repository Overview](../README.md)
-- 📄 [Paper](https://arxiv.org/abs/2509.16635)
-- ⚖️ [Compare With Original AT-ReID](./COMPARE_WITH_AT-ReID.md)
-- 🧪 [Original AT-ReID Reference](../AT-ReID/README.md)
-
-## ✨ Highlights
-
-- 🧷 `AT-ReID` stays unchanged.
-- 🚀 `AT-ReID-fast` is the optimized upload-friendly version.
-- ⚙️ The default runtime already uses the recommended fastest stable path (`fast-compile`).
-
 ## ⚡ Speedup Summary
 
 Benchmarked on real 120-epoch AT-USTC runs:
