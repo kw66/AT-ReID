@@ -1,74 +1,91 @@
+<div align="center">
+
 # AT-ReID
 
-Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification**.
+### A Benchmark for Anytime Person Re-Identification
 
-## Repository Scope
+[![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2509.16635)
+[![IJCAI 2025 Oral](https://img.shields.io/badge/IJCAI-2025%20Oral-c2410c)](https://doi.org/10.24963/ijcai.2025/164)
+[![Dataset](https://img.shields.io/badge/Dataset-AT--USTC-8957e5)](./AT-USTC%20Dataset%20Release%20Agreement.pdf)
 
-This repository is now kept focused on the AT-ReID benchmark itself:
+**Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification**
 
-- `AT-ReID-fast/`: recommended optimized implementation for training and evaluation.
-- `AT-ReID/`: original reference implementation kept for comparison.
-- `AT-USTC Dataset Release Agreement.pdf`: dataset application form.
-- `fig1.png`, `fig2.png`: overview figures used by this README.
-
-Presentation decks, plotting source files, and historical side-paper materials have been moved out to a separate companion repository [`research-figures`](https://github.com/kw66/research-figures) (科研绘图) so that this repository does not mix AT-ReID code, dataset information, and unrelated paper assets.
-
-## Links
-
-[\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129)
-
-[\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382)
-
-[\[Method Introduction\]](https://zhuanlan.zhihu.com/p/1947080865181078424)
-
-[\[Paper\]](https://arxiv.org/abs/2509.16635) Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification (IJCAI2025 oral)
-
-A Benchmark for Anytime Person Re-Identification (AT-ReID), which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
-
-Based on the timestamps of query and gallery images, AT-ReID can be categorized into six scenarios: daytime short-term (DT-ST), daytime long-term (DT-LT), nighttime short-term (NT-ST), nighttime long-term (NT-LT), all-day short-term (AD-ST) and all-day long-term (AD-LT), providing a broader range of scenarios compared to traditional ReID (Tr-ReID), visible-infrared cross-modal ReID (CM-ReID), and long-term cloth-changing ReID (CC-ReID).
-
-<p align="center">   
-    <img src="https://github.com/kw66/AT-ReID/blob/main/fig1.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;"> 
-</p>
-
-## Code Entry Points
-
-If you want to run the project, start from:
-
-- `AT-ReID-fast/README.md` for the maintained fast implementation.
-- `AT-ReID/README.md` for the original reference version.
-
-### AT-USTC Dataset
-
-The AT-USTC dataset is constructed to provide conditions for investigations in AT-ReID. Compared to existing datasets, AT-USTC stands out for its long data collection period and the inclusion of both RGB and IR camera footages. Our data collection spans 21 months, and 270 volunteers were photographed on average 29.1 times across different (13) dates or (16) scenes, 4-15 times more than current datasets, leading to the richest intra-identity diversity in scene, clothing, and modality. Importantly, our data collection has obtained the consent of each volunteer. 
-
-Please send a signed [Dataset Release Agreement](https://github.com/kw66/AT-ReID/blob/main/AT-USTC%20Dataset%20Release%20Agreement.pdf) copy to lxlkw@mail.ustc.edu.cn. If your application is approved, we will send the download link for the dataset.
+</div>
 
 <p align="center">
-  <img src="https://github.com/kw66/AT-ReID/blob/main/fig2.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;">
+  <img src="./assets/atreid-readme-hero-dark.svg" alt="AT-ReID hero banner" width="100%">
 </p>
 
-The AT-USTC dataset is built as the following folder structure:
-```
-│AT-USTC/
-├──p001-d01-c01/
-│  ├── cam01-f0-0050.jpg
-│  ├── cam01-f0-0100.jpg
-│  ├── ......
-├──p001-d02-c02/
-│  ├── ......
-│ .....
-```
-The image AT-USTC/p001-d01-c01/cam01-f0-0050.jpg denotes the following meaning: 
+> [!NOTE]
+> This page is the overview and navigation page for the AT-ReID benchmark and the AT-USTC dataset.
+> Detailed method descriptions and implementation details are kept in the corresponding subdirectories.
 
-"p001": person ID (1-270); "d01": capture date ID (1-13); "c01": clothes ID for its owner (1-14); "cam01": camera ID (1-8 for RGB cameras and 9-16 for infrared cameras); "0050": frame ID of the video segment. "f0": image division flag (0 training; 1 validation; 2-10 test) (2,3,4,5 for query; 6,7,8,9 for gallery; 2,6 for DT-ST; 3,7 for DT-LT; 4,8 for NT-ST; 5,9 for NT-LT; 2,4,6,8 for AD-ST; 3,5,7,9 for AD-LT).
+<div align="center">
+<table>
+  <tr>
+    <td><strong>6 scenarios</strong><br>DT-ST / DT-LT / NT-ST / NT-LT / AD-ST / AD-LT</td>
+    <td><strong>21 months</strong><br>long-span collection</td>
+    <td><strong>270 volunteers</strong><br>rich repeated captures</td>
+    <td><strong>403K+ images</strong><br>large-scale benchmark</td>
+    <td><strong>RGB + IR</strong><br>cross-illumination coverage</td>
+  </tr>
+</table>
+</div>
 
-We divided the training and testing sets according to ID 1:1. The training set contains 286,087 images from 135 IDs, with 55,060 images (20%) set aside as a validation set. The testing set includes 117,512 images from another 135 IDs. The existing datasets mainly evaluate single scenes, while we constructed separate galleries and query sets for all six scenes covered by AT-ReID for a fine-grained assessment of the model. 
+## Navigation
 
-Since the number of images per identity in our dataset is significantly high, the multi-shot evaluation may lead to excessively high rank-1 metrics, while the single-shot evaluation diminishes the relevance of the mAP metric. Therefore, we selected three query images and three gallery images for each identity's video clips (same ID, same camera, same clothing). In this setup, the gallery averages about 25 images per identity, which is comparable to the multi-shot conditions of other datasets (Market1501[1] has 21, MSMT17[2] has 27, and PRCC[5] has 24). We did not perform 10 trials and take the average as done with the SYSU-MM01[3] and LLCM[4] datasets, because the average number of images per identity in these two datasets is 3.1 and 1.6, respectively, which is closer to a single-shot scenario.
+| Destination | Description |
+| --- | --- |
+| [Paper](https://arxiv.org/abs/2509.16635) | Read the IJCAI 2025 oral paper. |
+| [Dataset Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) | Apply for AT-USTC dataset access. |
+| [AT-ReID-fast](./AT-ReID-fast) | Enter the maintained project subdirectory. |
+| [AT-ReID](./AT-ReID) | Enter the original project subdirectory. |
+| [Task Introduction](https://zhuanlan.zhihu.com/p/1944895842541605129) | 中文任务介绍。 |
+| [Dataset Introduction](https://zhuanlan.zhihu.com/p/1946682409371304382) | 中文数据集介绍。 |
+| [Contact](mailto:lxlkw@mail.ustc.edu.cn) | Dataset and project inquiries. |
 
-### Citation If you use the dataset, please cite the following paper: 
-```
+## AT-USTC Dataset
+
+AT-USTC is built to support the AT-ReID benchmark, which studies person retrieval across daytime and nighttime, from short-term to long-term settings.
+Compared with existing datasets, AT-USTC emphasizes long-span collection, repeated captures, rich clothing variation, and both RGB and IR camera footage.
+
+<table>
+  <tr>
+    <td><strong>Collection period</strong><br>21 months</td>
+    <td><strong>Volunteers</strong><br>270</td>
+    <td><strong>Dates / scenes</strong><br>13 dates / 16 scenes</td>
+  </tr>
+  <tr>
+    <td><strong>Modalities</strong><br>RGB + IR</td>
+    <td><strong>Total images</strong><br>403K+</td>
+    <td><strong>Average capture frequency</strong><br>29.1 times per volunteer</td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="./assets/atustc-dataset-rebuilt-dark.png" alt="AT-USTC dataset overview" width="100%">
+</p>
+
+### Dataset Access
+
+Please send a signed copy of the [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) to **lxlkw@mail.ustc.edu.cn**.
+If your application is approved, we will send the download link for the dataset.
+
+### Split Summary
+
+| Split | Content |
+| --- | --- |
+| Training | 286,087 images from 135 IDs |
+| Validation | 55,060 images |
+| Testing | 117,512 images from another 135 IDs |
+
+AT-ReID constructs separate galleries and query sets for all six scenarios to support fine-grained evaluation across time and illumination changes.
+
+## Citation
+
+If this project helps your research, please cite:
+
+```bibtex
 @inproceedings{li2025ATreid,
   title     = {Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification},
   author    = {Li, Xulin and Lu, Yan and Liu, Bin and Li, Jiaze and Yang, Qinhong and Gong, Tao and Chu, Qi and Ye, Mang and Yu, Nenghai},
@@ -84,17 +101,6 @@ Since the number of images per identity in our dataset is significantly high, th
 }
 ```
 
-###  References.
+## Contact
 
-[1] Liang Zheng, Liyue Shen, Lu Tian, Shengjin Wang, Jingdong Wang, and Qi Tian. Scalable person re-identification: A benchmark. ICCV, 2015.
-
-[2] Longhui Wei, Shiliang Zhang, Wen Gao, and Qi Tian. Person transfer gan to bridge domain gap for person re-identification. CVPR, 2018.
-
-[3] Ancong Wu, Wei-Shi Zheng, Hong-Xing Yu, Shaogang Gong, and Jianhuang Lai. Rgb-infrared cross-modality person re-identification. ICCV, 2017.
-
-[4]  Yukang Zhang and Hanzi Wang. Diverse embedding expansion network and low-light cross-modality benchmark for visible-infrared person re-identification. CVPR, 2023.
-
-[5] Qize Yang, Ancong Wu, and Wei-Shi Zheng. Person re-identification by contour sketch under moderate clothing change. IEEE TPAMI, 2019.
-
-### Contact 
-If you have any questions, please feel free to contact us. E-mail: lxlkw@mail.ustc.edu.cn
+If you have any questions, please feel free to contact us: **lxlkw@mail.ustc.edu.cn**

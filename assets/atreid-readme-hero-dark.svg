@@ -1,0 +1,46 @@
+<svg width="1200" height="420" viewBox="0 0 1200 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="420" rx="28" fill="#0D1117"/>
+  <rect x="1" y="1" width="1198" height="418" rx="27" stroke="#263041" stroke-width="2"/>
+  <circle cx="1032" cy="76" r="180" fill="#132134"/>
+  <circle cx="112" cy="384" r="160" fill="#111A24"/>
+  <path d="M742 0H1200V420H642C722 335 754 270 786 204C823 126 846 64 742 0Z" fill="url(#paint0_linear_1_2)" fill-opacity="0.75"/>
+
+  <text x="72" y="86" fill="#7DC0FF" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="2.8">IJCAI 2025 ORAL</text>
+  <text x="72" y="160" fill="#F0F6FC" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="700">AT-ReID</text>
+  <text x="72" y="206" fill="#F0F6FC" font-family="Georgia, 'Times New Roman', serif" font-size="26">Towards Anytime Retrieval</text>
+  <text x="72" y="252" fill="#B9C4D0" font-family="Segoe UI, Arial, sans-serif" font-size="21">
+    <tspan x="72" dy="0">A benchmark for person re-identification across daytime and nighttime,</tspan>
+    <tspan x="72" dy="32">from short-term to long-term retrieval intervals.</tspan>
+  </text>
+
+  <rect x="72" y="304" width="144" height="42" rx="21" fill="#1F6FEB"/>
+  <rect x="228" y="304" width="150" height="42" rx="21" fill="#8957E5"/>
+  <rect x="390" y="304" width="148" height="42" rx="21" fill="#238636"/>
+  <rect x="550" y="304" width="134" height="42" rx="21" fill="#C2410C"/>
+
+  <text x="144" y="331" text-anchor="middle" fill="#F0F6FC" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">6 scenarios</text>
+  <text x="303" y="331" text-anchor="middle" fill="#F0F6FC" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">403K+ images</text>
+  <text x="464" y="331" text-anchor="middle" fill="#F0F6FC" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">RGB + IR</text>
+  <text x="617" y="331" text-anchor="middle" fill="#F0F6FC" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">21 months</text>
+
+  <rect x="816" y="84" width="310" height="82" rx="20" fill="#101722" stroke="#263041"/>
+  <rect x="816" y="182" width="310" height="82" rx="20" fill="#101722" stroke="#263041"/>
+  <rect x="816" y="280" width="310" height="82" rx="20" fill="#101722" stroke="#263041"/>
+
+  <text x="842" y="116" fill="#7DC0FF" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8">TASK</text>
+  <text x="842" y="150" fill="#F0F6FC" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700">Anytime ReID</text>
+
+  <text x="842" y="214" fill="#C297FF" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8">DATASET</text>
+  <text x="842" y="248" fill="#F0F6FC" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700">AT-USTC</text>
+
+  <text x="842" y="312" fill="#8BD69C" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8">SETTING</text>
+  <text x="842" y="346" fill="#F0F6FC" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700">Day + Night</text>
+
+  <defs>
+    <linearGradient id="paint0_linear_1_2" x1="1200" y1="0" x2="758" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1F6FEB"/>
+      <stop offset="0.52" stop-color="#8957E5"/>
+      <stop offset="1" stop-color="#0D1117" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
