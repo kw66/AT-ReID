@@ -15,7 +15,7 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
     <td align="center"><a href="#at-reid-task">📍 仓库内概览</a></td>
     <td align="center"><a href="#at-ustc-dataset">📍 仓库内概览</a></td>
     <td align="center"><a href="#method-navigation">📍 仓库内导航</a></td>
-    <td align="center"><a href="https://github.com/kw66/research-figures/tree/main/AT-ReID">🎨 AT-ReID 绘图页</a></td>
+    <td align="center"><a href="https://github.com/kw66/research-figures">🎨 画图PPT</a></td>
   </tr>
   <tr>
     <td align="center"><a href="https://zhuanlan.zhihu.com/p/1944895842541605129">📘 知乎介绍</a></td>
