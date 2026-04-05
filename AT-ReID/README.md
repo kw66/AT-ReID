@@ -6,39 +6,48 @@ This folder keeps the original reference implementation of the paper *Towards An
 
 You may need to manually define the data path first.
 
-Train a full Uni-AT model by:
-```
+#### Common Flags
+
+| Flag | Meaning | Notes |
+| --- | --- | --- |
+| `-gpu 0` | run on GPU 0 | replace `0` with the target GPU id if needed |
+| `-v 1` | full Uni-AT model | used together with `-said -moae -hdw` |
+| `-v 2` | baseline model | baseline setting |
+| `-v 3` | unified embedding model | typically used with `-ncls 1` |
+| `-said` | enable SAID loss | full Uni-AT setting |
+| `-moae` | enable MOAE | full Uni-AT setting |
+| `-hdw` | enable HDW | full Uni-AT setting |
+| `-ncls 1` | use 1 CLS token | replaces the default 6 CLS tokens |
+
+#### Full Uni-AT
+
+```bash
 python train.py -gpu 0 -v 1 -said -moae -hdw
 ```
--gpu 0: run on gpu 0.
 
--v 1: version 1 of the training model.
+#### Baseline Model
 
--said: use said loss.
-
--moae: use moae.
-
--hdw: use hdw.
-
-Train a baseline model by:
-``` 
+```bash
 python train.py -gpu 0 -v 2
 ```
 
-Train a unified embedding model by: 
+#### Unified Embedding Model
+
+```bash
+python train.py -gpu 0 -v 3 -ncls 1
 ```
-python train.py -gpu 0 -v 3 -ncls 1 
-```
--ncls 1: use only 1 CLS token rather than 6.
 
 ### 2. 🧪 Testing
+
+Use the same model-related flags during testing as those used in training.
+
 Test a model by
-```
+```bash
 python train.py -gpu 0 -v 1 -said -moae -hdw -test
 ```
 
 Test a model on AT-USTC, Market1501[1], CUHK03[2], MSMT17[3], SYSU-MM01[4], RegDB[5], LLCM[6], PRCC[7], LTCC[8], and DeepChange[9] by 
-``` 
+```bash
 python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_all
 ```
 
