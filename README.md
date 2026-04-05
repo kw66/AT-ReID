@@ -4,12 +4,14 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
 
 ## Quick Links
 
-- [Paper](https://arxiv.org/abs/2509.16635): IJCAI 2025 oral
-- [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf): apply for AT-USTC access
-- [AT-ReID-fast](./AT-ReID-fast): recommended implementation
-- [AT-ReID](./AT-ReID): original reference implementation
-- [Dataset Introduction](https://zhuanlan.zhihu.com/p/1946682409371304382): 中文数据集介绍
-- [Task Introduction](https://zhuanlan.zhihu.com/p/1944895842541605129): 中文任务介绍
+| Type | Link | Description |
+| --- | --- | --- |
+| Paper | [Paper](https://arxiv.org/abs/2509.16635) | IJCAI 2025 oral |
+| Dataset | [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) | Apply for AT-USTC access |
+| Code | [AT-ReID-fast](./AT-ReID-fast) | Recommended implementation |
+| Code | [AT-ReID](./AT-ReID) | Original reference implementation |
+| Intro | [Dataset Introduction](https://zhuanlan.zhihu.com/p/1946682409371304382) | 中文数据集介绍 |
+| Intro | [Task Introduction](https://zhuanlan.zhihu.com/p/1944895842541605129) | 中文任务介绍 |
 
 AT-ReID is a benchmark for **anytime person re-identification**, which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
 
@@ -18,12 +20,6 @@ Based on the timestamps of query and gallery images, AT-ReID can be categorized 
 <p align="center">
   <img src="./fig1.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;">
 </p>
-
-## Navigation
-
-- [`AT-ReID-fast/`](./AT-ReID-fast): recommended entry point for training and evaluation.
-- [`AT-ReID/`](./AT-ReID): original reference implementation.
-- The root README only provides the dataset overview and entry links.
 
 ## AT-USTC Dataset
 
