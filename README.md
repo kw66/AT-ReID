@@ -2,15 +2,14 @@
 
 Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification**.
 
-## Links
+## Quick Links
 
-[\[Paper\]](https://arxiv.org/abs/2509.16635) IJCAI 2025 oral
-
-[\[Dataset Release Agreement\]](./AT-USTC%20Dataset%20Release%20Agreement.pdf)
-
-[\[Dataset Introduction\]](https://zhuanlan.zhihu.com/p/1946682409371304382)
-
-[\[Task Introduction\]](https://zhuanlan.zhihu.com/p/1944895842541605129)
+- [Paper](https://arxiv.org/abs/2509.16635): IJCAI 2025 oral
+- [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf): apply for AT-USTC access
+- [AT-ReID-fast](./AT-ReID-fast): recommended implementation
+- [AT-ReID](./AT-ReID): original reference implementation
+- [Dataset Introduction](https://zhuanlan.zhihu.com/p/1946682409371304382): 中文数据集介绍
+- [Task Introduction](https://zhuanlan.zhihu.com/p/1944895842541605129): 中文任务介绍
 
 AT-ReID is a benchmark for **anytime person re-identification**, which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
 
@@ -24,7 +23,7 @@ Based on the timestamps of query and gallery images, AT-ReID can be categorized 
 
 - [`AT-ReID-fast/`](./AT-ReID-fast): recommended entry point for training and evaluation.
 - [`AT-ReID/`](./AT-ReID): original reference implementation.
-- The root README only provides the dataset overview and entry links. Method descriptions and code usage are kept in the corresponding subdirectories.
+- The root README only provides the dataset overview and entry links.
 
 ## AT-USTC Dataset
 

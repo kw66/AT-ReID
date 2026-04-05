@@ -4,6 +4,12 @@ This folder keeps the original reference implementation of the paper *Towards An
 
 If you want the maintained entry point for training and evaluation, please use [`../AT-ReID-fast`](../AT-ReID-fast) first.
 
+## Quick Links
+
+- [Repository Overview](../README.md)
+- [Recommended Implementation: AT-ReID-fast](../AT-ReID-fast/README.md)
+- [Paper](https://arxiv.org/abs/2509.16635)
+
 ### 1. Training.
 
 You may need to manually define the data path first.
@@ -48,7 +54,7 @@ python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_all
 #### Our version of IJCAI selected 18 images for each video clip, ultimately choosing 135K images. In the final version, we provide the original 403K images with more perspectives and poses to enhance intra-class diversity. The results have been updated in the arXiv and the table below.
 
 <p align="center">        
-  <img src="https://github.com/kw66/AT-ReID/blob/main/AT-ReID/fig1.png" style="width:60%; display: block; margin-left: auto; margin-right: auto;">  
+  <img src="./fig1.png" style="width:60%; display: block; margin-left: auto; margin-right: auto;">  
 </p>
 
 ### 4. Citation

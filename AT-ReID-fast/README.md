@@ -1,8 +1,15 @@
 # AT-ReID-fast
 
-`AT-ReID-fast` is the recommended entry point for training and evaluation.
+`AT-ReID-fast` is the recommended entry point for training and evaluation in this repository.
 
 It is the maintained and accelerated version of the original `AT-ReID` folder.
+
+## Quick Links
+
+- [Repository Overview](../README.md)
+- [Paper](https://arxiv.org/abs/2509.16635)
+- [Compare With Original AT-ReID](./COMPARE_WITH_AT-ReID.md)
+- [Original AT-ReID Reference](../AT-ReID/README.md)
 
 - `AT-ReID` stays unchanged.
 - `AT-ReID-fast` is the optimized upload-friendly version.
