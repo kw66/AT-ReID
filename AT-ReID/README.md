@@ -2,14 +2,6 @@
 
 This folder keeps the original reference implementation of the paper *Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification*. 🧪
 
-If you want the maintained entry point for training and evaluation, please use [`../AT-ReID-fast`](../AT-ReID-fast) first.
-
-## 🔗 Quick Links
-
-- 🏠 [Repository Overview](../README.md)
-- 🚀 [Recommended Implementation: AT-ReID-fast](../AT-ReID-fast/README.md)
-- 📄 [Paper](https://arxiv.org/abs/2509.16635)
-
 ### 1. 🚂 Training
 
 You may need to manually define the data path first.
