@@ -4,37 +4,11 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
 
 ## 🧭 Navigation
 
-<table>
-  <tr>
-    <td align="center" width="33%">
-      <strong>🎯 任务</strong><br><br>
-      <a href="#at-reid-task">
-        <img src="https://img.shields.io/badge/GitHub-Overview-24292f?style=flat-square&logo=github&logoColor=white" alt="Task overview">
-      </a>
-      <a href="https://zhuanlan.zhihu.com/p/1944895842541605129">
-        <img src="https://img.shields.io/badge/Zhihu-Intro-0084ff?style=flat-square" alt="Task introduction">
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <strong>🗂️ 数据集</strong><br><br>
-      <a href="#at-ustc-dataset">
-        <img src="https://img.shields.io/badge/GitHub-Overview-24292f?style=flat-square&logo=github&logoColor=white" alt="Dataset overview">
-      </a>
-      <a href="https://zhuanlan.zhihu.com/p/1946682409371304382">
-        <img src="https://img.shields.io/badge/Zhihu-Intro-0084ff?style=flat-square" alt="Dataset introduction">
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <strong>🧠 方法</strong><br><br>
-      <a href="#method-navigation">
-        <img src="https://img.shields.io/badge/GitHub-Navigation-24292f?style=flat-square&logo=github&logoColor=white" alt="Method navigation">
-      </a>
-      <a href="https://zhuanlan.zhihu.com/p/1947080865181078424">
-        <img src="https://img.shields.io/badge/Zhihu-Intro-0084ff?style=flat-square" alt="Method introduction">
-      </a>
-    </td>
-  </tr>
-</table>
+| 主题 | 仓库内 | 知乎 | 科研绘图 |
+| --- | --- | --- | --- |
+| 🎯 任务 | [📍 任务概览](#at-reid-task) | [📘 任务介绍](https://zhuanlan.zhihu.com/p/1944895842541605129) | [🖼️ AT-ReID 绘图](https://github.com/kw66/research-figures/tree/main/AT-ReID) |
+| 🗂️ 数据集 | [📍 数据集概览](#at-ustc-dataset) | [📘 数据集介绍](https://zhuanlan.zhihu.com/p/1946682409371304382) | [🖼️ AT-ReID 绘图](https://github.com/kw66/research-figures/tree/main/AT-ReID) |
+| 🧠 方法 | [📍 方法导航](#method-navigation) | [📘 方法介绍](https://zhuanlan.zhihu.com/p/1947080865181078424) | [🖼️ AT-ReID 绘图](https://github.com/kw66/research-figures/tree/main/AT-ReID) |
 
 ## 🎯 AT-ReID Task
 
