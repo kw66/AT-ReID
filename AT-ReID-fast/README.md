@@ -1,21 +1,23 @@
 # AT-ReID-fast
 
-`AT-ReID-fast` is the recommended entry point for training and evaluation in this repository.
+`AT-ReID-fast` is the recommended entry point for training and evaluation in this repository. ⚡
 
 It is the maintained and accelerated version of the original `AT-ReID` folder.
 
-## Quick Links
+## 🔗 Quick Links
 
-- [Repository Overview](../README.md)
-- [Paper](https://arxiv.org/abs/2509.16635)
-- [Compare With Original AT-ReID](./COMPARE_WITH_AT-ReID.md)
-- [Original AT-ReID Reference](../AT-ReID/README.md)
+- 🏠 [Repository Overview](../README.md)
+- 📄 [Paper](https://arxiv.org/abs/2509.16635)
+- ⚖️ [Compare With Original AT-ReID](./COMPARE_WITH_AT-ReID.md)
+- 🧪 [Original AT-ReID Reference](../AT-ReID/README.md)
 
-- `AT-ReID` stays unchanged.
-- `AT-ReID-fast` is the optimized upload-friendly version.
-- The default runtime already uses the recommended fastest stable path (`fast-compile`).
+## ✨ Highlights
 
-## Speedup Summary
+- 🧷 `AT-ReID` stays unchanged.
+- 🚀 `AT-ReID-fast` is the optimized upload-friendly version.
+- ⚙️ The default runtime already uses the recommended fastest stable path (`fast-compile`).
+
+## ⚡ Speedup Summary
 
 Benchmarked on real 120-epoch AT-USTC runs:
 
@@ -28,7 +30,7 @@ Benchmarked on real 120-epoch AT-USTC runs:
 
 `test_all` above reports the wall time of the full cross-dataset evaluation stage. Per-dataset timings are omitted here to keep the README short.
 
-## Install
+## 🛠️ Install
 
 ```bash
 conda env create -f environment.yml
@@ -41,7 +43,7 @@ or
 pip install -r requirements.txt
 ```
 
-## Prepare Data
+## 🗂️ Prepare Data
 
 Edit:
 
@@ -67,13 +69,13 @@ You can override it with:
 python train.py --pretrained-path /path/to/jx_vit_base_p16_224-80ecf9dd.pth ...
 ```
 
-## Train
+## 🚂 Train
 
 ```bash
 python train.py -gpu 0 -v 1 -said -moae -hdw
 ```
 
-## Test
+## 🧪 Test
 
 ```bash
 python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t
@@ -83,12 +85,12 @@ python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/ep
 python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t -test_all
 ```
 
-## Notes
+## 📝 Notes
 
-- Cross-dataset `test_all` supports AT-USTC, Market1501, CUHK03, MSMT17, SYSU-MM01, RegDB, LLCM, PRCC, LTCC, and DeepChange.
-- The original `AT-ReID` folder remains the unmodified reference implementation.
+- 🌍 Cross-dataset `test_all` supports AT-USTC, Market1501, CUHK03, MSMT17, SYSU-MM01, RegDB, LLCM, PRCC, LTCC, and DeepChange.
+- 🧪 The original `AT-ReID` folder remains the unmodified reference implementation.
 
-## Citation
+## 📚 Citation
 
 ```bibtex
 @inproceedings{li2025ATreid,

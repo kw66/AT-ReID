@@ -2,12 +2,12 @@
 
 Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification**.
 
-## Navigation
+## 🧭 Navigation
 
 <table>
   <tr>
     <td align="center" width="33%">
-      <strong>任务</strong><br><br>
+      <strong>🎯 任务</strong><br><br>
       <a href="#at-reid-task">
         <img src="https://img.shields.io/badge/GitHub-Overview-24292f?style=flat-square&logo=github&logoColor=white" alt="Task overview">
       </a>
@@ -16,7 +16,7 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
       </a>
     </td>
     <td align="center" width="33%">
-      <strong>数据集</strong><br><br>
+      <strong>🗂️ 数据集</strong><br><br>
       <a href="#at-ustc-dataset">
         <img src="https://img.shields.io/badge/GitHub-Overview-24292f?style=flat-square&logo=github&logoColor=white" alt="Dataset overview">
       </a>
@@ -25,7 +25,7 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
       </a>
     </td>
     <td align="center" width="33%">
-      <strong>方法</strong><br><br>
+      <strong>🧠 方法</strong><br><br>
       <a href="#method-navigation">
         <img src="https://img.shields.io/badge/GitHub-Navigation-24292f?style=flat-square&logo=github&logoColor=white" alt="Method navigation">
       </a>
@@ -36,7 +36,7 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
   </tr>
 </table>
 
-## AT-ReID Task
+## 🎯 AT-ReID Task
 
 AT-ReID is a benchmark for **anytime person re-identification**, which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
 
@@ -46,7 +46,7 @@ Based on the timestamps of query and gallery images, AT-ReID can be categorized 
   <img src="./fig1.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;">
 </p>
 
-## AT-USTC Dataset
+## 🗂️ AT-USTC Dataset
 
 The AT-USTC dataset is constructed to support investigations in AT-ReID. Compared with existing datasets, AT-USTC stands out for its long collection period and the inclusion of both RGB and IR camera footage.
 
@@ -56,11 +56,11 @@ Our data collection spans **21 months**, and **270 volunteers** were photographe
   <img src="./fig2.png" style="width:90%; display: block; margin-left: auto; margin-right: auto;">
 </p>
 
-### Dataset Access
+### 📥 Dataset Access
 
 Please send a signed [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) copy to **lxlkw@mail.ustc.edu.cn**. If your application is approved, we will send the download link for the dataset.
 
-### Split Summary
+### 📊 Split Summary
 
 | Split | Content |
 | --- | --- |
@@ -68,14 +68,14 @@ Please send a signed [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%2
 | Validation | 55,060 images |
 | Testing | 117,512 images from another 135 IDs |
 
-## Method Navigation
+## 🧠 Method Navigation
 
 The root README only provides the task overview, dataset overview, and entry links.
 
-- [`AT-ReID-fast/`](./AT-ReID-fast): recommended entry point for training and evaluation.
-- [`AT-ReID/`](./AT-ReID): original reference implementation.
+- [`AT-ReID-fast/`](./AT-ReID-fast): 🚀 recommended entry point for training and evaluation.
+- [`AT-ReID/`](./AT-ReID): 🧪 original reference implementation.
 
-## Citation
+## 📚 Citation
 
 If this project helps your research, please cite:
 
@@ -95,6 +95,6 @@ If this project helps your research, please cite:
 }
 ```
 
-## Contact
+## 📮 Contact
 
 If you have any questions, please feel free to contact us: **lxlkw@mail.ustc.edu.cn**
