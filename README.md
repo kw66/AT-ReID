@@ -4,14 +4,13 @@ Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Per
 
 ## Quick Links
 
-| Type | Link | Description |
+| 部分 | 站内 | 站外 |
 | --- | --- | --- |
-| Paper | [Paper](https://arxiv.org/abs/2509.16635) | IJCAI 2025 oral |
-| Dataset | [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) | Apply for AT-USTC access |
-| Code | [AT-ReID-fast](./AT-ReID-fast) | Recommended implementation |
-| Code | [AT-ReID](./AT-ReID) | Original reference implementation |
-| Intro | [Dataset Introduction](https://zhuanlan.zhihu.com/p/1946682409371304382) | 中文数据集介绍 |
-| Intro | [Task Introduction](https://zhuanlan.zhihu.com/p/1944895842541605129) | 中文任务介绍 |
+| 任务 | [AT-ReID Task](#at-reid-task) | [Task Introduction](https://zhuanlan.zhihu.com/p/1944895842541605129) |
+| 数据集 | [AT-USTC Dataset](#at-ustc-dataset) | [Dataset Introduction](https://zhuanlan.zhihu.com/p/1946682409371304382) |
+| 方法 | [Method Navigation](#method-navigation) | [Method Introduction](https://zhuanlan.zhihu.com/p/1947080865181078424) |
+
+## AT-ReID Task
 
 AT-ReID is a benchmark for **anytime person re-identification**, which aims to retrieve a person at any time, including both daytime and nighttime, ranging from short-term to long-term.
 
@@ -42,6 +41,13 @@ Please send a signed [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%2
 | Training | 286,087 images from 135 IDs |
 | Validation | 55,060 images |
 | Testing | 117,512 images from another 135 IDs |
+
+## Method Navigation
+
+The root README only provides the task overview, dataset overview, and entry links.
+
+- [`AT-ReID-fast/`](./AT-ReID-fast): recommended entry point for training and evaluation.
+- [`AT-ReID/`](./AT-ReID): original reference implementation.
 
 ## Citation
 
