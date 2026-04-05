@@ -2,13 +2,27 @@
 
 Official repository for **Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification**.
 
-## Quick Links
+## Navigation
 
-| 主题 | 入口 |
-| --- | --- |
-| 任务 | [仓库内概览](#at-reid-task) / [知乎介绍](https://zhuanlan.zhihu.com/p/1944895842541605129) |
-| 数据集 | [仓库内概览](#at-ustc-dataset) / [知乎介绍](https://zhuanlan.zhihu.com/p/1946682409371304382) |
-| 方法 | [仓库内导航](#method-navigation) / [知乎介绍](https://zhuanlan.zhihu.com/p/1947080865181078424) |
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <strong>任务</strong><br>
+      <a href="#at-reid-task">仓库内概览</a><br>
+      <a href="https://zhuanlan.zhihu.com/p/1944895842541605129">知乎介绍</a>
+    </td>
+    <td align="center" width="33%">
+      <strong>数据集</strong><br>
+      <a href="#at-ustc-dataset">仓库内概览</a><br>
+      <a href="https://zhuanlan.zhihu.com/p/1946682409371304382">知乎介绍</a>
+    </td>
+    <td align="center" width="33%">
+      <strong>方法</strong><br>
+      <a href="#method-navigation">仓库内导航</a><br>
+      <a href="https://zhuanlan.zhihu.com/p/1947080865181078424">知乎介绍</a>
+    </td>
+  </tr>
+</table>
 
 ## AT-ReID Task
 
