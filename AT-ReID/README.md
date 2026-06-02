@@ -51,6 +51,38 @@ Test a model on AT-USTC, Market1501[1], CUHK03[2], MSMT17[3], SYSU-MM01[4], RegD
 python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_all
 ```
 
+#### Scenario-Agnostic Mixed Unseen Test
+
+This mixed test is an unseen, scenario-agnostic AT-USTC protocol. The query/gallery relation is still evaluated under six target relations, but the gallery keeps mixed DT/NT distractors and the final `Anytime` score is a valid-query weighted result over all query instances, not a simple average over six scenarios.
+
+The default command uses `--test-mix-feature adlt`, meaning every query-gallery relation is scored with the fixed AD-LT/head-5 feature. It does not select a different CLS token by scenario. `--test-mix-feature concat6` is available as an ablation, and `--test-mix-feature case` is only for scenario-aware diagnostics.
+
+```bash
+python train.py -gpu 0 -v 2 -test --checkpoint /path/to/baseline_epoch_best.t --test-mix --test-mix-feature adlt
+```
+
+```bash
+python train.py -gpu 0 -v 1 -said -moae -hdw -test --checkpoint /path/to/uni_at_epoch_best.t --test-mix --test-mix-feature adlt
+```
+
+The six mixed relations are:
+
+| Case | Query | Gallery | Extra same-ID filtering |
+| --- | --- | --- | --- |
+| DT-ST | `q_dt_st` | `g_ad_st` | nighttime and different-clothes targets |
+| DT-LT | `q_dt_lt` | `g_ad_lt` | nighttime and same-clothes targets |
+| NT-ST | `q_nt_st` | `g_ad_st` | daytime and different-clothes targets |
+| NT-LT | `q_nt_lt` | `g_ad_lt` | daytime and same-clothes targets |
+| AD-ST | `q_ad_st` | `g_ad_st` | same-modality and different-clothes targets |
+| AD-LT | `q_ad_lt` | `g_ad_lt` | same-modality and same-clothes targets |
+
+Recommended AD-LT fixed-feature results on the mixed unseen protocol:
+
+| Method | Feature | Valid queries | R1 | R5 | R10 | R20 | mAP |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Baseline | AD-LT/head-5 | 19,992 | 38.08 | 47.81 | 53.12 | 59.52 | 28.03 |
+| Uni-AT | AD-LT/head-5 | 19,992 | 41.02 | 50.67 | 55.75 | 63.14 | 31.84 |
+
 ### 3. 📈 Results
 #### Our version of IJCAI selected 18 images for each video clip, ultimately choosing 135K images. In the final version, we provide the original 403K images with more perspectives and poses to enhance intra-class diversity. The results have been updated in the arXiv and the table below.
 

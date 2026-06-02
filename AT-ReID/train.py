@@ -9,6 +9,7 @@ from args.args import create_argparser
 from dataset.sample import PSKSampler
 from model.uniat import uniat
 from others.test import attest
+from others.test_mix import test_mix
 from loss.hdw import saidloss_hdw
 from loss.tri import TripletLoss
 from dataset.dataset_all import dataset_all
@@ -43,6 +44,11 @@ criterion_said = saidloss_hdw(cid2pid=dataset.cid2pid, said=args.said, hdw=args.
 criterion_said.to('cuda')
 criterion_tri = TripletLoss()
 criterion_tri.to('cuda')
+
+if args.checkpoint:
+    checkpoint = torch.load(args.checkpoint)
+    model.load_state_dict(checkpoint['model'])
+    print(f"Loaded checkpoint: {args.checkpoint}")
 
 
 def train(epoch):
@@ -99,9 +105,12 @@ def train(epoch):
     print(f'DataTime: {data_time.sum:.3f} ({data_time.avg:.3f}) BatchTime: {batch_time.sum:.3f} ({batch_time.avg:.3f})')
 
 
-if test_model(checkpoint_path, model) or args.test:
+if (not args.checkpoint and test_model(checkpoint_path, model)) or args.test:
     print('no training')
-    cmc, mAP = attest(args, dataset, model)
+    if args.test_mix:
+        cmc, mAP = test_mix(args, dataset, model)
+    else:
+        cmc, mAP = attest(args, dataset, model)
     if args.test_all:
         cmc, mAP = test_all(args, 'market', dataset_all('market'), model)
         cmc, mAP = test_all(args, 'cuhk', dataset_all('cuhk'), model)
@@ -123,7 +132,10 @@ for epoch in range(1, args.max_epoch + 1):
     train(epoch)
     if epoch % args.test_epoch == 0 or epoch >= args.max_epoch - args.last_test:
         print(f'==> Start Testing Epoch: {epoch}')
-        cmc, mAP = attest(args, dataset, model)
+        if args.test_mix:
+            cmc, mAP = test_mix(args, dataset, model)
+        else:
+            cmc, mAP = attest(args, dataset, model)
         if cmc[0] > best_acc:
             best_acc, best_epoch = cmc[0], epoch
             state = {'model': model.state_dict(), 'epoch': epoch, }

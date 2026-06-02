@@ -30,6 +30,7 @@ from others.runtime import (
 )
 from others.test import attest
 from others.test_all import test_all
+from others.test_mix import test_mix
 from others.transforms import get_transform
 from others.utils import (
     AverageMeter,
@@ -383,7 +384,10 @@ def train_one_epoch(epoch, args, model, base_model, trainloader, optimizer, crit
 
 
 def evaluate_model(args, model, dataset):
-    cmc, mAP = attest(args, dataset, model)
+    if args.test_mix:
+        cmc, mAP = test_mix(args, dataset, model)
+    else:
+        cmc, mAP = attest(args, dataset, model)
     if args.test_all:
         for dataset_name in ['market', 'cuhk', 'msmt', 'sysu', 'regdb', 'llcm', 'prcc', 'ltcc', 'deepchange']:
             print(f'==> Cross-dataset test: {dataset_name}')

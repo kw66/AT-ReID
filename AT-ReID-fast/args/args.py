@@ -43,6 +43,22 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("-test", "--test", action="store_true", help="Run AT-USTC evaluation only.")
     parser.add_argument("-test_all", "--test-all", dest="test_all", action="store_true", help="Run cross-dataset evaluation.")
     parser.add_argument("--eval-only", action="store_true", help="Alias of --test with clearer semantics for new users.")
+    parser.add_argument(
+        "--test-mix",
+        action="store_true",
+        help="Run the AT-USTC scenario-agnostic mixed unseen evaluation protocol.",
+    )
+    parser.add_argument(
+        "--test-mix-feature",
+        default="adlt",
+        choices=["adlt", "concat6", "case"],
+        help="Feature used by --test-mix. adlt is the scenario-agnostic default; case is scenario-aware.",
+    )
+    parser.add_argument(
+        "--test-mix-json",
+        default=None,
+        help="Optional JSON output path for --test-mix metrics.",
+    )
     parser.add_argument("--test-batch", type=int, default=256)
     parser.add_argument(
         "--test-batch-auto-tune",

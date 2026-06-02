@@ -22,7 +22,9 @@ def create_argparser():
     defaults = dict(
         log_path='./log', model_path='./save_model',
         d='atustc',
-        v=1, gpu=0, test=False, test_all=False,
+        v=1, gpu=0, test=False, test_all=False, checkpoint='',
+        test_mix=False, test_mix_feature='adlt', test_mix_json='',
+        limit_query=0, limit_gallery=0,
         wait=True, t=0.0, mb=100,
         drop=0.2, stride=16,
         ncls=6, said=False, hdw=False, moae=False,
@@ -44,4 +46,10 @@ def create_argparser():
     )
     parser = argparse.ArgumentParser(description='ReID')
     add_dict_to_argparser(parser, defaults)
+    parser.add_argument('--test-mix', dest='test_mix', action='store_true', default=False)
+    parser.add_argument('--test-mix-feature', dest='test_mix_feature', default='adlt', choices=['adlt', 'concat6', 'case'])
+    parser.add_argument('--test-mix-json', dest='test_mix_json', default='')
+    parser.add_argument('--limit-query', dest='limit_query', type=int, default=0)
+    parser.add_argument('--limit-gallery', dest='limit_gallery', type=int, default=0)
+    parser.add_argument('--checkpoint', dest='checkpoint', default='')
     return parser
