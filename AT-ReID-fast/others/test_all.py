@@ -90,8 +90,8 @@ def test_1(args, d='market', dataset=None, model=None):
         bundles = extract_sample_feature_bundles(
             model,
             {
-                "query": _limit_samples(query, args.limit_query),
-                "gallery": _limit_samples(gallery, args.limit_gallery),
+                "query": _limit_samples(query, getattr(args, "limit_query", 0)),
+                "gallery": _limit_samples(gallery, getattr(args, "limit_gallery", 0)),
             },
             transform_test,
             args,

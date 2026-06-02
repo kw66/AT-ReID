@@ -47,10 +47,10 @@ def attest(args, dataset, model):
     bundles = extract_sample_feature_bundles(
         model,
         {
-            "q_ad_st": _limit_samples(dataset.q_ad_st, args.limit_query),
-            "g_ad_st": _limit_samples(dataset.g_ad_st, args.limit_gallery),
-            "q_ad_lt": _limit_samples(dataset.q_ad_lt, args.limit_query),
-            "g_ad_lt": _limit_samples(dataset.g_ad_lt, args.limit_gallery),
+            "q_ad_st": _limit_samples(dataset.q_ad_st, getattr(args, "limit_query", 0)),
+            "g_ad_st": _limit_samples(dataset.g_ad_st, getattr(args, "limit_gallery", 0)),
+            "q_ad_lt": _limit_samples(dataset.q_ad_lt, getattr(args, "limit_query", 0)),
+            "g_ad_lt": _limit_samples(dataset.g_ad_lt, getattr(args, "limit_gallery", 0)),
         },
         transform_test,
         args,

@@ -1,6 +1,4 @@
-import json
 import time
-from pathlib import Path
 
 import numpy as np
 import torch.nn.functional as F
@@ -86,7 +84,7 @@ def _limit_samples(samples, limit):
 def _resolve_feature_mode(args):
     if int(getattr(args, "nfeature", 6)) == 1:
         return "single"
-    return str(getattr(args, "test_mix_feature", "adlt")).strip().lower()
+    return "adlt"
 
 
 def _bundle_fixed_feature(bundle, case, feature_mode):
@@ -231,32 +229,6 @@ def _weighted_results(results, names):
     return cmc, float(mAP), int(total_valid)
 
 
-def _json_ready(results, mixed_results, feature_mode):
-    def encode(item):
-        return {
-            "r1": _rank(item["cmc"], 1),
-            "r5": _rank(item["cmc"], 5),
-            "r10": _rank(item["cmc"], 10),
-            "r20": _rank(item["cmc"], 20),
-            "map": float(item["map"]),
-            "valid_queries": int(item.get("valid_queries", 0)),
-            "cmc": [float(value) for value in item["cmc"]],
-        }
-
-    return {
-        "feature_mode": feature_mode,
-        "protocol": "scenario-agnostic mixed unseen AT-USTC test",
-        "atomic": {name: encode(item) for name, item in results.items()},
-        "mixed": {
-            name: {
-                **encode(item),
-                "scenarios": list(item["scenarios"]),
-            }
-            for name, item in mixed_results.items()
-        },
-    }
-
-
 def test_mix(args, dataset, model):
     start = time.time()
     _, transform_test = get_transform(
@@ -269,8 +241,8 @@ def test_mix(args, dataset, model):
 
     sample_groups = {}
     for case in ATUSTC_MIX_CASES:
-        sample_groups[case["query"]] = _limit_samples(getattr(dataset, case["query"]), args.limit_query)
-        sample_groups[case["gallery"]] = _limit_samples(getattr(dataset, case["gallery"]), args.limit_gallery)
+        sample_groups[case["query"]] = _limit_samples(getattr(dataset, case["query"]), getattr(args, "limit_query", 0))
+        sample_groups[case["gallery"]] = _limit_samples(getattr(dataset, case["gallery"]), getattr(args, "limit_gallery", 0))
 
     feature_start = time.perf_counter()
     bundles = extract_sample_feature_bundles(
@@ -338,12 +310,6 @@ def test_mix(args, dataset, model):
     print(f"Rank Time:\t {rank_time:.3f}")
     print(f"Eval Device:\t distance={distance_device_summary} rank=cpu-custom")
     print(f"Evaluation Time:\t {time.time() - start:.3f}")
-
-    if args.test_mix_json:
-        output_path = Path(args.test_mix_json)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(json.dumps(_json_ready(results, mixed_results, feature_mode), indent=2), encoding="utf-8")
-        print(f"Saved mix metrics: {output_path}")
 
     anytime = mixed_results["anytime"]
     return anytime["cmc"], anytime["map"]

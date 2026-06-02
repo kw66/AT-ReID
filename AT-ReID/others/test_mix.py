@@ -1,6 +1,4 @@
-import json
 import time
-from pathlib import Path
 
 import numpy as np
 import torch
@@ -88,7 +86,7 @@ def _limit_samples(samples, limit):
 def _resolve_feature_mode(args):
     if int(getattr(args, "nfeature", 6)) == 1:
         return "single"
-    return str(getattr(args, "test_mix_feature", "adlt")).strip().lower()
+    return "adlt"
 
 
 def _build_loader(samples, transform, args):
@@ -260,32 +258,6 @@ def _weighted_results(results, names):
     return cmc, float(mAP), int(total_valid)
 
 
-def _json_ready(results, mixed_results, feature_mode):
-    def encode(item):
-        return {
-            "r1": _rank(item["cmc"], 1),
-            "r5": _rank(item["cmc"], 5),
-            "r10": _rank(item["cmc"], 10),
-            "r20": _rank(item["cmc"], 20),
-            "map": float(item["map"]),
-            "valid_queries": int(item.get("valid_queries", 0)),
-            "cmc": [float(value) for value in item["cmc"]],
-        }
-
-    return {
-        "feature_mode": feature_mode,
-        "protocol": "scenario-agnostic mixed unseen AT-USTC test",
-        "atomic": {name: encode(item) for name, item in results.items()},
-        "mixed": {
-            name: {
-                **encode(item),
-                "scenarios": list(item["scenarios"]),
-            }
-            for name, item in mixed_results.items()
-        },
-    }
-
-
 def test_mix(args, dataset, model):
     start = time.time()
     _, transform_test = get_transform(args)
@@ -349,12 +321,6 @@ def test_mix(args, dataset, model):
     print(f"Distance Time:\t {distance_time:.3f}")
     print(f"Rank Time:\t {rank_time:.3f}")
     print(f"Evaluation Time:\t {time.time() - start:.3f}")
-
-    if getattr(args, "test_mix_json", ""):
-        output_path = Path(args.test_mix_json)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(json.dumps(_json_ready(results, mixed_results, feature_mode), indent=2), encoding="utf-8")
-        print(f"Saved mix metrics: {output_path}")
 
     anytime = mixed_results["anytime"]
     return anytime["cmc"], anytime["map"]
