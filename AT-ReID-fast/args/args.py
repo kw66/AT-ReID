@@ -44,6 +44,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("-test_all", "--test-all", dest="test_all", action="store_true", help="Run cross-dataset evaluation.")
     parser.add_argument("--eval-only", action="store_true", help="Alias of --test with clearer semantics for new users.")
     parser.add_argument(
+        "-test_mix",
         "--test-mix",
         action="store_true",
         help="Run the AT-USTC scenario-agnostic mixed unseen evaluation protocol.",

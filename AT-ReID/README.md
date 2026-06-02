@@ -51,32 +51,13 @@ Test a model on AT-USTC, Market1501[1], CUHK03[2], MSMT17[3], SYSU-MM01[4], RegD
 python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_all
 ```
 
-#### Scenario-Agnostic Mixed Unseen Test
+#### Scenario-Agnostic Mixed Test
 
-This mixed test is an unseen, scenario-agnostic AT-USTC protocol. The query/gallery relation is still evaluated under six target relations, but the gallery keeps mixed DT/NT distractors and the final `Anytime` score is a valid-query weighted result over all query instances, not a simple average over six scenarios.
-
-The default command uses `--test-mix-feature adlt`, meaning every query-gallery relation is scored with the fixed AD-LT/head-5 feature. It does not select a different CLS token by scenario. `--test-mix-feature concat6` is available as an ablation, and `--test-mix-feature case` is only for scenario-aware diagnostics.
+Unseen scenario-agnostic mixed test:
 
 ```bash
-python train.py -gpu 0 -v 2 -test --checkpoint /path/to/baseline_epoch_best.t --test-mix --test-mix-feature adlt
+python train.py -gpu 0 -v 1 -said -moae -hdw -test --checkpoint /path/to/uni_at_epoch_best.t -test_mix
 ```
-
-```bash
-python train.py -gpu 0 -v 1 -said -moae -hdw -test --checkpoint /path/to/uni_at_epoch_best.t --test-mix --test-mix-feature adlt
-```
-
-The six mixed relations are:
-
-| Case | Query | Gallery | Extra same-ID filtering |
-| --- | --- | --- | --- |
-| DT-ST | `q_dt_st` | `g_ad_st` | nighttime and different-clothes targets |
-| DT-LT | `q_dt_lt` | `g_ad_lt` | nighttime and same-clothes targets |
-| NT-ST | `q_nt_st` | `g_ad_st` | daytime and different-clothes targets |
-| NT-LT | `q_nt_lt` | `g_ad_lt` | daytime and same-clothes targets |
-| AD-ST | `q_ad_st` | `g_ad_st` | same-modality and different-clothes targets |
-| AD-LT | `q_ad_lt` | `g_ad_lt` | same-modality and same-clothes targets |
-
-Recommended AD-LT fixed-feature results on the mixed unseen protocol:
 
 | Method | Feature | Valid queries | R1 | R5 | R10 | R20 | mAP |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
