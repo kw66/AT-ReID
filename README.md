@@ -1,4 +1,4 @@
-# AT-ReID
+# AT-ReID （IJCAI2025 Oral）
 
 Official repository for **[Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification](https://arxiv.org/abs/2509.16635)**.
 
