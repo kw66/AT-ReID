@@ -56,7 +56,7 @@ python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_all
 Unseen scenario-agnostic mixed test:
 
 ```bash
-python train.py -gpu 0 -v 1 -said -moae -hdw -test --checkpoint /path/to/uni_at_epoch_best.t -test_mix
+python train.py -gpu 0 -v 1 -said -moae -hdw -test -test_mix
 ```
 
 | Method | Feature | Valid queries | R1 | R5 | R10 | R20 | mAP |

@@ -44,9 +44,9 @@ python train.py -gpu 0 -v 1 -said -moae -hdw
 ```
 
 ```bash
-python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t
+python test.py -gpu 0 -v 1 -said -moae -hdw
 ```
 
 ```bash
-python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t -test_all
+python test.py -gpu 0 -v 1 -said -moae -hdw -test_all
 ```

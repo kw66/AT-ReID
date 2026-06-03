@@ -426,9 +426,9 @@ def run(args):
         print(f"Resumed model weights from {args.resume} (epoch {checkpoint.get('epoch', 'unknown')})")
 
     if args.test or args.eval_only:
-        checkpoint_file = find_checkpoint(checkpoint_path, explicit_checkpoint=args.checkpoint or args.resume)
+        checkpoint_file = find_checkpoint(checkpoint_path)
         if checkpoint_file is None:
-            raise FileNotFoundError("No checkpoint found. Please pass --checkpoint or train a model first.")
+            raise FileNotFoundError(f"No checkpoint found under {checkpoint_path}. Please train a model first.")
         load_checkpoint(base_model, checkpoint_file, map_location=device)
         print(f'Loaded checkpoint for evaluation: {checkpoint_file}')
         return evaluate_model(args, base_model, dataset)

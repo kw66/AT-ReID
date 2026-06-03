@@ -65,11 +65,11 @@ python train.py -gpu 0 -v 1 -said -moae -hdw
 ## 🧪 Test
 
 ```bash
-python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t
+python test.py -gpu 0 -v 1 -said -moae -hdw
 ```
 
 ```bash
-python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t -test_all
+python test.py -gpu 0 -v 1 -said -moae -hdw -test_all
 ```
 
 ### Scenario-Agnostic Mixed Test
@@ -77,7 +77,7 @@ python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/ep
 Unseen scenario-agnostic mixed test:
 
 ```bash
-python test.py -gpu 0 -v 1 -said -moae -hdw --checkpoint save_model/atustc_v1/epoch_best.t -test_mix
+python test.py -gpu 0 -v 1 -said -moae -hdw -test_mix
 ```
 
 | Method | Feature | Valid queries | R1 | R5 | R10 | R20 | mAP |

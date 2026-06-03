@@ -22,7 +22,7 @@ def create_argparser():
     defaults = dict(
         log_path='./log', model_path='./save_model',
         d='atustc',
-        v=1, gpu=0, test=False, test_all=False, checkpoint='',
+        v=1, gpu=0, test=False, test_all=False,
         test_mix=False,
         wait=True, t=0.0, mb=100,
         drop=0.2, stride=16,
@@ -45,5 +45,4 @@ def create_argparser():
     )
     parser = argparse.ArgumentParser(description='ReID')
     add_dict_to_argparser(parser, defaults)
-    parser.add_argument('--checkpoint', dest='checkpoint', default='')
     return parser

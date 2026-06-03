@@ -27,7 +27,6 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--log-path", default=str(DEFAULT_LOG_PATH))
     parser.add_argument("--model-path", default=str(DEFAULT_MODEL_PATH))
-    parser.add_argument("--checkpoint", default=None, help="Checkpoint path used for evaluation-only or resume.")
     parser.add_argument("--resume", default=None, help="Resume training from an existing checkpoint.")
     parser.add_argument(
         "--no-pretrained",
@@ -335,8 +334,6 @@ def normalize_paths(args) -> None:
         args.pretrained_path = str(Path(args.pretrained_path))
     if args.decode_cache_dir is not None:
         args.decode_cache_dir = str(Path(args.decode_cache_dir))
-    if args.checkpoint is not None:
-        args.checkpoint = str(Path(args.checkpoint))
     if args.resume is not None:
         args.resume = str(Path(args.resume))
 

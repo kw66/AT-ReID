@@ -105,7 +105,7 @@ def make_output_dirs(args):
     os.makedirs(args.log_path, exist_ok=True)
     os.makedirs(args.model_path, exist_ok=True)
     while os.path.exists(f'{args.log_path}/{args.dataset}_v{args.v}.txt'):
-        if args.test or args.eval_only or args.resume or args.checkpoint:
+        if args.test or args.eval_only or args.resume:
             break
         if os.path.isfile(f'{args.model_path}/{args.dataset}_v{args.v}/complete.txt'):
             args.v += 1

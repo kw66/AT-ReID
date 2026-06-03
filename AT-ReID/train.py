@@ -45,12 +45,6 @@ criterion_said.to('cuda')
 criterion_tri = TripletLoss()
 criterion_tri.to('cuda')
 
-if args.checkpoint:
-    checkpoint = torch.load(args.checkpoint)
-    model.load_state_dict(checkpoint['model'])
-    print(f"Loaded checkpoint: {args.checkpoint}")
-
-
 def train(epoch):
     model.train()
     train_loss, data_time, batch_time, grad, acc, \
@@ -105,7 +99,10 @@ def train(epoch):
     print(f'DataTime: {data_time.sum:.3f} ({data_time.avg:.3f}) BatchTime: {batch_time.sum:.3f} ({batch_time.avg:.3f})')
 
 
-if (not args.checkpoint and test_model(checkpoint_path, model)) or args.test:
+loaded_checkpoint = test_model(checkpoint_path, model)
+if loaded_checkpoint or args.test:
+    if args.test and not loaded_checkpoint:
+        raise FileNotFoundError(f'No checkpoint found under {checkpoint_path}. Please train a model first.')
     print('no training')
     if args.test_mix:
         cmc, mAP = test_mix(args, dataset, model)
