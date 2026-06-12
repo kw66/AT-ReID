@@ -3,7 +3,7 @@
 Official repository for **[Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification](https://arxiv.org/abs/2509.16635)**.
 
 <p align="center">
-  <a href="https://kw66.github.io/">🏠 个人主页 / Personal Homepage</a>
+  <a href="https://kw66.github.io/">🏠 作者主页 / Personal Homepage</a>
 </p>
 
 ## 🧭 Navigation
