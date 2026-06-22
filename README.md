@@ -121,13 +121,8 @@ If this project helps your research, please cite:
   author    = {Li, Xulin and Lu, Yan and Liu, Bin and Li, Jiaze and Yang, Qinhong and Gong, Tao and Chu, Qi and Ye, Mang and Yu, Nenghai},
   booktitle = {Proceedings of the Thirty-Fourth International Joint Conference on Artificial Intelligence, {IJCAI-25}},
   publisher = {International Joint Conferences on Artificial Intelligence Organization},
-  editor    = {James Kwok},
   pages     = {1467--1475},
   year      = {2025},
-  month     = {8},
-  note      = {Main Track},
-  doi       = {10.24963/ijcai.2025/164},
-  url       = {https://doi.org/10.24963/ijcai.2025/164},
 }
 ```
 
