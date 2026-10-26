@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import warnings
 
 import torch
 import torch.nn as nn
@@ -79,6 +80,9 @@ class Attention(nn.Module):
 
 
 class Mlp_moe(nn.Module):
+    # Version 2 checkpoints include the learned routing bias.
+    _version = 2
+
     def __init__(
         self,
         in_dim,
@@ -123,7 +127,7 @@ class Mlp_moe(nn.Module):
             trunc_normal_(self.gate_pair, std=0.02)
             self.atom_in_layers = nn.ModuleList([nn.Linear(in_dim, hidden_dim) for _ in range(self.num_atoms)])
             self.atom_out_layers = nn.ModuleList([nn.Linear(hidden_dim, in_dim) for _ in range(self.num_atoms)])
-            self.register_buffer("balance_bias", torch.zeros(self.ncls, 2, dtype=torch.float32), persistent=False)
+            self.register_buffer("balance_bias", torch.zeros(self.ncls, 2, dtype=torch.float32))
             self.register_buffer("balance_usage_ema", torch.full((self.ncls, 2), 0.5, dtype=torch.float32), persistent=False)
         else:
             self.num_atoms = len(ATOM_NAMES)
@@ -139,6 +143,23 @@ class Mlp_moe(nn.Module):
         self.last_route_stats = None
         self.last_balance_fractions = None
         self.moae_epoch = 0
+
+    def _load_from_state_dict(
+        self, state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs
+    ):
+        bias_key = prefix + "balance_bias"
+        if self.moae and bias_key not in state_dict and local_metadata.get("version", 1) < 2:
+            warnings.warn(
+                "This legacy MoAE checkpoint did not save balance_bias; loading zero routing bias. "
+                "The original training-time bias cannot be recovered, so evaluation may differ "
+                "from the training log.",
+                UserWarning,
+                stacklevel=2,
+            )
+            state_dict[bias_key] = torch.zeros_like(self.balance_bias)
+        super()._load_from_state_dict(
+            state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs
+        )
 
     def rescale_output_layers(self, layer_id):
         scale = math.sqrt(2.0 * layer_id)

@@ -2,6 +2,12 @@
 
 This folder keeps the original reference implementation of the paper *Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification*. 🧪
 
+### MoAE routing correction (2026-10-27)
+
+Top-1 routing now retains the selected softmax probability as the expert's output weight. Previously, renormalizing a single selected probability made that weight equal to one and removed the gate's useful task-loss gradient. Selection now also keeps one expert when scores tie.
+
+Parameter names and shapes are unchanged, so existing checkpoints still load. The corrected output weighting changes the forward pass, however: historical checkpoint metrics are not guaranteed to match. Retrain to obtain a gate trained with the corrected implementation; use a revision before this correction when reproducing the historical implementation. The result tables below have not been remeasured after this correction.
+
 ### 1. 🚂 Training
 
 You may need to manually define the data path first.

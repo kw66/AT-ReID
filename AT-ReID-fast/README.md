@@ -88,7 +88,15 @@ python test.py -gpu 0 -v 1 -said -moae -hdw -test_mix
 ## 📝 Notes
 
 - 🌍 Cross-dataset `test_all` supports AT-USTC, Market1501, CUHK03, MSMT17, SYSU-MM01, RegDB, LLCM, PRCC, LTCC, and DeepChange.
-- 🧪 The original `AT-ReID` folder remains the unmodified reference implementation.
+- 🧪 The sibling `AT-ReID` folder contains the reference implementation and the documented top-1 gate correction.
+
+### MoAE checkpoint correction (2026-10-27)
+
+New checkpoints save each block's `balance_bias`, preserving routing probabilities and outputs when reloaded. Older checkpoints omitted this buffer. They still load with an explicit warning and zero routing bias; their original training-time bias cannot be reconstructed from the saved weights, so evaluation may differ from the training log. Missing routing bias in a new-format checkpoint remains a strict loading error.
+
+This correction retains the existing balance policy: current-batch selection fractions, RMS-normalized bias updates, a linearly decaying step, and no further updates from epoch 40. The bias remains active in both route selection and output weighting after updates stop. `balance_usage_ema` is not used by this update policy.
+
+The routing curves in the paper's additional analysis were generated from the fast implementation with and without bias updates. They aggregate training selection counts across Transformer blocks; they do not establish that every individual block is balanced or isolate attribute sharing as the cause. The analysis's simplified update equation omits this implementation's RMS normalization, decay schedule, and clipping.
 
 ## 📚 Citation
 

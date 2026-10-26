@@ -1,6 +1,6 @@
 # Compare With Original `AT-ReID`
 
-`AT-ReID-fast` is the optimized sibling folder of the original `AT-ReID`. The original folder stays unchanged.
+`AT-ReID-fast` is the optimized sibling folder of the reference `AT-ReID`. The reference folder received a top-1 gate correction on 2026-10-27; see its README for the effect on historical checkpoint results. The benchmark timings below predate that correction.
 
 ## Benchmark Summary
 

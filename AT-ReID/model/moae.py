@@ -104,10 +104,11 @@ class Mlp_moe(nn.Module):
             gate = self.gate[i](token).unsqueeze(2)
             gate = gate.softmax(dim=-1)
             if self.k < sum(gt):
-                gate_topk = gate.topk(k=self.k + 1, dim=-1)[0][:, :, :, -1]
-                gate_topk = ((gate - gate_topk.unsqueeze(3)) > 0).float()
-                gate = gate * gate_topk
-                gate = gate / (gate.sum(dim=-1, keepdim=True).clamp(1e-6))
+                selected = gate.topk(k=self.k, dim=-1).indices
+                gate_mask = torch.zeros_like(gate).scatter_(-1, selected, 1.0)
+                # Keep the selected softmax probability: top-1 renormalization
+                # would turn it into p / p = 1 and remove the gate gradient.
+                gate = gate * gate_mask
             x.append((out * gate).sum(3))
         x = torch.cat(x, 1)
         x = torch.cat((x, patch_tokens), 1)
