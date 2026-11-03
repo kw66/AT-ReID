@@ -36,6 +36,7 @@ class saidloss_hdw(nn.Module):
 
     def __init__(self, cid2pid, said=False, hdw=False):
         super().__init__()
+        self.skip_unused_stats = True
         self.said = said
         self.hdw = hdw
         cid_to_pid = torch.tensor([cid2pid[i] for i in range(len(cid2pid))], dtype=torch.long)
@@ -209,6 +210,8 @@ class saidloss_hdw(nn.Module):
             scenario_weight_tensor = torch.ones(len(HEAD_SCENARIOS), device=mean_losses[0].device, dtype=mean_losses[0].dtype)
             base_loss_tensor = torch.stack(mean_losses)
             loss_contrib_tensor = base_loss_tensor
+            if self.skip_unused_stats and not return_details:
+                return loss_contrib_tensor.sum()
             details = self._build_details(
                 losses,
                 tuple(scenario_weight_tensor[index] for index in range(len(HEAD_SCENARIOS))),
@@ -236,6 +239,8 @@ class saidloss_hdw(nn.Module):
             (loss_value.sum() / batch_size) if loss_value.ndim > 0 else loss_value
             for loss_value in losses
         ])
+        if self.skip_unused_stats and not return_details:
+            return (scenario_weight_tensor.to(dtype=base_loss_tensor.dtype) * base_loss_tensor).sum()
         effective_weight_tensor = torch.stack([
             scenario_weight_tensor[index] * (float(loss.numel()) / batch_size)
             for index, loss in enumerate(losses)

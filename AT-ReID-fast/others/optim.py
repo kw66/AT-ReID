@@ -26,6 +26,12 @@ def get_optim(args, param_groups):
 
 
 def get_param_groups(args, lr, model):
+    if lr == 0 and getattr(args, "group_optimizer", True):
+        # Preserve the multiplier distinction even when the scheduled LR is zero.
+        groups = get_param_groups(args, 1.0, model)
+        for group in groups:
+            group["lr"] = 0.0
+        return groups
     memo = set()
     param_groups = []
     defaults = {"lr": lr, "weight_decay": args.wd}
@@ -54,8 +60,20 @@ def get_param_groups(args, lr, model):
                 if isinstance(module, nn.LayerNorm):
                     hyperparams["weight_decay"] = 0.0
             hyperparams["module_name"] = module_name
+            if getattr(args, "group_optimizer", True):
+                hyperparams["parameter_name"] = f"{module_name}.{module_param_name}".lstrip(".")
             param_groups.append({"params": [value], **hyperparams})
-    return param_groups
+    if not getattr(args, "group_optimizer", True):
+        return param_groups
+    grouped = {}
+    for group in param_groups:
+        options = {key: value for key, value in group.items() if key not in {"params", "module_name", "parameter_name"}}
+        key = tuple(sorted(options.items()))
+        if key not in grouped:
+            grouped[key] = {**options, "params": [], "param_names": [], "lr_scale": options["lr"] / lr}
+        grouped[key]["params"].extend(group["params"])
+        grouped[key]["param_names"].append(group["parameter_name"])
+    return list(grouped.values())
 
 
 def adjust_learning_rate(args, optimizer, epoch, model):
@@ -69,6 +87,10 @@ def adjust_learning_rate(args, optimizer, epoch, model):
     else:
         step_ratio = (epoch - args.warmup_epoch) / max(1, (args.max_epoch - args.warmup_epoch))
         lr *= ((1 - args.cosmin_rate) * (1 + math.cos(math.pi * step_ratio)) / 2 + args.cosmin_rate)
+    if all("lr_scale" in group for group in optimizer.param_groups):
+        for group in optimizer.param_groups:
+            group["lr"] = lr * group["lr_scale"]
+        return lr
     new_lr = [param_group['lr'] for param_group in get_param_groups(args, lr, model)]
     for i, param_group in enumerate(optimizer.param_groups):
         param_group['lr'] = new_lr[i]

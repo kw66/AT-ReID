@@ -143,6 +143,8 @@ class Mlp_moe(nn.Module):
         self.last_route_stats = None
         self.last_balance_fractions = None
         self.moae_epoch = 0
+        self.collect_route_stats = True
+        self.skip_unused_stats = True
 
     def _load_from_state_dict(
         self, state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs
@@ -245,6 +247,13 @@ class Mlp_moe(nn.Module):
         if not self.moae:
             self.last_route_stats = None
             self.last_balance_fractions = None
+            return
+        if self.skip_unused_stats and (not self.training or not self.collect_route_stats):
+            self.last_route_stats = None
+            if self.training and self._current_balance_step() > 0:
+                self.last_balance_fractions = F.one_hot(chosen_route.detach(), num_classes=2).float().mean(dim=0)
+            else:
+                self.last_balance_fractions = None
             return
         route_probs = route_probs.detach().float()
         left_prob = route_probs[:, :, 0]

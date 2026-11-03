@@ -95,3 +95,27 @@ def saidloss(y, pids, cids, mids, invalid_same_pid_mask, scenario, said=False, h
     if scenario in SHORT_TERM_SCENARIOS:
         return _short_term_loss(y, cids, invalid_same_pid_mask.index_select(0, cids), hdw=hdw)
     raise ValueError(f"Unsupported SAID scenario: {scenario}")
+
+
+# Interface repair 2026-11-03: hdw.py expects per-head valid class counts.
+# Preserve the original loss implementation and its return when not requested.
+_original_compute_head_losses = compute_head_losses
+
+def compute_head_losses(head_logits, pids, cids, mids, invalid_same_pid_mask,
+                        *, said: bool, hdw: bool, return_class_counts=False):
+    losses = _original_compute_head_losses(head_logits, pids, cids, mids,
+                                          invalid_same_pid_mask, said=said, hdw=hdw)
+    if not return_class_counts:
+        return losses
+    effective, nominal = [], []
+    for logits, spec in zip(head_logits, HEAD_SPECS):
+        if said:
+            selected, _, selected_cids, _ = _select_scenario_samples(logits, pids, cids, mids, spec['name'])
+        else:
+            selected, selected_cids = logits, cids
+        count = torch.full((selected.shape[0],), logits.shape[-1], dtype=torch.float32, device=logits.device)
+        valid = ((~invalid_same_pid_mask.index_select(0, selected_cids)).sum(dim=1).float()
+                 if said and spec['target'] == 'cid' else count)
+        effective.append(valid)
+        nominal.append(count)
+    return losses, tuple(effective), tuple(nominal)

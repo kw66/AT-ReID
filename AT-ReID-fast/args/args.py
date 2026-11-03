@@ -19,6 +19,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("-v", "--run-version", dest="v", type=int, default=1, help="Version id used in log/model folders.")
     parser.add_argument("-gpu", "--gpu", default="0", help="CUDA_VISIBLE_DEVICES value, for example 0 or 0,1. Use env when launched by an external scheduler.")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--defer-metrics", action=argparse.BooleanOptionalAction, default=True,
+                        help="Read detached training metrics at print boundaries instead of every step.")
+    parser.add_argument("--group-optimizer", action=argparse.BooleanOptionalAction, default=True,
+                        help="Group parameters with identical update hyperparameters.")
+    parser.add_argument("--skip-unused-stats", action=argparse.BooleanOptionalAction, default=True,
+                        help="Skip display-only statistics when they are not requested.")
     parser.add_argument("--data-root", default=None, help="Root path for the primary training dataset.")
     parser.add_argument(
         "--data-root-config",

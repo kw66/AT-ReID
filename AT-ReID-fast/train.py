@@ -34,6 +34,7 @@ from others.test_mix import test_mix
 from others.transforms import get_transform
 from others.utils import (
     AverageMeter,
+    DeferredTrainMetrics,
     find_checkpoint,
     format_hms,
     get_grad_norm,
@@ -93,6 +94,10 @@ def build_model(args, dataset, device):
         pretrained_path=args.pretrained_path,
         attention_backend=args.vit_attention_backend,
     ).to(device)
+    for module in base_model.modules():
+        if hasattr(module, "collect_route_stats"):
+            module.skip_unused_stats = getattr(args, "skip_unused_stats", True)
+            module.collect_route_stats = bool(getattr(args, "train_stats", False))
     compile_args = args
     if args.test or args.eval_only:
         compile_args = SimpleNamespace(compile=False, compile_mode=getattr(args, "compile_mode", "default"))
@@ -106,6 +111,7 @@ def build_losses(args, dataset, device):
         said=args.said,
         hdw=args.hdw,
     ).to(device)
+    criterion_said.skip_unused_stats = getattr(args, "skip_unused_stats", True)
     criterion_tri = TripletLoss().to(device)
     return criterion_said, criterion_tri
 
@@ -167,6 +173,11 @@ def train_one_epoch(epoch, args, model, base_model, trainloader, optimizer, crit
         base_model.set_moae_epoch(epoch)
     collect_train_stats = bool(getattr(args, "train_stats", False))
     train_loss, data_time, batch_time, grad, acc, loss_1, loss_2 = [AverageMeter() for _ in range(7)]
+    defer_metrics = getattr(args, "defer_metrics", True)
+    metrics = DeferredTrainMetrics((train_loss, loss_1, loss_2, grad, acc)) if defer_metrics else None
+    for module in base_model.modules():
+        if hasattr(module, "collect_route_stats"):
+            module.collect_route_stats = collect_train_stats
     if collect_train_stats:
         num_scenarios = len(HEAD_SCENARIOS)
         scenario_loss_sum = torch.zeros(num_scenarios, device=device, dtype=torch.float32)
@@ -237,11 +248,14 @@ def train_one_epoch(epoch, args, model, base_model, trainloader, optimizer, crit
             base_model.update_moae_balance()
 
         predicted = logits[5].float().max(1)[1]
-        train_loss.update(loss.item(), pids.size(0))
-        loss_1.update(loss1.item(), pids.size(0))
-        loss_2.update(loss2.item(), pids.size(0))
-        grad.update(float(grad_norm))
-        acc.update(100.0 * predicted.eq(pids).sum().item() / pids.size(0))
+        if defer_metrics:
+            metrics.add(loss, loss1, loss2, grad_norm, predicted.eq(pids).sum(), pids.size(0))
+        else:
+            train_loss.update(loss.item(), pids.size(0))
+            loss_1.update(loss1.item(), pids.size(0))
+            loss_2.update(loss2.item(), pids.size(0))
+            grad.update(float(grad_norm))
+            acc.update(100.0 * predicted.eq(pids).sum().item() / pids.size(0))
         if collect_train_stats and loss1_details is not None:
             scenario_counts = loss1_details["scenario_sample_counts"].to(device=device)
             scenario_counts_float = scenario_counts.to(dtype=torch.float32)
@@ -278,6 +292,8 @@ def train_one_epoch(epoch, args, model, base_model, trainloader, optimizer, crit
         elapsed = time.time() - global_start
         remaining = elapsed * (args.max_epoch - step) / max(step, 1e-8)
         if (batch_idx + 1) % max(1, len(trainloader) // 10) == 0:
+            if defer_metrics:
+                metrics.flush()
             print(
                 f'E[{epoch:02d}][{batch_idx + 1:3d}/{len(trainloader)}] '
                 f'L: {train_loss.val:.3f} ({train_loss.avg:.3f}) '
@@ -290,6 +306,8 @@ def train_one_epoch(epoch, args, model, base_model, trainloader, optimizer, crit
         if args.max_train_steps > 0 and (batch_idx + 1) >= args.max_train_steps:
             print(f'==> Early stop epoch {epoch} after {batch_idx + 1} training steps (max_train_steps={args.max_train_steps})')
             break
+    if defer_metrics:
+        metrics.flush()
     print(f'DataTime: {data_time.sum:.3f} ({data_time.avg:.3f}) BatchTime: {batch_time.sum:.3f} ({batch_time.avg:.3f})')
     if not collect_train_stats:
         return {"weight_mode": weight_mode}

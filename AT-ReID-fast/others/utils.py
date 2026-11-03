@@ -177,3 +177,32 @@ def format_hms(seconds):
 
 def ensure_dir(path):
     Path(path).mkdir(parents=True, exist_ok=True)
+
+
+class DeferredTrainMetrics:
+    """Detach each step; perform one device-to-host transfer per print interval.
+
+    This changes only reporting, not backward, clipping, scaler or optimizer.
+    No new finite-check policy is introduced: AMP/scaler semantics are unchanged.
+    """
+
+    def __init__(self, meters):
+        self.meters = meters
+        self.pending = []
+
+    def add(self, loss, loss1, loss2, grad_norm, correct, count):
+        norm = torch.as_tensor(grad_norm, device=loss.device).detach()
+        self.pending.append(((loss.detach(), loss1.detach(), loss2.detach(), norm, correct.detach()), count))
+
+    def flush(self):
+        if not self.pending:
+            return
+        # Stack once per log interval, avoiding a small kernel per metric per step.
+        rows = torch.stack([v for values, _ in self.pending for v in values]).cpu().tolist()
+        for index, (_, count) in enumerate(self.pending):
+            loss, loss1, loss2, norm, correct = rows[index * 5:index * 5 + 5]
+            for meter, value in zip(self.meters[:3], (loss, loss1, loss2)):
+                meter.update(value, count)
+            self.meters[3].update(norm)
+            self.meters[4].update(100.0 * correct / count)
+        self.pending.clear()
