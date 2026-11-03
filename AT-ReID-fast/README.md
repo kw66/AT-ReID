@@ -88,7 +88,6 @@ python test.py -gpu 0 -v 1 -said -moae -hdw -test_mix
 ## 📝 Notes
 
 - 🌍 Cross-dataset `test_all` supports AT-USTC, Market1501, CUHK03, MSMT17, SYSU-MM01, RegDB, LLCM, PRCC, LTCC, and DeepChange.
-- 🧪 The sibling `AT-ReID` folder contains the reference implementation and the documented top-1 gate correction.
 
 ## 📚 Citation
 
