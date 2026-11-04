@@ -604,6 +604,37 @@ def _as_torch_int_tensor(array_like, *, device):
     return torch.as_tensor(array_like, dtype=torch.int32, device=device)
 
 
+class _CosineDistanceBlocks:
+    """Generate only the query rows needed by the ranking backend."""
+
+    def __init__(self, q, g, device):
+        self.device = device
+        # Match cosine_distance_matrix: normalize in FP32 before transfer.
+        self.q = F.normalize(q.float(), p=2, dim=1).to(device)
+        self.g = F.normalize(g.float(), p=2, dim=1).to(device)
+        self.events = []
+        self.cpu_seconds = 0.0
+
+    def __call__(self, start, stop):
+        if self.device.type == "cuda":
+            begin = torch.cuda.Event(enable_timing=True)
+            end = torch.cuda.Event(enable_timing=True)
+            begin.record()
+            block = -torch.mm(self.q[start:stop].to(self.device), self.g.t())
+            end.record()
+            self.events.append((begin, end))
+        else:
+            started = time.perf_counter()
+            block = -torch.mm(self.q[start:stop].to(self.device), self.g.t())
+            self.cpu_seconds += time.perf_counter() - started
+        return block
+
+    def elapsed(self):
+        if self.events:
+            self.events[-1][1].synchronize()
+        return self.cpu_seconds + sum(a.elapsed_time(b) for a, b in self.events) / 1000
+
+
 def _eval_torch(
     q_pids,
     q_cids,
@@ -623,11 +654,14 @@ def _eval_torch(
     sort_batch_size=256,
 ):
     with torch.inference_mode():
-        distmat = _as_torch_float_tensor(distmat, device=device)
-        if distmat.numel() == 0:
+        # Accept a distance-block provider or an existing CPU/GPU matrix.
+        # Never copy an entire CPU matrix to CUDA just to evaluate it.
+        num_q, num_g = len(q_pids), len(g_pids)
+        if not callable(distmat) and tuple(distmat.shape) != (num_q, num_g):
+            raise ValueError("Distance shape does not match identities")
+        if num_q == 0 or num_g == 0:
             return np.zeros(max_rank, dtype=np.float32), 0.0
 
-        num_q, num_g = int(distmat.shape[0]), int(distmat.shape[1])
         max_rank = min(int(max_rank), num_g)
         batch_size = max(1, int(sort_batch_size))
 
@@ -646,7 +680,10 @@ def _eval_torch(
 
         for start in range(0, num_q, batch_size):
             stop = min(num_q, start + batch_size)
-            block = distmat[start:stop]
+            block = distmat(start, stop) if callable(distmat) else distmat[start:stop]
+            block = _as_torch_float_tensor(block, device=device)
+            if tuple(block.shape) != (stop-start, num_g):
+                raise ValueError("Distance provider returned an invalid block")
             q_pid_col = q_pids_t[start:stop].view(-1, 1)
             q_cid_col = q_cids_t[start:stop].view(-1, 1)
             q_mid_col = q_mids_t[start:stop].view(-1, 1)
@@ -756,23 +793,33 @@ def evaluate_bundle_head(
     q = _bundle_head(query_bundle, head_index=head_index)
     g = _bundle_head(gallery_bundle, head_index=head_index)
     distance_device = resolve_distance_device(args.test_distance_device, default_device=default_device)
+    stream_distances = q.shape[0] * g.shape[0] > 64000000
+    sort_batch_size = max(1, int(getattr(args, "test_rank_sort_batch_size", 256)))
+    max_elements = int(getattr(args, "test_rank_max_elements_cuda", 1200000000))
+    # Keep the existing cap as a per-block working-set limit for streaming.
+    if max_elements > 0 and len(g):
+        sort_batch_size = min(sort_batch_size, max(1, max_elements // len(g)))
     rank_device = resolve_rank_device(
         getattr(args, "test_rank_device", "auto"),
         default_device=distance_device if distance_device.type == "cuda" else default_device,
         num_query=q.shape[0],
         num_gallery=g.shape[0],
-        max_cuda_elements=getattr(args, "test_rank_max_elements_cuda", 64000000),
+        max_cuda_elements=max_elements,
         auto_min_pairs=getattr(args, "test_rank_auto_min_pairs", 5000000),
+        streaming=stream_distances,
     )
 
     dist_start = time.perf_counter()
-    distmat = cosine_distance_matrix(
-        q,
-        g,
-        device=distance_device,
-        chunk_size=getattr(args, "test_distance_chunk_size", 2048),
-        return_tensor=rank_device.type == "cuda",
-    )
+    if rank_device.type == "cuda" and stream_distances:
+        distmat = _CosineDistanceBlocks(q, g, distance_device)
+        if distance_device.type == "cuda":
+            torch.cuda.synchronize(distance_device)
+    else:
+        distmat = cosine_distance_matrix(
+            q, g, device=distance_device,
+            chunk_size=getattr(args, "test_distance_chunk_size", 2048),
+            return_tensor=rank_device.type == "cuda",
+        )
     dist_time = time.perf_counter() - dist_start
 
     rank_start = time.perf_counter()
@@ -791,7 +838,7 @@ def evaluate_bundle_head(
             distmat,
             dataset,
             device=rank_device,
-            sort_batch_size=getattr(args, "test_rank_sort_batch_size", 256),
+            sort_batch_size=sort_batch_size,
         )
     else:
         cmc, mAP = eval(
@@ -811,6 +858,10 @@ def evaluate_bundle_head(
             dataset,
         )
     rank_time = time.perf_counter() - rank_start
+    if isinstance(distmat, _CosineDistanceBlocks):
+        streamed_distance_time = distmat.elapsed()
+        dist_time += streamed_distance_time
+        rank_time = max(0.0, rank_time - streamed_distance_time)
 
     if not return_metrics:
         return cmc, mAP
@@ -819,6 +870,8 @@ def evaluate_bundle_head(
         "rank_time_sec": float(rank_time),
         "distance_device": distance_device.type,
         "rank_device": rank_device.type,
+        "distance_streamed": isinstance(distmat, _CosineDistanceBlocks),
+        "rank_sort_batch_size": sort_batch_size,
     }
 
 

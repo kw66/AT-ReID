@@ -84,7 +84,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--test-rank-device",
         default="auto",
         choices=["auto", "cpu", "cuda"],
-        help="Device used by exact sorting / CMC / mAP evaluation after the distance matrix is built.",
+        help="Device used by sorting / CMC / mAP evaluation; CUDA streams large distance matrices.",
     )
     parser.add_argument(
         "--test-rank-sort-batch-size",
@@ -102,7 +102,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--test-rank-max-elements-cuda",
         type=int,
         default=1200000000,
-        help="Hard upper bound for auto CUDA ranking. Set <= 0 to remove the cap.",
+        help="Maximum distance elements per CUDA ranking block. Set <= 0 to remove the cap.",
     )
     parser.add_argument(
         "--decode-cache",

@@ -112,6 +112,7 @@ def resolve_rank_device(
     num_gallery: int,
     max_cuda_elements: int,
     auto_min_pairs: int = _AUTO_GPU_METRIC_MIN_PAIRS,
+    streaming: bool = False,
 ) -> torch.device:
     requested = str(requested).strip().lower()
     if requested == "auto":
@@ -122,7 +123,7 @@ def resolve_rank_device(
         if total < max(0, min_pairs):
             return torch.device("cpu")
         max_elements = int(max_cuda_elements) if max_cuda_elements is not None else 0
-        if max_elements > 0 and total > max_elements:
+        if not streaming and max_elements > 0 and total > max_elements:
             return torch.device("cpu")
         return torch.device("cuda")
     if requested == "cuda":
