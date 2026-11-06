@@ -53,6 +53,55 @@ Our data collection spans **21 months**, and **270 volunteers** were photographe
 
 Please send a signed [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) copy to **lxlkw@mail.ustc.edu.cn**. If your application is approved, we will send the download link for the dataset.
 
+<details>
+<summary>📋 申请者列表 / Applicants (37)</summary>
+
+截至 2026-11-06，已核对 37 位申请者。为保护隐私，仅展示学校／单位和姓氏。
+
+| 学校／单位 | 姓氏 |
+| --- | --- |
+| Universiti Teknologi PETRONAS | Haque |
+| 浙江工商大学 | 司 |
+| 华中科技大学 | 邓 |
+| 杭州电子科技大学 | 彭 |
+| University of Information Technology, VNU-HCM | Cáp |
+| 重庆邮电大学 | 袁 |
+| University of Information Technology, VNU-HCM | Trần |
+| Sejong University | 待核实 |
+| 安徽大学 | Wei |
+| 西安工业大学 | 刘 |
+| 重庆交通大学 | 陈 |
+| 华南理工大学 | 冼 |
+| VinUniversity | Tran |
+| 个人（未注明单位） | 田 |
+| Middle East Technical University | Artan |
+| 武汉大学 | 包 |
+| 西藏民族大学 | 赵 |
+| 杭州电子科技大学 | 余 |
+| 济南大学 | 王 |
+| 南昌大学 | 张 |
+| 吉林大学 | 梁 |
+| 清华大学 | 李 |
+| 大连海事大学 | 唐 |
+| 同济大学 | 杨 |
+| 重庆交通大学 | 官 |
+| 济南大学 | 王 |
+| 江西农业大学 | 汪 |
+| 浙江师范大学 | 吴 |
+| 西北工业大学 | 周 |
+| 电子科技大学 | 尹 |
+| Beijing Multi-Dimensional Vision Technology Co., Ltd. | 朴 |
+| 安徽大学 | 章 |
+| 北京工业大学 | 杨 |
+| 福州大学 | 杨 |
+| 浙江大学 | 罗 |
+| 南京邮电大学 | 周 |
+| 武汉大学 | 段 |
+
+注：同一单位的同姓申请者分别计数；“待核实”表示原申请中姓名顺序不一致，暂不展示姓名。
+
+</details>
+
 ### 📊 Split Summary
 
 | Split | IDs | Images | Notes |
