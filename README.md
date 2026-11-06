@@ -2,10 +2,6 @@
 
 Official repository for **[Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification](https://arxiv.org/abs/2509.16635)**.
 
-<p align="center">
-  <a href="https://kw66.github.io/">🏠 作者主页 </a>
-</p>
-
 ## 🧭 Navigation
 
 <table width="100%">
@@ -25,7 +21,7 @@ Official repository for **[Towards Anytime Retrieval: A Benchmark for Anytime Pe
     <td align="center" nowrap><a href="https://zhuanlan.zhihu.com/p/1944895842541605129">📘 知乎介绍</a></td>
     <td align="center" nowrap><a href="https://zhuanlan.zhihu.com/p/1946682409371304382">📘 知乎介绍</a></td>
     <td align="center" nowrap><a href="https://zhuanlan.zhihu.com/p/1947080865181078424">📘 知乎介绍</a></td>
-    <td align="center" nowrap>&nbsp;</td>
+    <td align="center" nowrap><a href="https://kw66.github.io/">🏠 作者主页</a></td>
   </tr>
 </table>
 
@@ -54,51 +50,47 @@ Our data collection spans **21 months**, and **270 volunteers** were photographe
 Please send a signed [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%20Agreement.pdf) copy to **lxlkw@mail.ustc.edu.cn**. If your application is approved, we will send the download link for the dataset.
 
 <details>
-<summary>📋 申请者列表 / Applicants (37)</summary>
+<summary>📋 Applicants</summary>
 
-截至 2026-11-06，已核对 37 位申请者。为保护隐私，仅展示学校／单位和姓氏。
-
-| 学校／单位 | 姓氏 |
+| 学校／单位 | 申请人 |
 | --- | --- |
-| Universiti Teknologi PETRONAS | Haque |
-| 浙江工商大学 | 司 |
-| 华中科技大学 | 邓 |
-| 杭州电子科技大学 | 彭 |
-| University of Information Technology, VNU-HCM | Cáp |
-| 重庆邮电大学 | 袁 |
-| University of Information Technology, VNU-HCM | Trần |
-| Sejong University | 待核实 |
-| 安徽大学 | Wei |
-| 西安工业大学 | 刘 |
-| 重庆交通大学 | 陈 |
-| 华南理工大学 | 冼 |
-| VinUniversity | Tran |
-| 个人（未注明单位） | 田 |
-| Middle East Technical University | Artan |
-| 武汉大学 | 包 |
-| 西藏民族大学 | 赵 |
-| 杭州电子科技大学 | 余 |
-| 济南大学 | 王 |
-| 南昌大学 | 张 |
-| 吉林大学 | 梁 |
-| 清华大学 | 李 |
-| 大连海事大学 | 唐 |
-| 同济大学 | 杨 |
-| 重庆交通大学 | 官 |
-| 济南大学 | 王 |
-| 江西农业大学 | 汪 |
-| 浙江师范大学 | 吴 |
-| 西北工业大学 | 周 |
-| 电子科技大学 | 尹 |
-| Beijing Multi-Dimensional Vision Technology Co., Ltd. | 朴 |
-| 安徽大学 | 章 |
-| 北京工业大学 | 杨 |
-| 福州大学 | 杨 |
-| 浙江大学 | 罗 |
-| 南京邮电大学 | 周 |
-| 武汉大学 | 段 |
-
-注：同一单位的同姓申请者分别计数；“待核实”表示原申请中姓名顺序不一致，暂不展示姓名。
+| 国油科技大学（马来西亚） | Haque\*\* |
+| 浙江工商大学 | 司\*\* |
+| 华中科技大学 | 邓\*\* |
+| 杭州电子科技大学 | 彭\*\* |
+| 胡志明市国家大学信息技术大学（越南） | Cáp\*\* |
+| 重庆邮电大学 | 袁\*\* |
+| 胡志明市国家大学信息技术大学（越南） | Trần\*\* |
+| 世宗大学（韩国） | Joshua\*\* |
+| 安徽大学 | Wei\*\* |
+| 西安工业大学 | 刘\*\* |
+| 重庆交通大学 | 陈\*\* |
+| 华南理工大学 | 冼\*\* |
+| VinUniversity（越南） | Tran\*\* |
+| 个人 | 田\*\* |
+| 中东技术大学（土耳其） | Artan\*\* |
+| 武汉大学 | 包\*\* |
+| 西藏民族大学 | 赵\*\* |
+| 杭州电子科技大学 | 余\*\* |
+| 济南大学 | 王\*\* |
+| 南昌大学 | 张\*\* |
+| 吉林大学 | 梁\*\* |
+| 清华大学 | 李\*\* |
+| 大连海事大学 | 唐\*\* |
+| 同济大学 | 杨\*\* |
+| 重庆交通大学 | 官\*\* |
+| 济南大学 | 王\*\* |
+| 江西农业大学 | 汪\*\* |
+| 浙江师范大学 | 吴\*\* |
+| 西北工业大学 | 周\*\* |
+| 电子科技大学 | 尹\*\* |
+| Beijing Multi-Dimensional Vision Technology Co., Ltd. | 朴\*\* |
+| 安徽大学 | 章\*\* |
+| 北京工业大学 | 杨\*\* |
+| 福州大学 | 杨\*\* |
+| 浙江大学 | 罗\*\* |
+| 南京邮电大学 | 周\*\* |
+| 武汉大学 | 段\*\* |
 
 </details>
 
