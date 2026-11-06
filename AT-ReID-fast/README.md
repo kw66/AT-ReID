@@ -1,6 +1,6 @@
 # AT-ReID-fast
 
-`AT-ReID-fast` is the GPT-5.4-refactored accelerated version of this repository. ⚡
+`AT-ReID-fast` is the GPT-6-refactored accelerated version of this repository. ⚡
 
 It corresponds to the original `AT-ReID` version kept in the sibling folder.
 
