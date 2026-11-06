@@ -66,7 +66,7 @@ Please send a signed [Dataset Release Agreement](./AT-USTC%20Dataset%20Release%2
 | 西安工业大学 | 刘\*\* |
 | 重庆交通大学 | 陈\*\* |
 | 华南理工大学 | 冼\*\* |
-| VinUniversity（越南） | Tran\*\* |
+| VinUni大学（越南） | Tran\*\* |
 | 个人 | 田\*\* |
 | 中东技术大学（土耳其） | Artan\*\* |
 | 武汉大学 | 包\*\* |
